@@ -77,10 +77,10 @@ public abstract class BaseRequestHandler<T extends BasicRequest, U extends Basic
          }
       }
 
-      return Response.status(Response.Status.OK).entity(getAuthResponse(request, account)).build();
+      return Response.status(Response.Status.OK).entity(getResponse(request, account)).build();
    }
-
-   protected abstract U getAuthResponse(T request, BillPayAccount account);
+ 
+   protected abstract U getResponse(T request, BillPayAccount account);
 
    protected Institution getProcessor() {
       Institution institution = new Institution();

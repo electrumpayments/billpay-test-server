@@ -66,7 +66,7 @@ public class PaymentResourceHandler
       return null;
    }
 
-   protected PaymentResponse getAuthResponse(PaymentRequest request, BillPayAccount account) {
+   protected PaymentResponse getResponse(PaymentRequest request, BillPayAccount account) {
       log.info("Constructing response");
       PaymentResponse response = new PaymentResponse();
 

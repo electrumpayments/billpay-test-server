@@ -37,7 +37,7 @@ public class AccountLookResourceHandler extends BaseRequestHandler<AccountLookup
    }
    
 
-   protected AccountLookupResponse getAuthResponse(AccountLookupRequest request, BillPayAccount account) {
+   protected AccountLookupResponse getResponse(AccountLookupRequest request, BillPayAccount account) {
       log.info("Constructing response");
       AccountLookupResponse response = new AccountLookupResponse();
 
