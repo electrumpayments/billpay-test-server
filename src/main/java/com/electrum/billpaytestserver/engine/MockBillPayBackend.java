@@ -24,7 +24,7 @@ import com.electrum.billpaytestserver.account.BillPayAccount;
  *
  */
 public class MockBillPayBackend {
-   
+
    private static HashMap<String, BillPayAccount> accounts = new HashMap();
 
    private static HashMap<UUID, AccountLookupRequest> accountLookups = new HashMap();
@@ -54,6 +54,17 @@ public class MockBillPayBackend {
 
    public static BillPayAccount getAccount(String accountRef) {
       return accounts.get(accountRef);
+   }
+
+   public static boolean add(BasicRequest request) {
+      if (request instanceof AccountLookupRequest) {
+         return add((AccountLookupRequest) request);
+      } else if (request instanceof PaymentRequest) {
+         return add((PaymentRequest) request);
+      } else if (request instanceof RefundRequest) {
+         return add((RefundRequest) request);
+      }
+      return false;
    }
 
    public static boolean add(AccountLookupRequest accountLookupRequest) {

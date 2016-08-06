@@ -1,6 +1,7 @@
 package com.electrum.billpaytestserver.engine;
 
 import io.electrum.billpay.model.AccountLookupRequest;
+import io.electrum.billpay.model.PaymentRequest;
 import io.electrum.vas.model.BasicRequest;
 import io.electrum.vas.model.Merchant;
 import io.electrum.vas.model.MerchantName;
@@ -13,19 +14,24 @@ public class Validator {
 
    private static boolean strictMode = true;
 
-   public static ValidationResult validate(AccountLookupRequest accountLookupRequest) {
+   public static ValidationResult validate(BasicRequest request) {
       ValidationResult result = new ValidationResult();
-      if (isEmpty(accountLookupRequest)) {
+      if (isEmpty(request)) {
          result.addInvalidityReason("Request is null");
          return result;
       }
 
-      validate(accountLookupRequest, result);
+      validate(request, result);
 
-      if (isEmpty(accountLookupRequest.getAccountRef())) {
-         result.addInvalidityReason("Message AccountRef must have a value");
+      if (request instanceof AccountLookupRequest) {
+         if (isEmpty(((AccountLookupRequest) request).getAccountRef())) {
+            result.addInvalidityReason("Message AccountRef must have a value");
+         }
+      } else if (request instanceof PaymentRequest) {
+         if (isEmpty(((PaymentRequest) request).getAccountRef())) {
+            result.addInvalidityReason("Message AccountRef must have a value");
+         }
       }
-
       return result;
    }
 
