@@ -55,7 +55,7 @@ public class AccountLoader {
             customer.setLastName(csv.get(2).replaceAll("\\s+", ""));
             customer.setIdNumber(csv.get(3).replaceAll("\\s+", ""));
             customer.setContactNumber(csv.get(4).replaceAll("\\s+", ""));
-            customer.setAddress(csv.get(5).replaceAll("\\s+", ""));
+            customer.setAddress(csv.get(5));
 
             LedgerAmount amount = new LedgerAmount();
             amount.setAmount(Long.parseLong(csv.get(6).replaceAll("\\s+", "")));
@@ -68,7 +68,7 @@ public class AccountLoader {
 
          }
       } catch (Exception e) {
-         log.error("Error parsing accounts file. Possibly incorrrect format", e);
+         log.error("Error parsing accounts file. Possibly incorrect format", e);
          throw e;
       }
 

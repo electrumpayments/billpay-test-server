@@ -40,7 +40,7 @@ public class AccountLookResourceHandler implements IAccountLookupsResource {
          AsyncResponse asyncResponse,
          HttpHeaders httpHeaders,
          UriInfo uriInfo) {
-      
+
       log.info("Handling account lookup request");
 
       ValidationResult validation = Validator.validate(accountLookupRequest);
@@ -55,13 +55,17 @@ public class AccountLookResourceHandler implements IAccountLookupsResource {
          return ErrorDetailFactory.getNotUniqueUuidErrorDetail();
       }
 
-      return getResponse(accountLookupRequest);
+      BillPayAccount account = MockBillPayBackend.getAccount(accountLookupRequest.getAccountRef());
+
+      if (account == null) {
+         return ErrorDetailFactory.getNoAccountFoundErrorDetail(accountLookupRequest.getAccountRef());
+      }
+
+      return getResponse(accountLookupRequest, account);
    }
 
-   private Response getResponse(AccountLookupRequest request) {
+   private Response getResponse(AccountLookupRequest request, BillPayAccount account) {
       AccountLookupResponse response = new AccountLookupResponse();
-
-      BillPayAccount account = MockBillPayBackend.getAccount(request.getAccountRef());
 
       response.setId(request.getId());
       response.setTime(new DateTime());

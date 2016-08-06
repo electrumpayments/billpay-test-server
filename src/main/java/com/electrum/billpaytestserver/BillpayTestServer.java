@@ -31,7 +31,7 @@ public class BillpayTestServer extends ResourceConfig {
       provider.setMapper(jodaMapper);
 
       register(provider);
-      
+
       log.info("Loading packages");
       packages(BillpayTestServer.class.getPackage().getName());
 
