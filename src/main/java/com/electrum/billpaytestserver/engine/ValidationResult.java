@@ -34,6 +34,11 @@ public class ValidationResult {
 
    public void addInvalidityReason(String reason) {
       this.setValid(false);
-      this.invalidityReason += "/n" + reason;
+      if (invalidityReason == null || invalidityReason.isEmpty()) {
+         this.invalidityReason += reason;
+      } else {
+         this.invalidityReason += " | " + reason;
+      }
+
    }
 }
