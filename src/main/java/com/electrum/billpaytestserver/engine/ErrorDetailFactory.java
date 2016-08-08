@@ -4,6 +4,8 @@ import io.electrum.billpay.model.ErrorDetail;
 
 import javax.ws.rs.core.Response;
 
+import com.electrum.billpaytestserver.validation.ValidationResult;
+
 /**
  *
  */
@@ -19,8 +21,9 @@ public class ErrorDetailFactory {
    public static Response getIllFormattedMessageErrorDetail(ValidationResult result) {
       ErrorDetail errorDetail = new ErrorDetail();
       errorDetail.setErrorType(ErrorDetail.ErrorType.FORMAT_ERROR);
-      errorDetail.setErrorMessage(
-            (result == null ? "Mandatory fields missing - check server logs." : result.getInvalidityReason()));
+      errorDetail.setErrorMessage("See error detail for format errors.");
+      errorDetail.setDetailMessage(
+            (result == null ? "Mandatory fields missing - check server logs." : result.getViolations()));
       return Response.status(Response.Status.BAD_REQUEST).entity(errorDetail).build();
    }
 

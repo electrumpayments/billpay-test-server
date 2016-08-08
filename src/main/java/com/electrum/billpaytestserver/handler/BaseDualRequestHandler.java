@@ -14,14 +14,12 @@ import org.slf4j.LoggerFactory;
 public abstract class BaseDualRequestHandler<W extends BasicRequest, X extends BasicResponse, Y extends BasicAdvice, Z extends BasicReversal>
       extends BaseRequestHandler<W, X> {
    private static final Logger log = LoggerFactory.getLogger(BaseDualRequestHandler.class);
-   
-   //handle confirm
-   
-   // handle reversal 
-   
-   
-   // abstract getConfirmResponse
-   
-   //abstract getReversalResponse
 
+   // handleConfirm
+
+   // handleReversal
+
+   // abstract getConfirmResponse
+
+   // abstract getReversalResponse
 }

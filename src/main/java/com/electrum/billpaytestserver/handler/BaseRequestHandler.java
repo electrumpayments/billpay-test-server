@@ -24,8 +24,8 @@ import com.electrum.billpaytestserver.Utils;
 import com.electrum.billpaytestserver.account.BillPayAccount;
 import com.electrum.billpaytestserver.engine.ErrorDetailFactory;
 import com.electrum.billpaytestserver.engine.MockBillPayBackend;
-import com.electrum.billpaytestserver.engine.ValidationResult;
-import com.electrum.billpaytestserver.engine.Validator;
+import com.electrum.billpaytestserver.validation.ValidationResult;
+import com.electrum.billpaytestserver.validation.BillpayMessageValidator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 /**
@@ -42,7 +42,7 @@ public abstract class BaseRequestHandler<T extends BasicRequest, U extends Basic
          HttpHeaders httpHeaders,
          UriInfo uriInfo) {
 
-      ValidationResult validation = Validator.validate(request);
+      ValidationResult validation = BillpayMessageValidator.validate(request);
 
       if (!validation.isValid()) {
          log.info("Request format invalid");
