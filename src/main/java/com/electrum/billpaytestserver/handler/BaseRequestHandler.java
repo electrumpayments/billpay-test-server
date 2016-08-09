@@ -10,9 +10,12 @@ import io.electrum.vas.model.Institution;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
@@ -24,8 +27,8 @@ import com.electrum.billpaytestserver.Utils;
 import com.electrum.billpaytestserver.account.BillPayAccount;
 import com.electrum.billpaytestserver.engine.ErrorDetailFactory;
 import com.electrum.billpaytestserver.engine.MockBillPayBackend;
-import com.electrum.billpaytestserver.validation.ValidationResult;
 import com.electrum.billpaytestserver.validation.BillpayMessageValidator;
+import com.electrum.billpaytestserver.validation.ValidationResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 /**
@@ -34,19 +37,50 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 public abstract class BaseRequestHandler<T extends BasicRequest, U extends BasicResponse> {
    private static final Logger log = LoggerFactory.getLogger(BaseRequestHandler.class);
 
-   protected Response handleMessage(
-         String id,
+   protected void handleMessage(
+         UUID id,
          T request,
          SecurityContext securityContext,
          AsyncResponse asyncResponse,
+         Request jaxRequest,
+         HttpServletRequest httpServletRequest,
          HttpHeaders httpHeaders,
          UriInfo uriInfo) {
 
+      if (!validateAndPersist(request, asyncResponse)) {
+         return;
+      }
+
+      BillPayAccount account = null;
+
+      if (request instanceof AccountLookupRequest) {
+         account = MockBillPayBackend.getAccount(((AccountLookupRequest) request).getAccountRef());
+
+         if (account == null) {
+            asyncResponse.resume(
+                  ErrorDetailFactory.getNoAccountFoundErrorDetail(((AccountLookupRequest) request).getAccountRef()));
+            return;
+         }
+      } else if (request instanceof PaymentRequest) {
+         account = MockBillPayBackend.getAccount(((PaymentRequest) request).getAccountRef());
+
+         if (account == null) {
+            asyncResponse
+                  .resume(ErrorDetailFactory.getNoAccountFoundErrorDetail(((PaymentRequest) request).getAccountRef()));
+            return;
+         }
+      }
+
+      asyncResponse.resume(Response.status(Response.Status.OK).entity(getResponse(request, account)).build());
+   }
+
+   protected boolean validateAndPersist(T request, AsyncResponse asyncResponse) {
       ValidationResult validation = BillpayMessageValidator.validate(request);
 
       if (!validation.isValid()) {
          log.info("Request format invalid");
-         return ErrorDetailFactory.getIllFormattedMessageErrorDetail(validation);
+         asyncResponse.resume(ErrorDetailFactory.getIllFormattedMessageErrorDetail(validation));
+         return false;
       }
 
       try {
@@ -58,28 +92,13 @@ public abstract class BaseRequestHandler<T extends BasicRequest, U extends Basic
       boolean wasAdded = MockBillPayBackend.add(request);
 
       if (!wasAdded) {
-         return ErrorDetailFactory.getNotUniqueUuidErrorDetail();
+         asyncResponse.resume(ErrorDetailFactory.getNotUniqueUuidErrorDetail());
+         return false;
       }
-
-      BillPayAccount account = null;
-      
-      if (request instanceof AccountLookupRequest) {
-          account = MockBillPayBackend.getAccount(((AccountLookupRequest) request).getAccountRef());
-
-         if (account == null) {
-            return ErrorDetailFactory.getNoAccountFoundErrorDetail(((AccountLookupRequest) request).getAccountRef());
-         }
-      } else if (request instanceof PaymentRequest) {
-          account = MockBillPayBackend.getAccount(((PaymentRequest) request).getAccountRef());
-
-         if (account == null) {
-            return ErrorDetailFactory.getNoAccountFoundErrorDetail(((PaymentRequest) request).getAccountRef());
-         }
-      }
-
-      return Response.status(Response.Status.OK).entity(getResponse(request, account)).build();
+      return true;
    }
- 
+   
+
    protected abstract U getResponse(T request, BillPayAccount account);
 
    protected Institution getProcessor() {

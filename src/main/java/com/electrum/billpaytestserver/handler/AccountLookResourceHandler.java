@@ -4,9 +4,12 @@ import io.electrum.billpay.api.IAccountLookupsResource;
 import io.electrum.billpay.model.AccountLookupRequest;
 import io.electrum.billpay.model.AccountLookupResponse;
 
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 
@@ -21,21 +24,24 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 /**
  *
  */
-public class AccountLookResourceHandler extends BaseRequestHandler<AccountLookupRequest,AccountLookupResponse> implements IAccountLookupsResource {
+public class AccountLookResourceHandler extends BaseRequestHandler<AccountLookupRequest, AccountLookupResponse>
+      implements IAccountLookupsResource {
    private static final Logger log = LoggerFactory.getLogger(AccountLookResourceHandler.class);
 
    @Override
-   public Response requestAccountInfo(
-         String id,
+   public void requestAccountInfo(
+         UUID id,
          AccountLookupRequest accountLookupRequest,
          SecurityContext securityContext,
          AsyncResponse asyncResponse,
+         Request request,
+         HttpServletRequest httpServletRequest,
          HttpHeaders httpHeaders,
          UriInfo uriInfo) {
       log.info("Handling account lookup request");
-      return handleMessage(id, accountLookupRequest, securityContext, asyncResponse, httpHeaders, uriInfo);
+      
+       handleMessage(id, accountLookupRequest, securityContext, asyncResponse, request, httpServletRequest, httpHeaders, uriInfo);
    }
-   
 
    protected AccountLookupResponse getResponse(AccountLookupRequest request, BillPayAccount account) {
       log.info("Constructing response");
@@ -59,6 +65,5 @@ public class AccountLookResourceHandler extends BaseRequestHandler<AccountLookup
 
       return response;
    }
-
 
 }

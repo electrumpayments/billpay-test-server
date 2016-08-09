@@ -6,13 +6,13 @@ package com.electrum.billpaytestserver.validation;
 public class BillpayMessageViolation {
    private String messageProperty;
    private String field;
-   private String format;
+   private String error;
    private Object invalidValue;
 
-   public BillpayMessageViolation(String messageProperty, String field, String format, Object invalidValue) {
+   public BillpayMessageViolation(String messageProperty, String field, String error, Object invalidValue) {
       this.messageProperty = messageProperty;
       this.field = field;
-      this.format = format;
+      this.error = error;
       this.invalidValue = invalidValue;
    }
 
@@ -32,12 +32,12 @@ public class BillpayMessageViolation {
       this.field = field;
    }
 
-   public String getFormat() {
-      return format;
+   public String getError() {
+      return error;
    }
 
-   public void setFormat(String format) {
-      this.format = format;
+   public void setError(String error) {
+      this.error = error;
    }
 
    public Object getInvalidValue() {

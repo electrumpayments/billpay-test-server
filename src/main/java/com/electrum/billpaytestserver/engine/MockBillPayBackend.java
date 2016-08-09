@@ -130,13 +130,26 @@ public class MockBillPayBackend {
       return true;
    }
 
-   public static boolean existsMessage(UUID uuid) {
+   private static boolean existsMessage(UUID uuid) {
       for (Map<UUID, ? extends Object> map : allMessages) {
          if (map.containsKey(uuid)) {
             return true;
          }
       }
       return false;
+   }
+
+   private static BasicRequest getRequest(UUID uuid) {
+      for (Map<UUID, ? extends BasicRequest> map : allRequests) {
+         if (map.containsKey(uuid)) {
+            return map.get(uuid);
+         }
+      }
+      return null;
+   }
+
+   public static BasicRequest getOrigRequest(UUID id) {
+      return getRequest(id);
    }
 
    public static BillPayAccount[] getAccounts() {
