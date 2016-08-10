@@ -12,8 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.electrum.billpaytestserver.engine.MockBillPayBackend;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.joda.JodaMapper;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 
 /**
@@ -26,9 +24,7 @@ public class BillpayTestServer extends ResourceConfig {
 
    public BillpayTestServer() throws IOException {
       JacksonJaxbJsonProvider provider = new JacksonJaxbJsonProvider();
-      JodaMapper jodaMapper = new JodaMapper();
-      jodaMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-      provider.setMapper(jodaMapper);
+      provider.setMapper(Utils.getObjectMapper());
 
       register(provider);
 

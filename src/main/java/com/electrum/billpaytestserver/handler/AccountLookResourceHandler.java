@@ -1,18 +1,15 @@
 package com.electrum.billpaytestserver.handler;
 
 import io.electrum.billpay.api.IAccountLookupsResource;
-import io.electrum.billpay.model.Account;
 import io.electrum.billpay.model.AccountLookupRequest;
 import io.electrum.billpay.model.AccountLookupResponse;
-import io.electrum.billpay.model.SlipData;
-import io.electrum.vas.model.Institution;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.UUID;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 
@@ -20,51 +17,47 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.electrum.billpaytestserver.Utils;
 import com.electrum.billpaytestserver.account.BillPayAccount;
 import com.electrum.billpaytestserver.engine.ErrorDetailFactory;
-import com.electrum.billpaytestserver.engine.MockBillPayBackend;
-import com.electrum.billpaytestserver.engine.ValidationResult;
-import com.electrum.billpaytestserver.engine.Validator;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 /**
  *
  */
-public class AccountLookResourceHandler implements IAccountLookupsResource {
+public class AccountLookResourceHandler extends BaseRequestHandler<AccountLookupRequest, AccountLookupResponse>
+      implements IAccountLookupsResource {
    private static final Logger log = LoggerFactory.getLogger(AccountLookResourceHandler.class);
 
    @Override
-   public Response requestAccountInfo(
-         String s,
+   public void requestAccountInfo(
+         UUID id,
          AccountLookupRequest accountLookupRequest,
          SecurityContext securityContext,
          AsyncResponse asyncResponse,
+         Request request,
+         HttpServletRequest httpServletRequest,
          HttpHeaders httpHeaders,
          UriInfo uriInfo) {
-
       log.info("Handling account lookup request");
-
-      ValidationResult validation = Validator.validate(accountLookupRequest);
-
-      if (!validation.isValid()) {
-         return ErrorDetailFactory.getIllFormattedMessageErrorDetail(validation);
+      try {
+         handleMessage(
+               id,
+               accountLookupRequest,
+               securityContext,
+               asyncResponse,
+               request,
+               httpServletRequest,
+               httpHeaders,
+               uriInfo);
+      } catch (Exception e) {
+         log.error("Error handling message", e);
+         asyncResponse.resume(ErrorDetailFactory.getServerErrorErrorDetail(e));
       }
-
-      boolean wasAdded = MockBillPayBackend.add(accountLookupRequest);
-
-      if (!wasAdded) {
-         return ErrorDetailFactory.getNotUniqueUuidErrorDetail();
-      }
-
-      BillPayAccount account = MockBillPayBackend.getAccount(accountLookupRequest.getAccountRef());
-
-      if (account == null) {
-         return ErrorDetailFactory.getNoAccountFoundErrorDetail(accountLookupRequest.getAccountRef());
-      }
-
-      return getResponse(accountLookupRequest, account);
    }
 
-   private Response getResponse(AccountLookupRequest request, BillPayAccount account) {
+   protected AccountLookupResponse getResponse(AccountLookupRequest request, BillPayAccount account) {
+      log.info("Constructing response");
       AccountLookupResponse response = new AccountLookupResponse();
 
       response.setId(request.getId());
@@ -77,45 +70,23 @@ public class AccountLookResourceHandler implements IAccountLookupsResource {
       response.setCustomer(account.getCustomer());
       response.setSlipData(getSlipData());
 
-      return Response.status(Response.Status.OK).entity(response).build();
+      try {
+         log.debug(Utils.objectToPrettyPrintedJson(response));
+      } catch (JsonProcessingException e) {
+         log.error("Could not print response");
+      }
+
+      return response;
    }
 
-   private Institution getProcessor() {
-      Institution institution = new Institution();
-      institution.setId("ProcessorId");
-      institution.setName("ProcessorName");
+   @Override
+   protected void doReversal(AccountLookupRequest origRequest) {
 
-      return institution;
    }
 
-   private Institution getReceiver() {
-      Institution institution = new Institution();
-      institution.setId("ReceiverId");
-      institution.setName("ReceiverName");
+   @Override
+   protected void doConfirm(AccountLookupRequest origRequest) {
 
-      return institution;
-   }
-
-   private Account getAccount(BillPayAccount bpAccount) {
-      Account account = new Account();
-
-      account.setAccountRef(bpAccount.getAccountRef());
-      account.setBalance(bpAccount.getBalance());
-      // account.setDueDate();
-      return account;
-   }
-
-   private SlipData getSlipData() {
-      SlipData slipData = new SlipData();
-      slipData.setIssuerReference("IssuerReference");
-      slipData.setPhoneNumber("PhoneNumber");
-      List<String> lines = new ArrayList();
-      lines.add("line 1");
-      lines.add("line 2");
-      lines.add("line 3");
-      slipData.setMessageLines(lines);
-
-      return slipData;
    }
 
 }

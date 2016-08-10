@@ -2,7 +2,11 @@ package com.electrum.billpaytestserver.ws;
 
 import io.electrum.billpay.model.AccountLookupRequest;
 import io.electrum.billpay.model.PaymentRequest;
+import io.electrum.billpay.model.PaymentReversal;
 import io.electrum.billpay.model.RefundRequest;
+import io.electrum.billpay.model.RefundReversal;
+import io.electrum.vas.model.BasicAdvice;
+import io.electrum.vas.model.TenderAdvice;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -50,5 +54,33 @@ public class TestHelpResource {
    public RefundRequest[] getAllRefundRequests() {
       log.info("GET refund requests");
       return MockBillPayBackend.getRefundRequests();
+   }
+
+   @Path("allPaymentConfirmations")
+   @GET
+   public TenderAdvice[] getAllPaymentConfirmations() {
+      log.info("GET refund requests");
+      return MockBillPayBackend.getPaymentConfirmations();
+   }
+
+   @Path("allPaymentReversals")
+   @GET
+   public PaymentReversal[] getAllPaymentReversals() {
+      log.info("GET refund requests");
+      return MockBillPayBackend.getPaymentReversals();
+   }
+
+   @Path("allRefundConfirmations")
+   @GET
+   public BasicAdvice[] getAllRefundConfirmations() {
+      log.info("GET refund requests");
+      return MockBillPayBackend.getRefundConfirmations();
+   }
+
+   @Path("allRefundReversals")
+   @GET
+   public RefundReversal[] getAllRefundReversals() {
+      log.info("GET refund requests");
+      return MockBillPayBackend.getRefundReversals();
    }
 }

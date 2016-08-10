@@ -2,6 +2,7 @@ package com.electrum.billpaytestserver.engine;
 
 import io.electrum.billpay.model.AccountLookupRequest;
 import io.electrum.billpay.model.PaymentRequest;
+import io.electrum.billpay.model.PaymentResponse;
 import io.electrum.billpay.model.PaymentReversal;
 import io.electrum.billpay.model.RefundRequest;
 import io.electrum.billpay.model.RefundReversal;
@@ -24,7 +25,7 @@ import com.electrum.billpaytestserver.account.BillPayAccount;
  *
  */
 public class MockBillPayBackend {
-   
+
    private static HashMap<String, BillPayAccount> accounts = new HashMap();
 
    private static HashMap<UUID, AccountLookupRequest> accountLookups = new HashMap();
@@ -45,6 +46,8 @@ public class MockBillPayBackend {
          new ArrayList<Map<UUID, ? extends BasicReversal>>();
    private static List<Map<UUID, ?>> allMessages = new ArrayList<Map<UUID, ? extends Object>>();
 
+   private static HashMap<String, PaymentResponse> paymentResponses = new HashMap();
+
    public static void init() throws IOException {
 
       AccountLoader accountLoader = new AccountLoader(accounts);
@@ -54,6 +57,17 @@ public class MockBillPayBackend {
 
    public static BillPayAccount getAccount(String accountRef) {
       return accounts.get(accountRef);
+   }
+
+   public static boolean add(BasicRequest request) {
+      if (request instanceof AccountLookupRequest) {
+         return add((AccountLookupRequest) request);
+      } else if (request instanceof PaymentRequest) {
+         return add((PaymentRequest) request);
+      } else if (request instanceof RefundRequest) {
+         return add((RefundRequest) request);
+      }
+      return false;
    }
 
    public static boolean add(AccountLookupRequest accountLookupRequest) {
@@ -71,6 +85,12 @@ public class MockBillPayBackend {
       }
 
       paymentRequests.put(paymentRequest.getId(), paymentRequest);
+      return true;
+   }
+
+   public static boolean add(PaymentResponse paymentResponse) {
+
+      paymentResponses.put(paymentResponse.getSlipData().getIssuerReference(), paymentResponse);
       return true;
    }
 
@@ -97,6 +117,14 @@ public class MockBillPayBackend {
          return false;
       }
 
+      if (advice instanceof TenderAdvice) {
+         return add((TenderAdvice) advice);
+      } else if (advice instanceof PaymentReversal) {
+         return add((PaymentReversal) advice);
+      } else if (advice instanceof RefundReversal) {
+         return add((RefundReversal) advice);
+      }
+
       refundConfirmation.put(advice.getId(), advice);
       return true;
    }
@@ -119,13 +147,52 @@ public class MockBillPayBackend {
       return true;
    }
 
-   public static boolean existsMessage(UUID uuid) {
+   private static boolean existsMessage(UUID uuid) {
       for (Map<UUID, ? extends Object> map : allMessages) {
          if (map.containsKey(uuid)) {
             return true;
          }
       }
       return false;
+   }
+
+   public static BasicRequest getRequest(UUID uuid) {
+      for (Map<UUID, ? extends BasicRequest> map : allRequests) {
+         if (map.containsKey(uuid)) {
+            return map.get(uuid);
+         }
+      }
+      return null;
+   }
+
+   public static BasicAdvice getRequestConfirmation(UUID requestId) {
+      for (Map<UUID, ? extends BasicAdvice> map : allConfirmations) {
+         for (Map.Entry<UUID, ? extends BasicAdvice> entry : map.entrySet()) {
+
+            if (entry.getValue().getRequestId().equals(requestId)) {
+               return entry.getValue();
+            }
+         }
+      }
+
+      return null;
+   }
+
+   public static BasicReversal getRequestReversal(UUID requestId) {
+      for (Map<UUID, ? extends BasicReversal> map : allReversals) {
+         for (Map.Entry<UUID, ? extends BasicReversal> entry : map.entrySet()) {
+
+            if (entry.getValue().getRequestId().equals(requestId)) {
+               return entry.getValue();
+            }
+         }
+      }
+
+      return null;
+   }
+
+   public static PaymentResponse getPaymentResponse(String issuerRefNum) {
+      return paymentResponses.get(issuerRefNum);
    }
 
    public static BillPayAccount[] getAccounts() {
@@ -142,6 +209,22 @@ public class MockBillPayBackend {
 
    public static RefundRequest[] getRefundRequests() {
       return refundRequests.values().toArray(new RefundRequest[] {});
+   }
+
+   public static TenderAdvice[] getPaymentConfirmations() {
+      return paymentConfirmations.values().toArray(new TenderAdvice[] {});
+   }
+
+   public static BasicAdvice[] getRefundConfirmations() {
+      return refundConfirmation.values().toArray(new BasicAdvice[] {});
+   }
+
+   public static PaymentReversal[] getPaymentReversals() {
+      return paymentReversals.values().toArray(new PaymentReversal[] {});
+   }
+
+   public static RefundReversal[] getRefundReversals() {
+      return refundReversals.values().toArray(new RefundReversal[] {});
    }
 
    static {

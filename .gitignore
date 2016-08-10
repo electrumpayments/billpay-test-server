@@ -22,7 +22,5 @@ log/
 
 Dockerfile
 Dockerrun.aws.json
-Procfile
 run_defaults.sh
 run.sh
-heroku_run.sh
