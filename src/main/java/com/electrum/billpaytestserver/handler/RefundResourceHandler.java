@@ -23,13 +23,15 @@ import org.slf4j.LoggerFactory;
 
 import com.electrum.billpaytestserver.Utils;
 import com.electrum.billpaytestserver.account.BillPayAccount;
+import com.electrum.billpaytestserver.engine.ErrorDetailFactory;
 import com.electrum.billpaytestserver.engine.MockBillPayBackend;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 /**
  *
  */
-public class RefundResourceHandler extends BaseRequestHandler<RefundRequest,RefundResponse> implements IRefundsResource {
+public class RefundResourceHandler extends BaseRequestHandler<RefundRequest, RefundResponse>
+      implements IRefundsResource {
    private static final Logger log = LoggerFactory.getLogger(RefundResourceHandler.class);
 
    @Override
@@ -44,16 +46,21 @@ public class RefundResourceHandler extends BaseRequestHandler<RefundRequest,Refu
          HttpHeaders httpHeaders,
          UriInfo uriInfo) {
       log.info("Handling refund confirm");
-      handleConfirm(
-            adviceId,
-            refundId,
-            basicAdvice,
-            securityContext,
-            asyncResponse,
-            request,
-            httpServletRequest,
-            httpHeaders,
-            uriInfo);
+      try {
+         handleConfirm(
+               adviceId,
+               refundId,
+               basicAdvice,
+               securityContext,
+               asyncResponse,
+               request,
+               httpServletRequest,
+               httpHeaders,
+               uriInfo);
+      } catch (Exception e) {
+         log.error("Error handling message", e);
+         asyncResponse.resume(ErrorDetailFactory.getServerErrorErrorDetail(e));
+      }
    }
 
    @Override
@@ -67,15 +74,20 @@ public class RefundResourceHandler extends BaseRequestHandler<RefundRequest,Refu
          HttpHeaders httpHeaders,
          UriInfo uriInfo) {
       log.info("Handling refund request");
-      handleMessage(
-            uuid,
-            refundRequest,
-            securityContext,
-            asyncResponse,
-            request,
-            httpServletRequest,
-            httpHeaders,
-            uriInfo);
+      try {
+         handleMessage(
+               uuid,
+               refundRequest,
+               securityContext,
+               asyncResponse,
+               request,
+               httpServletRequest,
+               httpHeaders,
+               uriInfo);
+      } catch (Exception e) {
+         log.error("Error handling message", e);
+         asyncResponse.resume(ErrorDetailFactory.getServerErrorErrorDetail(e));
+      }
    }
 
    @Override
@@ -90,16 +102,21 @@ public class RefundResourceHandler extends BaseRequestHandler<RefundRequest,Refu
          HttpHeaders httpHeaders,
          UriInfo uriInfo) {
       log.info("Handling refund reversal");
-      handleReversal(
-            adviceId,
-            refundId,
-            refundReversal,
-            securityContext,
-            asyncResponse,
-            request,
-            httpServletRequest,
-            httpHeaders,
-            uriInfo);
+      try {
+         handleReversal(
+               adviceId,
+               refundId,
+               refundReversal,
+               securityContext,
+               asyncResponse,
+               request,
+               httpServletRequest,
+               httpHeaders,
+               uriInfo);
+      } catch (Exception e) {
+         log.error("Error handling message", e);
+         asyncResponse.resume(ErrorDetailFactory.getServerErrorErrorDetail(e));
+      }
 
    }
 

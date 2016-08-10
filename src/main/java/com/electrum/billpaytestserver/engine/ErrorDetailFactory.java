@@ -14,6 +14,14 @@ import com.electrum.billpaytestserver.validation.ValidationResult;
  */
 public class ErrorDetailFactory {
 
+   public static Response getServerErrorErrorDetail(Exception exception) {
+      ErrorDetail errorDetail = new ErrorDetail();
+      errorDetail.setErrorType(ErrorDetail.ErrorType.GENERAL_ERROR);
+      errorDetail.setErrorMessage("Server error");
+      errorDetail.setDetailMessage(exception.getMessage());
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(errorDetail).build();
+   }
+
    public static Response getNotUniqueUuidErrorDetail() {
       ErrorDetail errorDetail = new ErrorDetail();
       errorDetail.setErrorType(ErrorDetail.ErrorType.DUPLICATE_RECORD);

@@ -49,7 +49,7 @@ public abstract class BaseRequestHandler<T extends BasicRequest, U extends Basic
          Request jaxRequest,
          HttpServletRequest httpServletRequest,
          HttpHeaders httpHeaders,
-         UriInfo uriInfo) {
+         UriInfo uriInfo) throws Exception{
 
       if (!validateAndPersist(request, asyncResponse)) {
          return;
@@ -105,7 +105,7 @@ public abstract class BaseRequestHandler<T extends BasicRequest, U extends Basic
          Request request,
          HttpServletRequest httpServletRequest,
          HttpHeaders httpHeaders,
-         UriInfo uriInfo) {
+         UriInfo uriInfo) throws Exception {
 
       BasicReversal reversal = MockBillPayBackend.getRequestReversal(requestId);
       if (reversal != null) {
@@ -144,7 +144,7 @@ public abstract class BaseRequestHandler<T extends BasicRequest, U extends Basic
          Request request,
          HttpServletRequest httpServletRequest,
          HttpHeaders httpHeaders,
-         UriInfo uriInfo) {
+         UriInfo uriInfo) throws Exception{
 
       BasicReversal prevReversal = MockBillPayBackend.getRequestReversal(requestId);
       if (prevReversal != null) {

@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import com.electrum.billpaytestserver.Utils;
 import com.electrum.billpaytestserver.account.BillPayAccount;
+import com.electrum.billpaytestserver.engine.ErrorDetailFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 /**
@@ -39,16 +40,20 @@ public class AccountLookResourceHandler extends BaseRequestHandler<AccountLookup
          HttpHeaders httpHeaders,
          UriInfo uriInfo) {
       log.info("Handling account lookup request");
-
-      handleMessage(
-            id,
-            accountLookupRequest,
-            securityContext,
-            asyncResponse,
-            request,
-            httpServletRequest,
-            httpHeaders,
-            uriInfo);
+      try {
+         handleMessage(
+               id,
+               accountLookupRequest,
+               securityContext,
+               asyncResponse,
+               request,
+               httpServletRequest,
+               httpHeaders,
+               uriInfo);
+      } catch (Exception e) {
+         log.error("Error handling message", e);
+         asyncResponse.resume(ErrorDetailFactory.getServerErrorErrorDetail(e));
+      }
    }
 
    protected AccountLookupResponse getResponse(AccountLookupRequest request, BillPayAccount account) {

@@ -2,8 +2,8 @@ package com.electrum.billpaytestserver;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Random;
 import java.util.TimeZone;
-import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -53,6 +53,7 @@ public class Utils {
    }
 
    public static String generateIssuerReferenceNumber() {
-      return UUID.randomUUID().toString();
+      Random randomGenerator = new Random();
+      return randomGenerator.nextInt(10000000) + "";
    }
 }

@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import com.electrum.billpaytestserver.Utils;
 import com.electrum.billpaytestserver.account.BillPayAccount;
+import com.electrum.billpaytestserver.engine.ErrorDetailFactory;
 import com.electrum.billpaytestserver.engine.MockBillPayBackend;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
@@ -44,16 +45,21 @@ public class PaymentResourceHandler extends BaseRequestHandler<PaymentRequest, P
          HttpHeaders httpHeaders,
          UriInfo uriInfo) {
       log.info("Handling payment confirm");
-      handleConfirm(
-            adviceId,
-            paymentId,
-            tenderAdvice,
-            securityContext,
-            asyncResponse,
-            request,
-            httpServletRequest,
-            httpHeaders,
-            uriInfo);
+      try {
+         handleConfirm(
+               adviceId,
+               paymentId,
+               tenderAdvice,
+               securityContext,
+               asyncResponse,
+               request,
+               httpServletRequest,
+               httpHeaders,
+               uriInfo);
+      } catch (Exception e) {
+         log.error("Error handling message", e);
+         asyncResponse.resume(ErrorDetailFactory.getServerErrorErrorDetail(e));
+      }
    }
 
    @Override
@@ -67,15 +73,20 @@ public class PaymentResourceHandler extends BaseRequestHandler<PaymentRequest, P
          HttpHeaders httpHeaders,
          UriInfo uriInfo) {
       log.info("Handling payment request");
-      handleMessage(
-            uuid,
-            paymentRequest,
-            securityContext,
-            asyncResponse,
-            request,
-            httpServletRequest,
-            httpHeaders,
-            uriInfo);
+      try {
+         handleMessage(
+               uuid,
+               paymentRequest,
+               securityContext,
+               asyncResponse,
+               request,
+               httpServletRequest,
+               httpHeaders,
+               uriInfo);
+      } catch (Exception e) {
+         log.error("Error handling message", e);
+         asyncResponse.resume(ErrorDetailFactory.getServerErrorErrorDetail(e));
+      }
    }
 
    @Override
@@ -90,16 +101,21 @@ public class PaymentResourceHandler extends BaseRequestHandler<PaymentRequest, P
          HttpHeaders httpHeaders,
          UriInfo uriInfo) {
       log.info("Handling payment reversal");
-      handleReversal(
-            adviceId,
-            paymentId,
-            paymentReversal,
-            securityContext,
-            asyncResponse,
-            request,
-            httpServletRequest,
-            httpHeaders,
-            uriInfo);
+      try {
+         handleReversal(
+               adviceId,
+               paymentId,
+               paymentReversal,
+               securityContext,
+               asyncResponse,
+               request,
+               httpServletRequest,
+               httpHeaders,
+               uriInfo);
+      } catch (Exception e) {
+         log.error("Error handling message", e);
+         asyncResponse.resume(ErrorDetailFactory.getServerErrorErrorDetail(e));
+      }
    }
 
    protected void doConfirm(PaymentRequest request) {
