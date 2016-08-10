@@ -90,7 +90,7 @@ public class MockBillPayBackend {
 
    public static boolean add(PaymentResponse paymentResponse) {
 
-      paymentResponses.put(paymentResponse.getSender().getReferenceNumber(), paymentResponse);
+      paymentResponses.put(paymentResponse.getSlipData().getIssuerReference(), paymentResponse);
       return true;
    }
 

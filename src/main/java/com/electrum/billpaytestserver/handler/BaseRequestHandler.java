@@ -3,6 +3,8 @@ package com.electrum.billpaytestserver.handler;
 import io.electrum.billpay.model.Account;
 import io.electrum.billpay.model.AccountLookupRequest;
 import io.electrum.billpay.model.PaymentRequest;
+import io.electrum.billpay.model.PaymentResponse;
+import io.electrum.billpay.model.RefundRequest;
 import io.electrum.billpay.model.SlipData;
 import io.electrum.vas.model.BasicAdvice;
 import io.electrum.vas.model.BasicRequest;
@@ -69,6 +71,24 @@ public abstract class BaseRequestHandler<T extends BasicRequest, U extends Basic
          if (account == null) {
             asyncResponse
                   .resume(ErrorDetailFactory.getNoAccountFoundErrorDetail(((PaymentRequest) request).getAccountRef()));
+            return;
+         }
+      } else if (request instanceof RefundRequest) {
+         PaymentResponse paymentResponse =
+               MockBillPayBackend.getPaymentResponse(((RefundRequest) request).getIssuerReference());
+
+         if (paymentResponse == null) {
+            asyncResponse.resume(
+                  ErrorDetailFactory
+                        .getNoPaymentRequestFoundErrorDetail(((RefundRequest) request).getIssuerReference()));
+            return;
+         }
+
+         account = MockBillPayBackend.getAccount(paymentResponse.getAccount().getAccountRef());
+
+         if (account == null) {
+            asyncResponse.resume(
+                  ErrorDetailFactory.getNoAccountFoundErrorDetail(paymentResponse.getAccount().getAccountRef()));
             return;
          }
       }

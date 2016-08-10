@@ -28,8 +28,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 /**
  *
  */
-public class PaymentResourceHandler
-      extends BaseRequestHandler<PaymentRequest,PaymentResponse> implements IPaymentsResource {
+public class PaymentResourceHandler extends BaseRequestHandler<PaymentRequest, PaymentResponse>
+      implements IPaymentsResource {
    private static final Logger log = LoggerFactory.getLogger(PaymentResourceHandler.class);
 
    @Override
@@ -115,7 +115,6 @@ public class PaymentResourceHandler
    }
 
    protected void doReversal(PaymentRequest request) {
-      
    }
 
    protected PaymentResponse getResponse(PaymentRequest request, BillPayAccount account) {
@@ -138,6 +137,8 @@ public class PaymentResourceHandler
       } catch (JsonProcessingException e) {
          log.error("Could not print response");
       }
+
+      MockBillPayBackend.add(response);
 
       return response;
    }
