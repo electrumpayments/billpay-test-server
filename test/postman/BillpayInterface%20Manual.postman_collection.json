@@ -1,0 +1,943 @@
+{
+	"variables": [],
+	"info": {
+		"name": "BillpayInterface Manual",
+		"_postman_id": "696a6498-75eb-641f-5c1d-f6564de9dcb9",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "AccountLookup",
+			"description": "",
+			"item": [
+				{
+					"name": "AccountLookupRequest Test 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct id returned\"] = jsonData.id === environment.requestId;\n\n\n"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"reqDateTime\", dateTime);\n\npostman.setEnvironmentVariable(\"rrn\",_p8());\npostman.setEnvironmentVariable(\"requestId\",uuid());\n"
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/accountLookups/{{requestId}}",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic dXNlcm5hbWU6cGFzc3N3b3Jk",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\" : \"{{requestId}}\",\n  \"time\" : \"{{reqDateTime}}\",\n  \"sender\" : {\n    \"institution\" : {\n      \"id\" : \"{{senderInstId}}\",\n      \"name\" : \"{{senderInstName}}\"\n    },\n    \"terminalId\" : \"{{terminalId}}\",\n    \"referenceNumber\" : \"{{rrn}}\",\n    \"merchant\" : {\n      \"merchantType\" : \"{{merchantType}}\",\n      \"merchantId\" : \"{{merchantId}}\",\n      \"merchantName\" : {\n        \"name\" : \"{{merchantName}}\",\n        \"city\" : \"{{merchantCity}}\",\n        \"region\" : \"{{merchantRegion}}\",\n        \"country\" : \"{{merchantCountry}}\"\n      }\n    }\n  },\n  \"accountRef\" : \"{{accountRef}}\"\n}"
+						},
+						"description": "Test AccountLookupRequest"
+					},
+					"response": []
+				},
+				{
+					"name": "AccountLookupRequest Test 2 (Format Exception)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests[\"Status code is 400\"] = responseCode.code === 400;\n\n\n\n"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"reqDateTime\", dateTime);\n\npostman.setEnvironmentVariable(\"rrn\",_p8());\npostman.setEnvironmentVariable(\"requestId\",uuid());\n"
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/accountLookups/{{requestId}}",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic dXNlcm5hbWU6cGFzc3N3b3Jk",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\" : \"{{requestId}}\",\n  \"time\" : \"\",\n  \"sender\" : {\n    \"institution\" : {\n      \"id\" : \"hjg77\",\n      \"name\" : \"{{senderInstName}}\"\n    },\n    \"terminalId\" : \"{{terminalId}}\",\n    \"referenceNumber\" : \"{{rrn}}dd\",\n    \"merchant\" : {\n      \"merchantType\" : \"{{merchantType}}\",\n     \n      \"merchantName\" : {\n        \"name\" : \"{{merchantName}}\",\n        \"city\" : \"{{merchantCity}}\",\n        \"region\" : \"{{merchantRegion}}\",\n        \"country\" : \"{{merchantCountry}}\"\n      }\n    }\n  },\n  \"accountRef\" : \"{{accountRef}}}\"\n}"
+						},
+						"description": "Test AccountLookupRequest with missing field values"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Payment and Confirmation",
+			"description": "",
+			"item": [
+				{
+					"name": "AccountLookupRequest",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct id returned\"] = jsonData.id === environment.requestId;\n\n\npostman.setEnvironmentVariable(\"accountAmount\", jsonData.account.balance.amount);"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"reqDateTime\", dateTime);\n\npostman.setEnvironmentVariable(\"rrn\",_p8());\npostman.setEnvironmentVariable(\"requestId\",uuid());\n"
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/accountLookups/{{requestId}}",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic dXNlcm5hbWU6cGFzc3N3b3Jk",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\" : \"{{requestId}}\",\n  \"time\" : \"{{reqDateTime}}\",\n  \"sender\" : {\n    \"institution\" : {\n      \"id\" : \"{{senderInstId}}\",\n      \"name\" : \"{{senderInstName}}\"\n    },\n    \"terminalId\" : \"{{terminalId}}\",\n    \"referenceNumber\" : \"{{rrn}}\",\n    \"merchant\" : {\n      \"merchantType\" : \"{{merchantType}}\",\n      \"merchantId\" : \"{{merchantId}}\",\n      \"merchantName\" : {\n        \"name\" : \"{{merchantName}}\",\n        \"city\" : \"{{merchantCity}}\",\n        \"region\" : \"{{merchantRegion}}\",\n        \"country\" : \"{{merchantCountry}}\"\n      }\n    }\n  },\n  \"accountRef\" : \"{{accountRef}}\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "PaymentRequest",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct id returned\"] = jsonData.id === environment.requestId;\n\n\npostman.setEnvironmentVariable(\"linkData\", jsonData.linkData);\npostman.setEnvironmentVariable(\"issuerReference\", jsonData.slipData.issuerReference);\n"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nfunction halve(n) {\n    \n    return Math.floor(n/2);\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"reqDateTime\", dateTime);\n\nvar rrn = _p8()\npostman.setEnvironmentVariable(\"rrn\",rrn);\npostman.setEnvironmentVariable(\"requestRrn\",rrn);\n\npostman.setEnvironmentVariable(\"requestId\",uuid());\n\npostman.setEnvironmentVariable(\"requestAmount\",halve(environment.accountAmount));\n"
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/payments/{{requestId}}",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic dXNlcm5hbWU6cGFzc3N3b3Jk",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\" : \"{{requestId}}\",\n  \"time\" : \"{{reqDateTime}}\",\n  \"sender\" : {\n    \"institution\" : {\n      \"id\" : \"{{senderInstId}}\",\n      \"name\" : \"{{senderInstName}}\"\n    },\n    \"terminalId\" : \"{{terminalId}}\",\n    \"referenceNumber\" : \"{{rrn}}\",\n    \"merchant\" : {\n      \"merchantType\" : \"{{merchantType}}\",\n      \"merchantId\" : \"{{merchantId}}\",\n      \"merchantName\" : {\n        \"name\" : \"{{merchantName}}\",\n        \"city\" : \"{{merchantCity}}\",\n        \"region\" : \"{{merchantRegion}}\",\n        \"country\" : \"{{merchantCountry}}\"\n      }\n    }\n  },\n  \"accountRef\" : \"{{accountRef}}\",\n  \"clientRef\" : \"{{rrn}}\",\n  \"requestAmount\" : {\n    \"amount\" : \"{{requestAmount}}\",\n    \"currency\" : \"{{currency}}\"\n  }\n}"
+						},
+						"description": "Test PaymentRequest"
+					},
+					"response": []
+				},
+				{
+					"name": "PaymentConfirmation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests[\"Status code is 200\"] = responseCode.code === 202;\n\n\n"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nfunction halve(n) {\n    \n    return Math.floor(n/2);\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"adviceDateTime\", dateTime);\n\npostman.setEnvironmentVariable(\"rrn\",_p8());\npostman.setEnvironmentVariable(\"adviceId\",uuid());\npostman.setEnvironmentVariable(\"tenderAmount\",halve(environment.requestAmount));\n"
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/payments/{{requestId}}/confirmations/{{adviceId}}",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic dXNlcm5hbWU6cGFzc3N3b3Jk",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\" : \"{{adviceId}}\",\n  \"requestId\" : \"{{requestId}}\",\n  \"time\" : \"{{adviceDateTime}}\",\n  \"linkData\" : \"{{linkData}}\",\n  \"tenders\" : [ {\n    \"accountType\" : \"{{tenderAccountType}}\",\n    \"amount\" : {\n      \"amount\" : {{tenderAmount}},\n      \"currency\" : \"{{currency}}\"\n    },\n    \"cardNumber\" : \"{{tenderCardNumber}}1\",\n    \"reference\" : \"{{tenderRef}}1\",\n    \"tenderType\" : \"{{tenderTypeCash}}\"\n  }, {\n    \"accountType\" : \"DEFAULT\",\n    \"amount\" : {\n      \"amount\" : {{tenderAmount}},\n      \"currency\" : \"{{currency}}\"\n    },\n    \"cardNumber\" : \"{{tenderCardNumber}}2\",\n    \"reference\" : \"{{tenderRef}}2\",\n    \"tenderType\" : \"{{tenderTypeCard}}\"\n  } ]\n}"
+						},
+						"description": "Test confirm payment"
+					},
+					"response": []
+				},
+				{
+					"name": "PaymentReversal",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests[\"Status code is 200\"] = responseCode.code === 400;\n\n\n"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nfunction halve(n) {\n    \n    return Math.floor(n/2);\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"adviceDateTime\", dateTime);\n\npostman.setEnvironmentVariable(\"rrn\",_p8());\npostman.setEnvironmentVariable(\"adviceId\",uuid());\npostman.setEnvironmentVariable(\"tenderAmount\",halve(environment.requestAmount));\n"
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/payments/{{requestId}}/reversals/{{adviceId}}",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic dXNlcm5hbWU6cGFzc3N3b3Jk",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\" : \"{{adviceId}}\",\n  \"requestId\" : \"{{requestId}}\",\n  \"time\" : \"{{adviceDateTime}}\",\n  \"linkData\" : \"{{linkData}}\",\n  \"reversalReason\" : \"{{reversalReason}}\",\n  \"paymentRequest\" : {\n  \"id\" : \"{{requestId}}\",\n  \"time\" : \"{{reqDateTime}}\",\n  \"sender\" : {\n    \"institution\" : {\n      \"id\" : \"{{senderInstId}}\",\n      \"name\" : \"{{senderInstName}}\"\n    },\n    \"terminalId\" : \"{{terminalId}}\",\n    \"referenceNumber\" : \"{{requestRrn}}\",\n    \"merchant\" : {\n      \"merchantType\" : \"{{merchantType}}\",\n      \"merchantId\" : \"{{merchantId}}\",\n      \"merchantName\" : {\n        \"name\" : \"{{merchantName}}\",\n        \"city\" : \"{{merchantCity}}\",\n        \"region\" : \"{{merchantRegion}}\",\n        \"country\" : \"{{merchantCountry}}\"\n      }\n    }\n  },\n  \"accountRef\" : \"{{accountRef}}\",\n  \"clientRef\" : \"{{requestRrn}}\",\n  \"requestAmount\" : {\n    \"amount\" : \"{{requestAmount}}\",\n    \"currency\" : \"{{currency}}\"\n  }\n}\n}"
+						},
+						"description": "Test payment reversal"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Payment and Reversal",
+			"description": "",
+			"item": [
+				{
+					"name": "AccountLookupRequest",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct id returned\"] = jsonData.id === environment.requestId;\n\n\npostman.setEnvironmentVariable(\"accountAmount\", jsonData.account.balance.amount);"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"reqDateTime\", dateTime);\n\npostman.setEnvironmentVariable(\"rrn\",_p8());\npostman.setEnvironmentVariable(\"requestId\",uuid());\n"
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/accountLookups/{{requestId}}",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic dXNlcm5hbWU6cGFzc3N3b3Jk",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\" : \"{{requestId}}\",\n  \"time\" : \"{{reqDateTime}}\",\n  \"sender\" : {\n    \"institution\" : {\n      \"id\" : \"{{senderInstId}}\",\n      \"name\" : \"{{senderInstName}}\"\n    },\n    \"terminalId\" : \"{{terminalId}}\",\n    \"referenceNumber\" : \"{{rrn}}\",\n    \"merchant\" : {\n      \"merchantType\" : \"{{merchantType}}\",\n      \"merchantId\" : \"{{merchantId}}\",\n      \"merchantName\" : {\n        \"name\" : \"{{merchantName}}\",\n        \"city\" : \"{{merchantCity}}\",\n        \"region\" : \"{{merchantRegion}}\",\n        \"country\" : \"{{merchantCountry}}\"\n      }\n    }\n  },\n  \"accountRef\" : \"{{accountRef}}\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "PaymentRequest",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct id returned\"] = jsonData.id === environment.requestId;\n\n\npostman.setEnvironmentVariable(\"linkData\", jsonData.linkData);\npostman.setEnvironmentVariable(\"issuerReference\", jsonData.slipData.issuerReference);\n"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nfunction halve(n) {\n    \n    return Math.floor(n/2);\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"reqDateTime\", dateTime);\n\nvar rrn = _p8()\npostman.setEnvironmentVariable(\"rrn\",rrn);\npostman.setEnvironmentVariable(\"requestRrn\",rrn);\n\npostman.setEnvironmentVariable(\"requestId\",uuid());\n\npostman.setEnvironmentVariable(\"requestAmount\",halve(environment.accountAmount));\n"
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/payments/{{requestId}}",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic dXNlcm5hbWU6cGFzc3N3b3Jk",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\" : \"{{requestId}}\",\n  \"time\" : \"{{reqDateTime}}\",\n  \"sender\" : {\n    \"institution\" : {\n      \"id\" : \"{{senderInstId}}\",\n      \"name\" : \"{{senderInstName}}\"\n    },\n    \"terminalId\" : \"{{terminalId}}\",\n    \"referenceNumber\" : \"{{rrn}}\",\n    \"merchant\" : {\n      \"merchantType\" : \"{{merchantType}}\",\n      \"merchantId\" : \"{{merchantId}}\",\n      \"merchantName\" : {\n        \"name\" : \"{{merchantName}}\",\n        \"city\" : \"{{merchantCity}}\",\n        \"region\" : \"{{merchantRegion}}\",\n        \"country\" : \"{{merchantCountry}}\"\n      }\n    }\n  },\n  \"accountRef\" : \"{{accountRef}}\",\n  \"clientRef\" : \"{{rrn}}\",\n  \"requestAmount\" : {\n    \"amount\" : \"{{requestAmount}}\",\n    \"currency\" : \"{{currency}}\"\n  }\n}"
+						},
+						"description": "Test PaymentRequest"
+					},
+					"response": []
+				},
+				{
+					"name": "PaymentReversal",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests[\"Status code is 200\"] = responseCode.code === 202;\n\n\n"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nfunction halve(n) {\n    \n    return Math.floor(n/2);\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"adviceDateTime\", dateTime);\n\npostman.setEnvironmentVariable(\"rrn\",_p8());\npostman.setEnvironmentVariable(\"adviceId\",uuid());\npostman.setEnvironmentVariable(\"tenderAmount\",halve(environment.requestAmount));\n"
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/payments/{{requestId}}/reversals/{{adviceId}}",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic dXNlcm5hbWU6cGFzc3N3b3Jk",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\" : \"{{adviceId}}\",\n  \"requestId\" : \"{{requestId}}\",\n  \"time\" : \"{{adviceDateTime}}\",\n  \"linkData\" : \"{{linkData}}\",\n  \"reversalReason\" : \"{{reversalReason}}\",\n  \"paymentRequest\" : {\n  \"id\" : \"{{requestId}}\",\n  \"time\" : \"{{reqDateTime}}\",\n  \"sender\" : {\n    \"institution\" : {\n      \"id\" : \"{{senderInstId}}\",\n      \"name\" : \"{{senderInstName}}\"\n    },\n    \"terminalId\" : \"{{terminalId}}\",\n    \"referenceNumber\" : \"{{requestRrn}}\",\n    \"merchant\" : {\n      \"merchantType\" : \"{{merchantType}}\",\n      \"merchantId\" : \"{{merchantId}}\",\n      \"merchantName\" : {\n        \"name\" : \"{{merchantName}}\",\n        \"city\" : \"{{merchantCity}}\",\n        \"region\" : \"{{merchantRegion}}\",\n        \"country\" : \"{{merchantCountry}}\"\n      }\n    }\n  },\n  \"accountRef\" : \"{{accountRef}}\",\n  \"clientRef\" : \"{{requestRrn}}\",\n  \"requestAmount\" : {\n    \"amount\" : \"{{requestAmount}}\",\n    \"currency\" : \"{{currency}}\"\n  }\n}\n}"
+						},
+						"description": "Test payment reversal"
+					},
+					"response": []
+				},
+				{
+					"name": "PaymentConfirmation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests[\"Status code is 200\"] = responseCode.code === 400;\n\n\n"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nfunction halve(n) {\n    \n    return Math.floor(n/2);\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"adviceDateTime\", dateTime);\n\npostman.setEnvironmentVariable(\"rrn\",_p8());\npostman.setEnvironmentVariable(\"adviceId\",uuid());\npostman.setEnvironmentVariable(\"tenderAmount\",halve(environment.requestAmount));\n"
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/payments/{{requestId}}/confirmations/{{adviceId}}",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic dXNlcm5hbWU6cGFzc3N3b3Jk",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\" : \"{{adviceId}}\",\n  \"requestId\" : \"{{requestId}}\",\n  \"time\" : \"{{adviceDateTime}}\",\n  \"linkData\" : \"{{linkData}}\",\n  \"tenders\" : [ {\n    \"accountType\" : \"{{tenderAccountType}}\",\n    \"amount\" : {\n      \"amount\" : {{tenderAmount}},\n      \"currency\" : \"{{currency}}\"\n    },\n    \"cardNumber\" : \"{{tenderCardNumber}}1\",\n    \"reference\" : \"{{tenderRef}}1\",\n    \"tenderType\" : \"{{tenderTypeCash}}\"\n  }, {\n    \"accountType\" : \"DEFAULT\",\n    \"amount\" : {\n      \"amount\" : {{tenderAmount}},\n      \"currency\" : \"{{currency}}\"\n    },\n    \"cardNumber\" : \"{{tenderCardNumber}}2\",\n    \"reference\" : \"{{tenderRef}}2\",\n    \"tenderType\" : \"{{tenderTypeCard}}\"\n  } ]\n}"
+						},
+						"description": "Test confirm payment"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Payment, Confirmation and Refund and Confirmation",
+			"description": "",
+			"item": [
+				{
+					"name": "AccountLookupRequest",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct id returned\"] = jsonData.id === environment.requestId;\n\n\npostman.setEnvironmentVariable(\"accountAmount\", jsonData.account.balance.amount);"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"reqDateTime\", dateTime);\n\npostman.setEnvironmentVariable(\"rrn\",_p8());\npostman.setEnvironmentVariable(\"requestId\",uuid());\n"
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/accountLookups/{{requestId}}",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic dXNlcm5hbWU6cGFzc3N3b3Jk",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\" : \"{{requestId}}\",\n  \"time\" : \"{{reqDateTime}}\",\n  \"sender\" : {\n    \"institution\" : {\n      \"id\" : \"{{senderInstId}}\",\n      \"name\" : \"{{senderInstName}}\"\n    },\n    \"terminalId\" : \"{{terminalId}}\",\n    \"referenceNumber\" : \"{{rrn}}\",\n    \"merchant\" : {\n      \"merchantType\" : \"{{merchantType}}\",\n      \"merchantId\" : \"{{merchantId}}\",\n      \"merchantName\" : {\n        \"name\" : \"{{merchantName}}\",\n        \"city\" : \"{{merchantCity}}\",\n        \"region\" : \"{{merchantRegion}}\",\n        \"country\" : \"{{merchantCountry}}\"\n      }\n    }\n  },\n  \"accountRef\" : \"{{accountRef}}\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "PaymentRequest",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct id returned\"] = jsonData.id === environment.requestId;\n\n\npostman.setEnvironmentVariable(\"linkData\", jsonData.linkData);\npostman.setEnvironmentVariable(\"issuerReference\", jsonData.slipData.issuerReference);\n\n"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nfunction halve(n) {\n    \n    return Math.floor(n/2);\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"reqDateTime\", dateTime);\n\nvar rrn = _p8()\npostman.setEnvironmentVariable(\"rrn\",rrn);\npostman.setEnvironmentVariable(\"requestRrn\",rrn);\n\npostman.setEnvironmentVariable(\"requestId\",uuid());\n\npostman.setEnvironmentVariable(\"requestAmount\",halve(environment.accountAmount));\n"
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/payments/{{requestId}}",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic dXNlcm5hbWU6cGFzc3N3b3Jk",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\" : \"{{requestId}}\",\n  \"time\" : \"{{reqDateTime}}\",\n  \"sender\" : {\n    \"institution\" : {\n      \"id\" : \"{{senderInstId}}\",\n      \"name\" : \"{{senderInstName}}\"\n    },\n    \"terminalId\" : \"{{terminalId}}\",\n    \"referenceNumber\" : \"{{rrn}}\",\n    \"merchant\" : {\n      \"merchantType\" : \"{{merchantType}}\",\n      \"merchantId\" : \"{{merchantId}}\",\n      \"merchantName\" : {\n        \"name\" : \"{{merchantName}}\",\n        \"city\" : \"{{merchantCity}}\",\n        \"region\" : \"{{merchantRegion}}\",\n        \"country\" : \"{{merchantCountry}}\"\n      }\n    }\n  },\n  \"accountRef\" : \"{{accountRef}}\",\n  \"clientRef\" : \"{{rrn}}\",\n  \"requestAmount\" : {\n    \"amount\" : \"{{requestAmount}}\",\n    \"currency\" : \"{{currency}}\"\n  }\n}"
+						},
+						"description": "Test PaymentRequest"
+					},
+					"response": []
+				},
+				{
+					"name": "PaymentConfirmation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests[\"Status code is 200\"] = responseCode.code === 202;\n\n\n"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nfunction halve(n) {\n    \n    return Math.floor(n/2);\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"adviceDateTime\", dateTime);\n\npostman.setEnvironmentVariable(\"rrn\",_p8());\npostman.setEnvironmentVariable(\"adviceId\",uuid());\npostman.setEnvironmentVariable(\"tenderAmount\",halve(environment.requestAmount));\n"
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/payments/{{requestId}}/confirmations/{{adviceId}}",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic dXNlcm5hbWU6cGFzc3N3b3Jk",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\" : \"{{adviceId}}\",\n  \"requestId\" : \"{{requestId}}\",\n  \"time\" : \"{{adviceDateTime}}\",\n  \"linkData\" : \"{{linkData}}\",\n  \"tenders\" : [ {\n    \"accountType\" : \"{{tenderAccountType}}\",\n    \"amount\" : {\n      \"amount\" : {{tenderAmount}},\n      \"currency\" : \"{{currency}}\"\n    },\n    \"cardNumber\" : \"{{tenderCardNumber}}1\",\n    \"reference\" : \"{{tenderRef}}1\",\n    \"tenderType\" : \"{{tenderTypeCash}}\"\n  }, {\n    \"accountType\" : \"DEFAULT\",\n    \"amount\" : {\n      \"amount\" : {{tenderAmount}},\n      \"currency\" : \"{{currency}}\"\n    },\n    \"cardNumber\" : \"{{tenderCardNumber}}2\",\n    \"reference\" : \"{{tenderRef}}2\",\n    \"tenderType\" : \"{{tenderTypeCard}}\"\n  } ]\n}"
+						},
+						"description": "Test confirm payment"
+					},
+					"response": []
+				},
+				{
+					"name": "RefundRequest",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct id returned\"] = jsonData.id === environment.requestId;\n\n\npostman.setEnvironmentVariable(\"linkData\", jsonData.linkData);\n\n\n"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nfunction halve(n) {\n    \n    return Math.floor(n/2);\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"reqDateTime\", dateTime);\n\nvar rrn = _p8()\npostman.setEnvironmentVariable(\"rrn\",rrn);\npostman.setEnvironmentVariable(\"requestRrn\",rrn);\n\npostman.setEnvironmentVariable(\"requestId\",uuid());\n\npostman.setEnvironmentVariable(\"requestAmount\",halve(environment.accountAmount));\n"
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/refunds/{{requestId}}",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic dXNlcm5hbWU6cGFzc3N3b3Jk",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\" : \"{{requestId}}\",\n  \"time\" : \"{{reqDateTime}}\",\n  \"sender\" : {\n    \"institution\" : {\n      \"id\" : \"{{senderInstId}}\",\n      \"name\" : \"{{senderInstName}}\"\n    }\n    },\n    \"issuerReference\" : \"{{issuerReference}}\",\n    \"refundReason\" : \"{{refundReason}}\"\n}"
+						},
+						"description": "Test RefundRequest"
+					},
+					"response": []
+				},
+				{
+					"name": "RefundConfirmation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests[\"Status code is 200\"] = responseCode.code === 202;\n\n\n"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"adviceDateTime\", dateTime);\n\npostman.setEnvironmentVariable(\"adviceId\",uuid());\n\n"
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/refunds/{{requestId}}/confirmations/{{adviceId}}",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic dXNlcm5hbWU6cGFzc3N3b3Jk",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\" : \"{{adviceId}}\",\n  \"requestId\" : \"{{requestId}}\",\n  \"time\" : \"{{adviceDateTime}}\",\n  \"linkData\" : \"{{linkData}}\"\n}"
+						},
+						"description": "Test Refund confirmation"
+					},
+					"response": []
+				},
+				{
+					"name": "RefundReversal",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests[\"Status code is 200\"] = responseCode.code === 400;\n\n\n"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nfunction halve(n) {\n    \n    return Math.floor(n/2);\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"adviceDateTime\", dateTime);\n\npostman.setEnvironmentVariable(\"rrn\",_p8());\npostman.setEnvironmentVariable(\"adviceId\",uuid());\npostman.setEnvironmentVariable(\"tenderAmount\",halve(environment.requestAmount));\n"
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/refunds/{{requestId}}/reversals/{{adviceId}}",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic dXNlcm5hbWU6cGFzc3N3b3Jk",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\" : \"{{adviceId}}\",\n  \"requestId\" : \"{{requestId}}\",\n  \"time\" : \"{{adviceDateTime}}\",\n  \"linkData\" : \"{{linkData}}\",\n  \"reversalReason\" : \"{{reversalReason}}\",\n  \"refundRequest\" : {\n  \"id\" : \"{{requestId}}\",\n  \"time\" : \"{{reqDateTime}}\",\n  \"sender\" : {\n    \"institution\" : {\n      \"id\" : \"{{senderInstId}}\",\n      \"name\" : \"{{senderInstName}}\"\n    }\n    },\n    \"issuerReference\" : \"{{issuerReference}}\",\n    \"refundReason\" : \"{{refundReason}}\"\n}\n}"
+						},
+						"description": "Test refund reversal"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Payment, Confirmation and Refund and Reversal",
+			"description": "",
+			"item": [
+				{
+					"name": "AccountLookupRequest",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct id returned\"] = jsonData.id === environment.requestId;\n\n\npostman.setEnvironmentVariable(\"accountAmount\", jsonData.account.balance.amount);"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"reqDateTime\", dateTime);\n\npostman.setEnvironmentVariable(\"rrn\",_p8());\npostman.setEnvironmentVariable(\"requestId\",uuid());\n"
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/accountLookups/{{requestId}}",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic dXNlcm5hbWU6cGFzc3N3b3Jk",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\" : \"{{requestId}}\",\n  \"time\" : \"{{reqDateTime}}\",\n  \"sender\" : {\n    \"institution\" : {\n      \"id\" : \"{{senderInstId}}\",\n      \"name\" : \"{{senderInstName}}\"\n    },\n    \"terminalId\" : \"{{terminalId}}\",\n    \"referenceNumber\" : \"{{rrn}}\",\n    \"merchant\" : {\n      \"merchantType\" : \"{{merchantType}}\",\n      \"merchantId\" : \"{{merchantId}}\",\n      \"merchantName\" : {\n        \"name\" : \"{{merchantName}}\",\n        \"city\" : \"{{merchantCity}}\",\n        \"region\" : \"{{merchantRegion}}\",\n        \"country\" : \"{{merchantCountry}}\"\n      }\n    }\n  },\n  \"accountRef\" : \"{{accountRef}}\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "PaymentRequest",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct id returned\"] = jsonData.id === environment.requestId;\n\n\npostman.setEnvironmentVariable(\"linkData\", jsonData.linkData);\npostman.setEnvironmentVariable(\"issuerReference\", jsonData.slipData.issuerReference);\n\n"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nfunction halve(n) {\n    \n    return Math.floor(n/2);\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"reqDateTime\", dateTime);\n\nvar rrn = _p8()\npostman.setEnvironmentVariable(\"rrn\",rrn);\npostman.setEnvironmentVariable(\"requestRrn\",rrn);\n\npostman.setEnvironmentVariable(\"requestId\",uuid());\n\npostman.setEnvironmentVariable(\"requestAmount\",halve(environment.accountAmount));\n"
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/payments/{{requestId}}",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic dXNlcm5hbWU6cGFzc3N3b3Jk",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\" : \"{{requestId}}\",\n  \"time\" : \"{{reqDateTime}}\",\n  \"sender\" : {\n    \"institution\" : {\n      \"id\" : \"{{senderInstId}}\",\n      \"name\" : \"{{senderInstName}}\"\n    },\n    \"terminalId\" : \"{{terminalId}}\",\n    \"referenceNumber\" : \"{{rrn}}\",\n    \"merchant\" : {\n      \"merchantType\" : \"{{merchantType}}\",\n      \"merchantId\" : \"{{merchantId}}\",\n      \"merchantName\" : {\n        \"name\" : \"{{merchantName}}\",\n        \"city\" : \"{{merchantCity}}\",\n        \"region\" : \"{{merchantRegion}}\",\n        \"country\" : \"{{merchantCountry}}\"\n      }\n    }\n  },\n  \"accountRef\" : \"{{accountRef}}\",\n  \"clientRef\" : \"{{rrn}}\",\n  \"requestAmount\" : {\n    \"amount\" : \"{{requestAmount}}\",\n    \"currency\" : \"{{currency}}\"\n  }\n}"
+						},
+						"description": "Test PaymentRequest"
+					},
+					"response": []
+				},
+				{
+					"name": "PaymentConfirmation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests[\"Status code is 200\"] = responseCode.code === 202;\n\n\n"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nfunction halve(n) {\n    \n    return Math.floor(n/2);\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"adviceDateTime\", dateTime);\n\npostman.setEnvironmentVariable(\"rrn\",_p8());\npostman.setEnvironmentVariable(\"adviceId\",uuid());\npostman.setEnvironmentVariable(\"tenderAmount\",halve(environment.requestAmount));\n"
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/payments/{{requestId}}/confirmations/{{adviceId}}",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic dXNlcm5hbWU6cGFzc3N3b3Jk",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\" : \"{{adviceId}}\",\n  \"requestId\" : \"{{requestId}}\",\n  \"time\" : \"{{adviceDateTime}}\",\n  \"linkData\" : \"{{linkData}}\",\n  \"tenders\" : [ {\n    \"accountType\" : \"{{tenderAccountType}}\",\n    \"amount\" : {\n      \"amount\" : {{tenderAmount}},\n      \"currency\" : \"{{currency}}\"\n    },\n    \"cardNumber\" : \"{{tenderCardNumber}}1\",\n    \"reference\" : \"{{tenderRef}}1\",\n    \"tenderType\" : \"{{tenderTypeCash}}\"\n  }, {\n    \"accountType\" : \"DEFAULT\",\n    \"amount\" : {\n      \"amount\" : {{tenderAmount}},\n      \"currency\" : \"{{currency}}\"\n    },\n    \"cardNumber\" : \"{{tenderCardNumber}}2\",\n    \"reference\" : \"{{tenderRef}}2\",\n    \"tenderType\" : \"{{tenderTypeCard}}\"\n  } ]\n}"
+						},
+						"description": "Test confirm payment"
+					},
+					"response": []
+				},
+				{
+					"name": "RefundRequest",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct id returned\"] = jsonData.id === environment.requestId;\n\n\npostman.setEnvironmentVariable(\"linkData\", jsonData.linkData);\n\n\n"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nfunction halve(n) {\n    \n    return Math.floor(n/2);\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"reqDateTime\", dateTime);\n\nvar rrn = _p8()\npostman.setEnvironmentVariable(\"rrn\",rrn);\npostman.setEnvironmentVariable(\"requestRrn\",rrn);\n\npostman.setEnvironmentVariable(\"requestId\",uuid());\n\npostman.setEnvironmentVariable(\"requestAmount\",halve(environment.accountAmount));\n"
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/refunds/{{requestId}}",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic dXNlcm5hbWU6cGFzc3N3b3Jk",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\" : \"{{requestId}}\",\n  \"time\" : \"{{reqDateTime}}\",\n  \"sender\" : {\n    \"institution\" : {\n      \"id\" : \"{{senderInstId}}\",\n      \"name\" : \"{{senderInstName}}\"\n    }\n    },\n    \"issuerReference\" : \"{{issuerReference}}\",\n    \"refundReason\" : \"{{refundReason}}\"\n}"
+						},
+						"description": "Test RefundRequest"
+					},
+					"response": []
+				},
+				{
+					"name": "RefundReversal",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests[\"Status code is 200\"] = responseCode.code === 202;\n\n\n"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nfunction halve(n) {\n    \n    return Math.floor(n/2);\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"adviceDateTime\", dateTime);\n\npostman.setEnvironmentVariable(\"rrn\",_p8());\npostman.setEnvironmentVariable(\"adviceId\",uuid());\npostman.setEnvironmentVariable(\"tenderAmount\",halve(environment.requestAmount));\n"
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/refunds/{{requestId}}/reversals/{{adviceId}}",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic dXNlcm5hbWU6cGFzc3N3b3Jk",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\" : \"{{adviceId}}\",\n  \"requestId\" : \"{{requestId}}\",\n  \"time\" : \"{{adviceDateTime}}\",\n  \"linkData\" : \"{{linkData}}\",\n  \"reversalReason\" : \"{{reversalReason}}\",\n  \"refundRequest\" : {\n  \"id\" : \"{{requestId}}\",\n  \"time\" : \"{{reqDateTime}}\",\n  \"sender\" : {\n    \"institution\" : {\n      \"id\" : \"{{senderInstId}}\",\n      \"name\" : \"{{senderInstName}}\"\n    }\n    },\n    \"issuerReference\" : \"{{issuerReference}}\",\n    \"refundReason\" : \"{{refundReason}}\"\n}\n}"
+						},
+						"description": "Test refund reversal"
+					},
+					"response": []
+				},
+				{
+					"name": "RefundConfirmation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests[\"Status code is 200\"] = responseCode.code === 400;\n\n\n"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"adviceDateTime\", dateTime);\n\npostman.setEnvironmentVariable(\"adviceId\",uuid());\n\n"
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/refunds/{{requestId}}/confirmations/{{adviceId}}",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic dXNlcm5hbWU6cGFzc3N3b3Jk",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\" : \"{{adviceId}}\",\n  \"requestId\" : \"{{requestId}}\",\n  \"time\" : \"{{adviceDateTime}}\",\n  \"linkData\" : \"{{linkData}}\"\n}"
+						},
+						"description": "Test Refund confirmation"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
