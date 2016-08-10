@@ -3,6 +3,7 @@ package com.electrum.billpaytestserver;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
+import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -49,5 +50,9 @@ public class Utils {
 
    public static ObjectMapper getObjectMapper() {
       return objectMapper;
+   }
+
+   public static String generateIssuerReferenceNumber() {
+      return UUID.randomUUID().toString();
    }
 }

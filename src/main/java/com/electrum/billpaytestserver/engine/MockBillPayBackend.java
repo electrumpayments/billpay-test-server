@@ -2,6 +2,7 @@ package com.electrum.billpaytestserver.engine;
 
 import io.electrum.billpay.model.AccountLookupRequest;
 import io.electrum.billpay.model.PaymentRequest;
+import io.electrum.billpay.model.PaymentResponse;
 import io.electrum.billpay.model.PaymentReversal;
 import io.electrum.billpay.model.RefundRequest;
 import io.electrum.billpay.model.RefundReversal;
@@ -45,6 +46,8 @@ public class MockBillPayBackend {
          new ArrayList<Map<UUID, ? extends BasicReversal>>();
    private static List<Map<UUID, ?>> allMessages = new ArrayList<Map<UUID, ? extends Object>>();
 
+   private static HashMap<String, PaymentResponse> paymentResponses = new HashMap();
+
    public static void init() throws IOException {
 
       AccountLoader accountLoader = new AccountLoader(accounts);
@@ -82,6 +85,12 @@ public class MockBillPayBackend {
       }
 
       paymentRequests.put(paymentRequest.getId(), paymentRequest);
+      return true;
+   }
+
+   public static boolean add(PaymentResponse paymentResponse) {
+
+      paymentResponses.put(paymentResponse.getSender().getReferenceNumber(), paymentResponse);
       return true;
    }
 
@@ -139,7 +148,7 @@ public class MockBillPayBackend {
       return false;
    }
 
-   private static BasicRequest getRequest(UUID uuid) {
+   public static BasicRequest getRequest(UUID uuid) {
       for (Map<UUID, ? extends BasicRequest> map : allRequests) {
          if (map.containsKey(uuid)) {
             return map.get(uuid);
@@ -148,8 +157,8 @@ public class MockBillPayBackend {
       return null;
    }
 
-   public static BasicRequest getOrigRequest(UUID id) {
-      return getRequest(id);
+   public static PaymentResponse getPaymentResponse(String issuerRefNum) {
+      return paymentResponses.get(issuerRefNum);
    }
 
    public static BillPayAccount[] getAccounts() {

@@ -4,13 +4,15 @@ import io.electrum.billpay.api.IPaymentsResource;
 import io.electrum.billpay.model.PaymentRequest;
 import io.electrum.billpay.model.PaymentResponse;
 import io.electrum.billpay.model.PaymentReversal;
+import io.electrum.vas.model.LedgerAmount;
 import io.electrum.vas.model.TenderAdvice;
 
 import java.util.UUID;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 
@@ -20,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import com.electrum.billpaytestserver.Utils;
 import com.electrum.billpaytestserver.account.BillPayAccount;
+import com.electrum.billpaytestserver.engine.MockBillPayBackend;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 /**
@@ -28,42 +31,100 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 public class PaymentResourceHandler
       extends BaseDualRequestHandler<PaymentRequest, PaymentResponse, TenderAdvice, PaymentReversal>
       implements IPaymentsResource {
-   private static final Logger log = LoggerFactory.getLogger(AccountLookResourceHandler.class);
+   private static final Logger log = LoggerFactory.getLogger(PaymentResourceHandler.class);
 
    @Override
-   public Response confirmPayment(
-         UUID uuid,
-         UUID uuid1,
+   public void confirmPayment(
+         UUID adviceId,
+         UUID paymentId,
          TenderAdvice tenderAdvice,
          SecurityContext securityContext,
          AsyncResponse asyncResponse,
+         Request request,
+         HttpServletRequest httpServletRequest,
          HttpHeaders httpHeaders,
          UriInfo uriInfo) {
-      return null;
+      log.info("Handling payment confirm");
+      handleConfirm(
+            adviceId,
+            paymentId,
+            tenderAdvice,
+            securityContext,
+            asyncResponse,
+            request,
+            httpServletRequest,
+            httpHeaders,
+            uriInfo);
    }
 
    @Override
-   public Response createPayment(
+   public void createPayment(
          UUID uuid,
          PaymentRequest paymentRequest,
          SecurityContext securityContext,
          AsyncResponse asyncResponse,
+         Request request,
+         HttpServletRequest httpServletRequest,
          HttpHeaders httpHeaders,
          UriInfo uriInfo) {
       log.info("Handling payment request");
-      return handleMessage(uuid.toString(), paymentRequest, securityContext, asyncResponse, httpHeaders, uriInfo);
+      handleMessage(
+            uuid,
+            paymentRequest,
+            securityContext,
+            asyncResponse,
+            request,
+            httpServletRequest,
+            httpHeaders,
+            uriInfo);
    }
 
    @Override
-   public Response reversePayment(
-         UUID uuid,
-         UUID uuid1,
+   public void reversePayment(
+         UUID adviceId,
+         UUID paymentId,
          PaymentReversal paymentReversal,
          SecurityContext securityContext,
          AsyncResponse asyncResponse,
+         Request request,
+         HttpServletRequest httpServletRequest,
          HttpHeaders httpHeaders,
          UriInfo uriInfo) {
-      return null;
+      log.info("Handling payment reversal");
+      handleReversal(
+            adviceId,
+            paymentId,
+            paymentReversal,
+            securityContext,
+            asyncResponse,
+            request,
+            httpServletRequest,
+            httpHeaders,
+            uriInfo);
+   }
+
+   protected void doConfirm(PaymentRequest request) {
+      BillPayAccount account = MockBillPayBackend.getAccount(request.getAccountRef());
+
+      LedgerAmount ledgerAmount = account.getBalance();
+
+      long amount = ledgerAmount.getAmount();
+
+      amount -= request.getRequestAmount().getAmount();
+
+      ledgerAmount.setAmount(amount);
+   }
+
+   protected void doReversal(PaymentRequest request) {
+      BillPayAccount account = MockBillPayBackend.getAccount(request.getAccountRef());
+
+      LedgerAmount ledgerAmount = account.getBalance();
+
+      long amount = ledgerAmount.getAmount();
+
+      amount += request.getRequestAmount().getAmount();
+
+      ledgerAmount.setAmount(amount);
    }
 
    protected PaymentResponse getResponse(PaymentRequest request, BillPayAccount account) {
@@ -79,8 +140,7 @@ public class PaymentResourceHandler
       response.setAccount(getAccount(account));
       response.setCustomer(account.getCustomer());
       response.setSlipData(getSlipData());
-
-      // add response amount
+      response.setResponseAmount(request.getRequestAmount());
 
       try {
          log.debug(Utils.objectToPrettyPrintedJson(response));

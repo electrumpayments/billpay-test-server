@@ -97,7 +97,6 @@ public abstract class BaseRequestHandler<T extends BasicRequest, U extends Basic
       }
       return true;
    }
-   
 
    protected abstract U getResponse(T request, BillPayAccount account);
 
@@ -128,7 +127,7 @@ public abstract class BaseRequestHandler<T extends BasicRequest, U extends Basic
 
    protected SlipData getSlipData() {
       SlipData slipData = new SlipData();
-      slipData.setIssuerReference("IssuerReference");
+      slipData.setIssuerReference(Utils.generateIssuerReferenceNumber());
       slipData.setPhoneNumber("PhoneNumber");
       List<String> lines = new ArrayList();
       lines.add("line 1");

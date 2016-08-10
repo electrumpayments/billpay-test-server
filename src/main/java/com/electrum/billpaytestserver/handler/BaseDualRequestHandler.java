@@ -34,7 +34,7 @@ public abstract class BaseDualRequestHandler<W extends BasicRequest, X extends B
 
    protected void handleConfirm(
          UUID adviceId,
-         UUID paymentId,
+         UUID requestId,
          Y advice,
          SecurityContext securityContext,
          AsyncResponse asyncResponse,
@@ -47,10 +47,10 @@ public abstract class BaseDualRequestHandler<W extends BasicRequest, X extends B
          return;
       }
 
-      W origRequest = (W) MockBillPayBackend.getOrigRequest(paymentId);
+      W origRequest = (W) MockBillPayBackend.getRequest(requestId);
 
       if (origRequest == null) {
-         asyncResponse.resume(ErrorDetailFactory.getNoPrecedingRequestFoundErrorDetail(paymentId));
+         asyncResponse.resume(ErrorDetailFactory.getNoPrecedingRequestFoundErrorDetail(requestId));
          return;
       }
 
@@ -61,7 +61,7 @@ public abstract class BaseDualRequestHandler<W extends BasicRequest, X extends B
 
    protected void handleReversal(
          UUID adviceId,
-         UUID paymentId,
+         UUID requestId,
          Z reversal,
          SecurityContext securityContext,
          AsyncResponse asyncResponse,
@@ -78,10 +78,10 @@ public abstract class BaseDualRequestHandler<W extends BasicRequest, X extends B
          return;
       }
 
-      W origRequest = (W) MockBillPayBackend.getOrigRequest(paymentId);
+      W origRequest = (W) MockBillPayBackend.getRequest(requestId);
 
       if (origRequest == null) {
-         asyncResponse.resume(ErrorDetailFactory.getNoPrecedingRequestFoundErrorDetail(paymentId));
+         asyncResponse.resume(ErrorDetailFactory.getNoPrecedingRequestFoundErrorDetail(requestId));
          return;
       }
 
