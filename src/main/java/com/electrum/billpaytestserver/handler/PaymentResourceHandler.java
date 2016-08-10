@@ -29,8 +29,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
  *
  */
 public class PaymentResourceHandler
-      extends BaseDualRequestHandler<PaymentRequest, PaymentResponse, TenderAdvice, PaymentReversal>
-      implements IPaymentsResource {
+      extends BaseRequestHandler<PaymentRequest,PaymentResponse> implements IPaymentsResource {
    private static final Logger log = LoggerFactory.getLogger(PaymentResourceHandler.class);
 
    @Override
@@ -116,15 +115,7 @@ public class PaymentResourceHandler
    }
 
    protected void doReversal(PaymentRequest request) {
-      BillPayAccount account = MockBillPayBackend.getAccount(request.getAccountRef());
-
-      LedgerAmount ledgerAmount = account.getBalance();
-
-      long amount = ledgerAmount.getAmount();
-
-      amount += request.getRequestAmount().getAmount();
-
-      ledgerAmount.setAmount(amount);
+      
    }
 
    protected PaymentResponse getResponse(PaymentRequest request, BillPayAccount account) {

@@ -6,7 +6,6 @@ import io.electrum.billpay.model.PaymentReversal;
 import io.electrum.billpay.model.RefundReversal;
 import io.electrum.vas.model.BasicAdvice;
 import io.electrum.vas.model.BasicRequest;
-import io.electrum.vas.model.BasicReversal;
 import io.electrum.vas.model.Institution;
 import io.electrum.vas.model.Merchant;
 import io.electrum.vas.model.MerchantName;
@@ -20,9 +19,6 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
-/**
- *
- */
 public class BillpayMessageValidator {
 
    private static boolean strictMode = true;
@@ -44,20 +40,6 @@ public class BillpayMessageValidator {
       return result;
    }
 
-   public static ValidationResult validate(TenderAdvice advice) {
-      ValidationResult result = new ValidationResult();
-      if (isEmpty(advice)) {
-         result.addViolation(getViolation("message", "", "", null));
-         return result;
-      }
-
-      validateValue(advice, "message", "tenders", result);
-
-      validate(advice, result);
-
-      return result;
-   }
-
    public static ValidationResult validate(BasicAdvice advice) {
       ValidationResult result = new ValidationResult();
       if (isEmpty(advice)) {
@@ -65,52 +47,36 @@ public class BillpayMessageValidator {
          return result;
       }
 
+      if (advice instanceof TenderAdvice) {
+         validate((TenderAdvice) advice, result);
+      } else if (advice instanceof PaymentReversal) {
+         validate((PaymentReversal) advice, result);
+      } else if (advice instanceof RefundReversal) {
+         validate((RefundReversal) advice, result);
+      }
+
       validate(advice, result);
 
       return result;
    }
 
-   public static ValidationResult validate(PaymentReversal reversal) {
-      ValidationResult result = new ValidationResult();
-      if (isEmpty(reversal)) {
-         result.addViolation(getViolation("Message", "", "", null));
-         return result;
-      }
+   private static void validate(TenderAdvice advice, ValidationResult result) {
+      validateValue(advice, "message", "tenders", result);
+   }
 
+   public static void validate(PaymentReversal reversal, ValidationResult result) {
+      validateValue(reversal, "reversalReason", "id", result);
       validateValue(reversal, "message", "paymentRequest", result);
       validateValue(reversal.getPaymentRequest(), "paymentRequest", "accountRef", result);
       validate(reversal.getPaymentRequest(), result);
-
-      validate(reversal, result);
-
-      return result;
    }
 
-   public static ValidationResult validate(RefundReversal reversal) {
-      ValidationResult result = new ValidationResult();
-      if (isEmpty(reversal)) {
-         result.addViolation(getViolation("message", "", "", null));
-         return result;
-      }
-
+   public static void validate(RefundReversal reversal, ValidationResult result) {
+      validateValue(reversal, "reversalReason", "id", result);
       validateValue(reversal, "message", "refundRequest", result);
       validateValue(reversal.getRefundRequest(), "refundRequest", "issuerReference", result);
       validateValue(reversal.getRefundRequest(), "refundRequest", "refundReason", result);
       validate(reversal.getRefundRequest(), result);
-
-      validate(reversal, result);
-
-      return result;
-   }
-
-   private static void validate(BasicReversal reversal, ValidationResult result) {
-      if (isEmpty(reversal)) {
-         return;
-      }
-
-      validateValue(reversal, "reversalReason", "id", result);
-      validate((BasicAdvice) reversal, result);
-
    }
 
    private static void validate(BasicAdvice advice, ValidationResult result) {

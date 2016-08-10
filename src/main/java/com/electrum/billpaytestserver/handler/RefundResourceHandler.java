@@ -29,8 +29,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 /**
  *
  */
-public class RefundResourceHandler extends
-      BaseDualRequestHandler<RefundRequest, RefundResponse, BasicAdvice, RefundReversal> implements IRefundsResource {
+public class RefundResourceHandler extends BaseRequestHandler<RefundRequest,RefundResponse> implements IRefundsResource {
    private static final Logger log = LoggerFactory.getLogger(RefundResourceHandler.class);
 
    @Override

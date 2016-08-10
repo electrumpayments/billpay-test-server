@@ -4,8 +4,10 @@ import io.electrum.billpay.model.Account;
 import io.electrum.billpay.model.AccountLookupRequest;
 import io.electrum.billpay.model.PaymentRequest;
 import io.electrum.billpay.model.SlipData;
+import io.electrum.vas.model.BasicAdvice;
 import io.electrum.vas.model.BasicRequest;
 import io.electrum.vas.model.BasicResponse;
+import io.electrum.vas.model.BasicReversal;
 import io.electrum.vas.model.Institution;
 
 import java.util.ArrayList;
@@ -74,6 +76,108 @@ public abstract class BaseRequestHandler<T extends BasicRequest, U extends Basic
       asyncResponse.resume(Response.status(Response.Status.OK).entity(getResponse(request, account)).build());
    }
 
+   protected void handleConfirm(
+         UUID adviceId,
+         UUID requestId,
+         BasicAdvice advice,
+         SecurityContext securityContext,
+         AsyncResponse asyncResponse,
+         Request request,
+         HttpServletRequest httpServletRequest,
+         HttpHeaders httpHeaders,
+         UriInfo uriInfo) {
+
+      BasicReversal reversal = MockBillPayBackend.getRequestReversal(requestId);
+      if (reversal != null) {
+         asyncResponse.resume(ErrorDetailFactory.getPreviousAdviceReceivedErrorDetail(reversal));
+         return;
+      }
+
+      BasicAdvice prevAdvice = MockBillPayBackend.getRequestConfirmation(requestId);
+      if (prevAdvice != null) {
+         asyncResponse.resume(ErrorDetailFactory.getPreviousAdviceReceivedErrorDetail(prevAdvice));
+         return;
+      }
+
+      if (!validateAndPersist(advice, asyncResponse)) {
+         return;
+      }
+
+      T origRequest = (T) MockBillPayBackend.getRequest(requestId);
+
+      if (origRequest == null) {
+         asyncResponse.resume(ErrorDetailFactory.getNoPrecedingRequestFoundErrorDetail(requestId));
+         return;
+      }
+
+      doConfirm(origRequest);
+
+      asyncResponse.resume(Response.status(Response.Status.ACCEPTED).build());
+   }
+
+   protected void handleReversal(
+         UUID adviceId,
+         UUID requestId,
+         BasicReversal reversal,
+         SecurityContext securityContext,
+         AsyncResponse asyncResponse,
+         Request request,
+         HttpServletRequest httpServletRequest,
+         HttpHeaders httpHeaders,
+         UriInfo uriInfo) {
+
+      BasicReversal prevReversal = MockBillPayBackend.getRequestReversal(requestId);
+      if (prevReversal != null) {
+         asyncResponse.resume(ErrorDetailFactory.getPreviousAdviceReceivedErrorDetail(prevReversal));
+         return;
+      }
+
+      BasicAdvice advice = MockBillPayBackend.getRequestConfirmation(requestId);
+      if (advice != null) {
+         asyncResponse.resume(ErrorDetailFactory.getPreviousAdviceReceivedErrorDetail(advice));
+         return;
+      }
+
+      if (!validateAndPersist(reversal, asyncResponse)) {
+         return;
+      }
+
+      T origRequest = (T) MockBillPayBackend.getRequest(requestId);
+
+      if (origRequest == null) {
+         asyncResponse.resume(ErrorDetailFactory.getNoPrecedingRequestFoundErrorDetail(requestId));
+         return;
+      }
+
+      doReversal(origRequest);
+
+      asyncResponse.resume(Response.status(Response.Status.ACCEPTED).build());
+   }
+
+   protected boolean validateAndPersist(BasicAdvice advice, AsyncResponse asyncResponse) {
+      ValidationResult validation = BillpayMessageValidator.validate(advice);
+
+      if (!validation.isValid()) {
+         log.info("Request format invalid");
+         asyncResponse.resume(ErrorDetailFactory.getIllFormattedMessageErrorDetail(validation));
+         return false;
+      }
+
+      try {
+         log.debug(Utils.objectToPrettyPrintedJson(advice));
+      } catch (JsonProcessingException e) {
+         log.error("Could not print advice");
+      }
+
+      boolean wasAdded = MockBillPayBackend.add(advice);
+
+      if (!wasAdded) {
+         asyncResponse.resume(ErrorDetailFactory.getNotUniqueUuidErrorDetail());
+         return false;
+      }
+      return true;
+   }
+
    protected boolean validateAndPersist(T request, AsyncResponse asyncResponse) {
       ValidationResult validation = BillpayMessageValidator.validate(request);
 
@@ -99,6 +203,10 @@ public abstract class BaseRequestHandler<T extends BasicRequest, U extends Basic
    }
 
    protected abstract U getResponse(T request, BillPayAccount account);
+
+   protected abstract void doReversal(T origRequest);
+
+   protected abstract void doConfirm(T origRequest);
 
    protected Institution getProcessor() {
       Institution institution = new Institution();

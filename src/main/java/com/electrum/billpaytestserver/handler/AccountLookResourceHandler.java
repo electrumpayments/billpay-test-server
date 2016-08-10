@@ -39,8 +39,16 @@ public class AccountLookResourceHandler extends BaseRequestHandler<AccountLookup
          HttpHeaders httpHeaders,
          UriInfo uriInfo) {
       log.info("Handling account lookup request");
-      
-       handleMessage(id, accountLookupRequest, securityContext, asyncResponse, request, httpServletRequest, httpHeaders, uriInfo);
+
+      handleMessage(
+            id,
+            accountLookupRequest,
+            securityContext,
+            asyncResponse,
+            request,
+            httpServletRequest,
+            httpHeaders,
+            uriInfo);
    }
 
    protected AccountLookupResponse getResponse(AccountLookupRequest request, BillPayAccount account) {
@@ -64,6 +72,16 @@ public class AccountLookResourceHandler extends BaseRequestHandler<AccountLookup
       }
 
       return response;
+   }
+
+   @Override
+   protected void doReversal(AccountLookupRequest origRequest) {
+
+   }
+
+   @Override
+   protected void doConfirm(AccountLookupRequest origRequest) {
+
    }
 
 }

@@ -117,6 +117,14 @@ public class MockBillPayBackend {
          return false;
       }
 
+      if (advice instanceof TenderAdvice) {
+         return add((TenderAdvice) advice);
+      } else if (advice instanceof PaymentReversal) {
+         return add((PaymentReversal) advice);
+      } else if (advice instanceof RefundReversal) {
+         return add((RefundReversal) advice);
+      }
+
       refundConfirmation.put(advice.getId(), advice);
       return true;
    }
@@ -157,6 +165,32 @@ public class MockBillPayBackend {
       return null;
    }
 
+   public static BasicAdvice getRequestConfirmation(UUID requestId) {
+      for (Map<UUID, ? extends BasicAdvice> map : allConfirmations) {
+         for (Map.Entry<UUID, ? extends BasicAdvice> entry : map.entrySet()) {
+
+            if (entry.getValue().getRequestId().equals(requestId)) {
+               return entry.getValue();
+            }
+         }
+      }
+
+      return null;
+   }
+
+   public static BasicReversal getRequestReversal(UUID requestId) {
+      for (Map<UUID, ? extends BasicReversal> map : allReversals) {
+         for (Map.Entry<UUID, ? extends BasicReversal> entry : map.entrySet()) {
+
+            if (entry.getValue().getRequestId().equals(requestId)) {
+               return entry.getValue();
+            }
+         }
+      }
+
+      return null;
+   }
+
    public static PaymentResponse getPaymentResponse(String issuerRefNum) {
       return paymentResponses.get(issuerRefNum);
    }
@@ -175,6 +209,22 @@ public class MockBillPayBackend {
 
    public static RefundRequest[] getRefundRequests() {
       return refundRequests.values().toArray(new RefundRequest[] {});
+   }
+
+   public static TenderAdvice[] getPaymentConfirmations() {
+      return paymentConfirmations.values().toArray(new TenderAdvice[] {});
+   }
+
+   public static BasicAdvice[] getRefundConfirmations() {
+      return refundConfirmation.values().toArray(new BasicAdvice[] {});
+   }
+
+   public static PaymentReversal[] getPaymentReversals() {
+      return paymentReversals.values().toArray(new PaymentReversal[] {});
+   }
+
+   public static RefundReversal[] getRefundReversals() {
+      return refundReversals.values().toArray(new RefundReversal[] {});
    }
 
    static {

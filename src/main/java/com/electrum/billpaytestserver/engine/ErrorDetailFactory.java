@@ -1,6 +1,7 @@
 package com.electrum.billpaytestserver.engine;
 
 import io.electrum.billpay.model.ErrorDetail;
+import io.electrum.vas.model.BasicAdvice;
 
 import java.util.UUID;
 
@@ -44,6 +45,21 @@ public class ErrorDetailFactory {
       errorDetail.setErrorMessage(
             "No preceding request (ID: " + id.toString()
                   + ") found for advice. Use GET /test/allPaymentRequests or /test/allRefundRequests to see all requests");
+      return Response.status(Response.Status.BAD_REQUEST).entity(errorDetail).build();
+   }
+
+   public static Response getPreviousAdviceReceivedErrorDetail(BasicAdvice advice) {
+      ErrorDetail errorDetail = new ErrorDetail();
+      errorDetail.setErrorType(ErrorDetail.ErrorType.ACCOUNT_ALREADY_SETTLED);
+      if (advice != null) {
+         errorDetail.setErrorMessage(
+               "Preceding advice  (ID: " + advice.getId().toString()
+                     + ") for request found. Use GET /test/allPaymentConfirmations or /test/allPaymentReversals or /test/allRefundConfirmations or /test/allRefundReversals to see all advices");
+         errorDetail.setDetailMessage(advice);
+      } else {
+         errorDetail.setErrorMessage(
+               "Preceding advice for request found. Use GET /test/allPaymentConfirmations or /test/allPaymentReversals or /test/allRefundConfirmations or /test/allRefundReversals to see all advices");
+      }
       return Response.status(Response.Status.BAD_REQUEST).entity(errorDetail).build();
    }
 
