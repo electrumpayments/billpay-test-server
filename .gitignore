@@ -21,4 +21,3 @@ log/
 .idea
 
 Dockerrun.aws.json
-heroku_run.sh
