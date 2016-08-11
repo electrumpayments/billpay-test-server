@@ -24,7 +24,7 @@ dependencies:
     
 test:
   override:
-    - ./circle_run.sh
+    - sh target/classes/circle_run.sh
     - ~/circlecitools/bin/newmanTest.sh billpaytest_server_tests.postman_collection.json localhost.postman_environment.json
 
 deployment:
