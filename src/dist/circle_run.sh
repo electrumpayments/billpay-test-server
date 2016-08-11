@@ -1,0 +1,1 @@
+java -jar target/${project.artifactId}-${project.version}-jar-with-dependencies.jar 8080

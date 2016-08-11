@@ -24,8 +24,8 @@ dependencies:
     
 test:
   override:
-    # run mvn integration-test
-    - ~/circlecitools/bin/newmanTest.sh billpaytest_server_tests.postman_collection.json heroku.postman_environment.json
+    - ./circle_run.sh
+    - ~/circlecitools/bin/newmanTest.sh billpaytest_server_tests.postman_collection.json localhost.postman_environment.json
 
 deployment:
   production:

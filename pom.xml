@@ -113,6 +113,10 @@
       <resource>
         <directory>src/main/resources</directory>
       </resource>
+      <resource>
+        <directory>src/dist</directory>
+        <filtering>true</filtering>
+      </resource>
 
     </resources>
 
