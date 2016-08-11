@@ -115,13 +115,40 @@
       </resource>
       <resource>
         <directory>src/dist</directory>
-        <filtering>true</filtering>
       </resource>
 
     </resources>
 
 
     <plugins>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>2.7</version>
+        <executions>
+          <execution>
+            <id>copy-resource-one</id>
+            <phase>install</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+
+            <configuration>
+              <outputDirectory>${basedir}/target</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${basedir}/target/classes</directory>
+                  <includes>
+                    <include>Dockerfile</include>
+                    <include>heroku_run.sh</include>
+                    <include>Procfile</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      
       <!-- Jar with dependecies -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

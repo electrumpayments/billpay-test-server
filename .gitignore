@@ -20,7 +20,6 @@ log/
 *.iml
 .idea
 
-Dockerfile
 Dockerrun.aws.json
 run_defaults.sh
 run.sh
