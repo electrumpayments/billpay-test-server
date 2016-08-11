@@ -3,8 +3,6 @@ machine:
     Africa/Johannesburg
   java:
     version: oraclejdk7
-  node:
-    version: 6.2.2
   services:
     - docker   
 

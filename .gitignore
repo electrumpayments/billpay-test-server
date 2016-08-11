@@ -22,4 +22,3 @@ log/
 
 Dockerrun.aws.json
 heroku_run.sh
-Procfile
