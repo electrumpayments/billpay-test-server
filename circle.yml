@@ -3,6 +3,8 @@ machine:
     Africa/Johannesburg
   java:
     version: oraclejdk7
+  node:
+    version: 6.2.2
 
 general:
   artifacts:
@@ -10,7 +12,7 @@ general:
 
 dependencies:
   pre:
-    - npm install newman
+    - npm install -g newman
     # copy some utilities over from github
     - git clone git@github.com:electrumpayments/circlecitools.git ~/circlecitools
     - chmod +x ~/circlecitools/bin/*.sh
