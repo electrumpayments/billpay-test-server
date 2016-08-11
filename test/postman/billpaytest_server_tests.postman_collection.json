@@ -188,7 +188,7 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 200\"] = responseCode.code === 202;\n\n\n"
+								"exec": "tests[\"Status code is 202\"] = responseCode.code === 202;\n\n\n"
 							}
 						},
 						{
@@ -229,7 +229,7 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 200\"] = responseCode.code === 400;\n\n\n"
+								"exec": "tests[\"Status code is 400\"] = responseCode.code === 400;\n\n\n"
 							}
 						},
 						{
@@ -358,7 +358,7 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 200\"] = responseCode.code === 202;\n\n\n"
+								"exec": "tests[\"Status code is 202\"] = responseCode.code === 202;\n\n\n"
 							}
 						},
 						{
@@ -399,7 +399,7 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 200\"] = responseCode.code === 400;\n\n\n"
+								"exec": "tests[\"Status code is 400\"] = responseCode.code === 400;\n\n\n"
 							}
 						},
 						{
@@ -528,7 +528,7 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 200\"] = responseCode.code === 202;\n\n\n"
+								"exec": "tests[\"Status code is 202\"] = responseCode.code === 202;\n\n\n"
 							}
 						},
 						{
@@ -610,7 +610,7 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 200\"] = responseCode.code === 202;\n\n\n"
+								"exec": "tests[\"Status code is 202\"] = responseCode.code === 202;\n\n\n"
 							}
 						},
 						{
@@ -651,7 +651,7 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 200\"] = responseCode.code === 400;\n\n\n"
+								"exec": "tests[\"Status code is 400\"] = responseCode.code === 400;\n\n\n"
 							}
 						},
 						{
@@ -780,7 +780,7 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 200\"] = responseCode.code === 202;\n\n\n"
+								"exec": "tests[\"Status code is 202\"] = responseCode.code === 202;\n\n\n"
 							}
 						},
 						{
@@ -862,7 +862,7 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 200\"] = responseCode.code === 202;\n\n\n"
+								"exec": "tests[\"Status code is 202\"] = responseCode.code === 202;\n\n\n"
 							}
 						},
 						{
@@ -903,7 +903,7 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 200\"] = responseCode.code === 400;\n\n\n"
+								"exec": "tests[\"Status code is 400\"] = responseCode.code === 400;\n\n\n"
 							}
 						},
 						{
