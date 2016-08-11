@@ -11,7 +11,7 @@ WORKDIR /
 USER daemon
 
 # copy the locally built fat-jar to the image
-ADD target/${project.artifactId}-${project.version}-jar-with-dependencies.jar ${project.artifactId}-${project.version}-jar-with-dependencies.jar 
+ADD ${project.artifactId}-${project.version}-jar-with-dependencies.jar ${project.artifactId}-${project.version}-jar-with-dependencies.jar 
 
 # the server binds to 8080 - expose that port
 EXPOSE 	8080
