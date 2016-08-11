@@ -127,7 +127,7 @@
         <version>2.7</version>
         <executions>
           <execution>
-            <id>copy-resource-one</id>
+            <id>copy-resource-docker</id>
             <phase>install</phase>
             <goals>
               <goal>copy-resources</goal>
@@ -140,6 +140,26 @@
                   <directory>${basedir}/target/classes</directory>
                   <includes>
                     <include>Dockerfile</include>
+                    <include>heroku_run.sh</include>
+                    <include>Procfile</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-resource-heroku</id>
+            <phase>install</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+
+            <configuration>
+              <outputDirectory>${basedir}</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${basedir}/target/classes</directory>
+                  <includes>
                     <include>heroku_run.sh</include>
                     <include>Procfile</include>
                   </includes>

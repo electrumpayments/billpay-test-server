@@ -21,5 +21,5 @@ log/
 .idea
 
 Dockerrun.aws.json
-run_defaults.sh
-run.sh
+heroku_run.sh
+Procfile
