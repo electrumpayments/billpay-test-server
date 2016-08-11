@@ -12,6 +12,7 @@ general:
 
 dependencies:
   pre:
+    - chmod +x target/classes/circle_run.sh
     - npm install -g newman
     # copy some utilities over from github
     - git clone git@github.com:electrumpayments/circlecitools.git ~/circlecitools
