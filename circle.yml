@@ -24,10 +24,9 @@ dependencies:
     
 test:
   override:
-    - cd target
-    - docker build -t="billpay-test-server" .
+    - mvn clean install
+    - docker build -t="billpay-test-server" target
     - docker run -d -p 8080:8080 --name billpay-test-server_container billpay-test-server
-    - cd ..
     - ~/circlecitools/bin/newmanTest.sh billpaytest_server_tests.postman_collection.json localhost.postman_environment.json
 
 deployment:
