@@ -6,6 +6,27 @@
   <artifactId>billpay-test-server</artifactId>
   <version>1.0.0</version>
   <packaging>jar</packaging>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Electrum Payments</name>
+      <email>hello@electrum.io</email>
+      <organization>Electrum Payments</organization>
+      <organizationUrl>http://electrum.io</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git@github.com:electrumpayments/billpay-test-server.git</connection>
+    <developerConnection>scm:git:git@github.com:electrumpayments/billpay-test-server.git</developerConnection>
+    <url>git@github.com:electrumpayments/billpay-test-server.git</url>
+  </scm>
+  
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.7</maven.compiler.source>
@@ -21,7 +42,7 @@
     <dependency>
       <groupId>io.electrum</groupId>
       <artifactId>billpay-service-interface</artifactId>
-      <version>2.0.4</version>
+      <version>2.0.5</version>
     </dependency>
     
     <!-- CSV -->
@@ -117,6 +138,9 @@
         <directory>src/dist</directory>
         <filtering>true</filtering>
       </resource>
+      <resource>
+        <directory>src/docs/devguide</directory>
+      </resource>
 
     </resources>
 
@@ -126,6 +150,7 @@
         <artifactId>maven-resources-plugin</artifactId>
         <version>2.7</version>
         <executions>
+          
           <execution>
             <id>copy-resource-docker</id>
             <phase>install</phase>
@@ -140,8 +165,6 @@
                   <directory>${basedir}/target/classes</directory>
                   <includes>
                     <include>Dockerfile</include>
-                    <include>heroku_run.sh</include>
-                    <include>Procfile</include>
                   </includes>
                 </resource>
               </resources>
@@ -170,7 +193,7 @@
         </executions>
       </plugin>
       
-      <!-- Jar with dependecies -->
+      <!-- Jar with dependencies -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
@@ -206,7 +229,6 @@
         </configuration>
       </plugin>
 
-      <!--
       <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
@@ -220,9 +242,7 @@
               </execution>
           </executions>
       </plugin>
-      -->
 
-      <!--
       <plugin>
          <groupId>org.apache.maven.plugins</groupId>
          <artifactId>maven-javadoc-plugin</artifactId>
@@ -236,27 +256,28 @@
             </execution>
          </executions>
       </plugin>
-      -->
 
-      <!--
       <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-jar-plugin</artifactId>
-          <version>2.4</version>
-          <configuration>
-              <archive>
-                  <manifest>
-                      <addClasspath>true</addClasspath>
-                      <mainClass>io.echidna.EchidnaRunner</mainClass>
-                  </manifest>
-              </archive>
-              <resources>
-                  <directory>src/main/resources</directory>
-              </resources>
-          </configuration>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>install</phase>
+            <configuration>
+              <tasks unless="maven.test.skip">
+                <exec executable="${basedir}/test/postman/run_tests.sh" failonerror="true">
+                  <arg value="${basedir}"/>
+                  <arg value="${basedir}/test/postman"/>
+                </exec>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
-      -->
-
+      
     </plugins>
   </build>
 

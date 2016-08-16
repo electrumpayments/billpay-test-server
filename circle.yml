@@ -26,7 +26,7 @@ dependencies:
     
 test:
   override:
-    - mvn clean install
+    - mvn clean install -Dmaven.test.skip=true
     - docker build -t="billpay-test-server" ./target
     - docker run -d -p 8080:8080 --name billpay-test-server_container billpay-test-server
     - ~/circlecitools/bin/waitForServer.sh localhost:8080 500
