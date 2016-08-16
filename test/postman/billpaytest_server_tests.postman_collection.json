@@ -59,7 +59,7 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 400\"] = responseCode.code === 400;\n\n\n\n"
+								"exec": "tests[\"Status code is 400\"] = responseCode.code === 400;\n\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct error type\"] = jsonData.errorType === environment.formatErrorType;\n"
 							}
 						},
 						{
@@ -229,7 +229,7 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 400\"] = responseCode.code === 400;\n\n\n"
+								"exec": "tests[\"Status code is 400\"] = responseCode.code === 400;\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct error type\"] = jsonData.errorType === environment.accountAlreadySettledErrorType;"
 							}
 						},
 						{
@@ -399,7 +399,7 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 400\"] = responseCode.code === 400;\n\n\n"
+								"exec": "tests[\"Status code is 400\"] = responseCode.code === 400;\n\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct error type\"] = jsonData.errorType === environment.accountAlreadySettledErrorType;"
 							}
 						},
 						{
@@ -651,7 +651,7 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 400\"] = responseCode.code === 400;\n\n\n"
+								"exec": "tests[\"Status code is 400\"] = responseCode.code === 400;\n\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct error type\"] = jsonData.errorType === environment.accountAlreadySettledErrorType;"
 							}
 						},
 						{
@@ -903,7 +903,7 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 400\"] = responseCode.code === 400;\n\n\n"
+								"exec": "tests[\"Status code is 400\"] = responseCode.code === 400;\n\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct error type\"] = jsonData.errorType === environment.accountAlreadySettledErrorType;"
 							}
 						},
 						{
