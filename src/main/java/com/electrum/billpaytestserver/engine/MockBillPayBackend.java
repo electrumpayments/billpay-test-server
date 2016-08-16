@@ -147,10 +147,19 @@ public class MockBillPayBackend {
       return true;
    }
 
-   private static boolean existsMessage(UUID uuid) {
+   public static boolean existsMessage(UUID uuid) {
       for (Map<UUID, ? extends Object> map : allMessages) {
          if (map.containsKey(uuid)) {
             return true;
+         }
+      }
+      return false;
+   }
+
+   public static boolean removeMessage(UUID uuid) {
+      for (Map<UUID, ? extends Object> map : allMessages) {
+         if (map.containsKey(uuid)) {
+            map.remove(uuid);
          }
       }
       return false;

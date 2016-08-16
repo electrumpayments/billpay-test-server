@@ -125,7 +125,15 @@ public abstract class BaseRequestHandler<T extends BasicRequest, U extends Basic
 
       T origRequest = (T) MockBillPayBackend.getRequest(requestId);
       if (origRequest != null) {
-         doConfirm(origRequest);
+         try {
+            doConfirm(origRequest);
+         } catch (ClassCastException e) {
+            log.error("Request type and advice type incompatible");
+            log.info("Removing advice message of ID {}", adviceId);
+            MockBillPayBackend.removeMessage(adviceId);
+            asyncResponse.resume(ErrorDetailFactory.getMismatchingRequestAndAdviceErrorDetail(requestId));
+            return;
+         }
       }
 
       asyncResponse.resume(Response.status(Response.Status.ACCEPTED).build());
@@ -160,7 +168,15 @@ public abstract class BaseRequestHandler<T extends BasicRequest, U extends Basic
 
       T origRequest = (T) MockBillPayBackend.getRequest(requestId);
       if (origRequest != null) {
-         doReversal(origRequest);
+         try {
+            doReversal(origRequest);
+         } catch (ClassCastException e) {
+            log.error("Request type and reversal type incompatible");
+            log.info("Removing advice message of ID {}", adviceId);
+            MockBillPayBackend.removeMessage(adviceId);
+            asyncResponse.resume(ErrorDetailFactory.getMismatchingRequestAndAdviceErrorDetail(requestId));
+            return;
+         }
       }
 
       asyncResponse.resume(Response.status(Response.Status.ACCEPTED).build());

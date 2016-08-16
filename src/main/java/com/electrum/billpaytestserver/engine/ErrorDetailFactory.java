@@ -57,6 +57,15 @@ public class ErrorDetailFactory {
       return Response.status(Response.Status.BAD_REQUEST).entity(errorDetail).build();
    }
 
+   public static Response getMismatchingRequestAndAdviceErrorDetail(UUID id) {
+      ErrorDetail errorDetail = new ErrorDetail();
+      errorDetail.setErrorType(ErrorDetail.ErrorType.FUNCTION_NOT_SUPPORTED);
+      errorDetail.setErrorMessage(
+            "Request (ID: " + id.toString()
+                  + ") found for advice is incompatible. Use GET /test/allPaymentRequests or /test/allRefundRequests to see all requests");
+      return Response.status(Response.Status.BAD_REQUEST).entity(errorDetail).build();
+   }
+   
    public static Response getNoPaymentRequestFoundErrorDetail(String issuerRefNum) {
       ErrorDetail errorDetail = new ErrorDetail();
       errorDetail.setErrorType(ErrorDetail.ErrorType.UNABLE_TO_LOCATE_RECORD);
