@@ -264,7 +264,7 @@
           <execution>
             <phase>install</phase>
             <configuration>
-              <tasks unless="maven.test.skip">
+              <tasks if="newman.test">
                 <exec executable="${basedir}/test/postman/run_tests.sh" failonerror="true">
                   <arg value="${basedir}"/>
                   <arg value="${basedir}/test/postman"/>
