@@ -49,7 +49,7 @@ public abstract class BaseRequestHandler<T extends BasicRequest, U extends Basic
          Request jaxRequest,
          HttpServletRequest httpServletRequest,
          HttpHeaders httpHeaders,
-         UriInfo uriInfo) throws Exception{
+         UriInfo uriInfo) throws Exception {
 
       if (!validateAndPersist(request, asyncResponse)) {
          return;
@@ -124,13 +124,9 @@ public abstract class BaseRequestHandler<T extends BasicRequest, U extends Basic
       }
 
       T origRequest = (T) MockBillPayBackend.getRequest(requestId);
-
-      if (origRequest == null) {
-         asyncResponse.resume(ErrorDetailFactory.getNoPrecedingRequestFoundErrorDetail(requestId));
-         return;
+      if (origRequest != null) {
+         doConfirm(origRequest);
       }
-
-      doConfirm(origRequest);
 
       asyncResponse.resume(Response.status(Response.Status.ACCEPTED).build());
    }
@@ -144,7 +140,7 @@ public abstract class BaseRequestHandler<T extends BasicRequest, U extends Basic
          Request request,
          HttpServletRequest httpServletRequest,
          HttpHeaders httpHeaders,
-         UriInfo uriInfo) throws Exception{
+         UriInfo uriInfo) throws Exception {
 
       BasicReversal prevReversal = MockBillPayBackend.getRequestReversal(requestId);
       if (prevReversal != null) {
@@ -163,13 +159,9 @@ public abstract class BaseRequestHandler<T extends BasicRequest, U extends Basic
       }
 
       T origRequest = (T) MockBillPayBackend.getRequest(requestId);
-
-      if (origRequest == null) {
-         asyncResponse.resume(ErrorDetailFactory.getNoPrecedingRequestFoundErrorDetail(requestId));
-         return;
+      if (origRequest != null) {
+         doReversal(origRequest);
       }
-
-      doReversal(origRequest);
 
       asyncResponse.resume(Response.status(Response.Status.ACCEPTED).build());
    }
@@ -189,10 +181,16 @@ public abstract class BaseRequestHandler<T extends BasicRequest, U extends Basic
          log.error("Could not print advice");
       }
 
+      T origRequest = (T) MockBillPayBackend.getRequest(advice.getRequestId());
+      if (origRequest == null) {
+         asyncResponse.resume(ErrorDetailFactory.getNoPrecedingRequestFoundErrorDetail(advice.getRequestId()));
+         return false;
+      }
+
       boolean wasAdded = MockBillPayBackend.add(advice);
 
       if (!wasAdded) {
-         asyncResponse.resume(ErrorDetailFactory.getNotUniqueUuidErrorDetail());
+         asyncResponse.resume(ErrorDetailFactory.getNotUniqueUuidErrorDetail(advice.getId()));
          return false;
       }
       return true;
@@ -216,7 +214,7 @@ public abstract class BaseRequestHandler<T extends BasicRequest, U extends Basic
       boolean wasAdded = MockBillPayBackend.add(request);
 
       if (!wasAdded) {
-         asyncResponse.resume(ErrorDetailFactory.getNotUniqueUuidErrorDetail());
+         asyncResponse.resume(ErrorDetailFactory.getNotUniqueUuidErrorDetail(request.getId()));
          return false;
       }
       return true;

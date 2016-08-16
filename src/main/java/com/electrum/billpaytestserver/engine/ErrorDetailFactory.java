@@ -22,10 +22,11 @@ public class ErrorDetailFactory {
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(errorDetail).build();
    }
 
-   public static Response getNotUniqueUuidErrorDetail() {
+   public static Response getNotUniqueUuidErrorDetail(UUID id) {
       ErrorDetail errorDetail = new ErrorDetail();
       errorDetail.setErrorType(ErrorDetail.ErrorType.DUPLICATE_RECORD);
       errorDetail.setErrorMessage("Message ID (UUID) is not unique.");
+      errorDetail.setDetailMessage(id);
       return Response.status(Response.Status.BAD_REQUEST).entity(errorDetail).build();
    }
 
