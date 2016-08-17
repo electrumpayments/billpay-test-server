@@ -66,6 +66,12 @@ public class MockBillPayBackend {
       return accounts.get(accountRef);
    }
 
+   public static void add(BillPayAccount account) {
+      if (account != null && account.getAccountRef() != null) {
+         accounts.put(account.getAccountRef(), account);
+      }
+   }
+
    public static boolean add(BasicRequest request) {
       if (request instanceof AccountLookupRequest) {
          return add((AccountLookupRequest) request);

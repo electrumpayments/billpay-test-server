@@ -7,7 +7,7 @@ import io.electrum.vas.model.LedgerAmount;
  *
  */
 public class BillPayAccount {
-   
+
    private String accountRef;
    private LedgerAmount balance;
    private Customer customer;
@@ -42,6 +42,17 @@ public class BillPayAccount {
    }
 
    public void setCustomer(Customer customer) {
+      this.customer = customer;
+   }
+
+   public void setCustomer(String firstName, String lastName, String address, String idNumber, String contactNumber) {
+      Customer customer = new Customer();
+      customer.setFirstName(firstName);
+      customer.setLastName(lastName);
+      customer.setAddress(address);
+      customer.setIdNumber(idNumber);
+      customer.setContactNumber(contactNumber);
+
       this.customer = customer;
    }
 }

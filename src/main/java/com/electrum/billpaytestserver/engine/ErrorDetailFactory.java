@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import javax.ws.rs.core.Response;
 
+import com.electrum.billpaytestserver.account.BillPayAccount;
 import com.electrum.billpaytestserver.validation.ValidationResult;
 
 /**
@@ -65,7 +66,7 @@ public class ErrorDetailFactory {
                   + ") found for advice is incompatible. Use GET /test/allPaymentRequests or /test/allRefundRequests to see all requests");
       return Response.status(Response.Status.BAD_REQUEST).entity(errorDetail).build();
    }
-   
+
    public static Response getNoPaymentRequestFoundErrorDetail(String issuerRefNum) {
       ErrorDetail errorDetail = new ErrorDetail();
       errorDetail.setErrorType(ErrorDetail.ErrorType.UNABLE_TO_LOCATE_RECORD);
@@ -74,7 +75,7 @@ public class ErrorDetailFactory {
                   + ") found for advice. Use GET /test/allPaymentRequests or /test/allRefundRequests to see all requests");
       return Response.status(Response.Status.BAD_REQUEST).entity(errorDetail).build();
    }
-   
+
    public static Response getPreviousAdviceReceivedErrorDetail(BasicAdvice advice) {
       ErrorDetail errorDetail = new ErrorDetail();
       errorDetail.setErrorType(ErrorDetail.ErrorType.ACCOUNT_ALREADY_SETTLED);
@@ -87,6 +88,14 @@ public class ErrorDetailFactory {
          errorDetail.setErrorMessage(
                "Preceding advice for request found. Use GET /test/allPaymentConfirmations or /test/allPaymentReversals or /test/allRefundConfirmations or /test/allRefundReversals to see all advices");
       }
+      return Response.status(Response.Status.BAD_REQUEST).entity(errorDetail).build();
+   }
+
+   public static Response getAccountAddErrorErrorDetail(String error, BillPayAccount account) {
+      ErrorDetail errorDetail = new ErrorDetail();
+      errorDetail.setErrorType(ErrorDetail.ErrorType.FORMAT_ERROR);
+      errorDetail.setErrorMessage(error);
+      errorDetail.setDetailMessage(account);
       return Response.status(Response.Status.BAD_REQUEST).entity(errorDetail).build();
    }
 

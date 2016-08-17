@@ -6,19 +6,23 @@ import io.electrum.billpay.model.PaymentReversal;
 import io.electrum.billpay.model.RefundRequest;
 import io.electrum.billpay.model.RefundReversal;
 import io.electrum.vas.model.BasicAdvice;
+import io.electrum.vas.model.LedgerAmount;
 import io.electrum.vas.model.TenderAdvice;
 
 import java.io.IOException;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.electrum.billpaytestserver.account.BillPayAccount;
+import com.electrum.billpaytestserver.engine.ErrorDetailFactory;
 import com.electrum.billpaytestserver.engine.MockBillPayBackend;
 
 /**
@@ -32,14 +36,15 @@ public class TestHelpResource {
 
    @Path("reset")
    @GET
-   public void reset() throws IOException {
+   public Response reset() throws IOException {
       log.info("Resetting server");
       try {
          MockBillPayBackend.reset();
       } catch (IOException e) {
          log.error("Could not reset server", e);
-         throw e;
+         return ErrorDetailFactory.getServerErrorErrorDetail(e);
       }
+      return Response.ok().build();
    }
 
    @Path("allAccounts")
@@ -96,5 +101,40 @@ public class TestHelpResource {
    public RefundReversal[] getAllRefundReversals() {
       log.info("GET refund requests");
       return MockBillPayBackend.getRefundReversals();
+   }
+
+   @Path("addAccount")
+   @POST
+   public Response getAllQuestions(BillPayAccount account) {
+      log.info("Adding account");
+
+      if (account == null) {
+         return ErrorDetailFactory.getAccountAddErrorErrorDetail("Account can not be null", account);
+      }
+
+      if (account.getAccountRef() == null || account.getAccountRef().isEmpty()) {
+         return ErrorDetailFactory.getAccountAddErrorErrorDetail("AccountRef must be populated", account);
+      }
+
+      if (MockBillPayBackend.getAccount(account.getAccountRef()) != null) {
+         return ErrorDetailFactory.getAccountAddErrorErrorDetail(
+               "Account with this AccountRef already exists",
+               MockBillPayBackend.getAccount(account.getAccountRef()));
+      }
+
+      if (account.getBalance() == null) {
+         LedgerAmount amount = new LedgerAmount();
+         amount.setAmount(10000l);
+         amount.setCurrency("$AM");
+         account.setBalance(amount);
+      }
+
+      if (account.getCustomer() == null) {
+         account.setCustomer("Terry", "Pratchett", "34 Ankh Morpork Drive", "1234567890987", "0213456578");
+      }
+
+      MockBillPayBackend.add(account);
+
+      return Response.accepted().entity(account).build();
    }
 }
