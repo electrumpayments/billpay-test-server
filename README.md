@@ -2,7 +2,9 @@
 REST server for testing a client implementation of the [billpay-service-interface](https://github.com/electrumpayments/billpay-service-interface) against.
 
 ##Testing a Client
-To test a client implementation an instance of this test server is provided at: https://billpay-test-server.herokuapp.com. Messages sent to this server via the urls described in the [billpay-service-interface](https://github.com/electrumpayments/billpay-service-interface) will be validated as well as processed against a set of preloaded mock customer accounts.
+To test a client implementation an instance of this test server is provided at: https://billpay-test-server.herokuapp.com. 
+Messages sent to this server via the urls described in the [billpay-service-interface](https://github.com/electrumpayments/billpay-service-interface) will be 
+validated as well as processed against a set of preloaded mock customer accounts.
 
 ####Test utils
 | Action                                                  | Url                     |
@@ -49,14 +51,16 @@ An errorType of `FORMAT_ERROR` is returned followed by an explanation of the for
 
 * The "messageProperty" attribute containing the element in which the error occurs
 * The "field"  attribute containing the field that has been formatted incorrectly
-* The "error" field contains information on what violation has occured
+* The "error" field contains information on what violation has occurred
 * The "invalidValue" field contains the incorrectly formatted value that was used
 
 ###Customer Accounts
-Forty-five mock customer accounts are loaded and are available for the testing of payment flows. For a example changes to an accounts balance via a PaymentRequest and PaymentConfirmation will remain unless a RefundRequest and RefundConfirmation are made for said PaymentRequest. Details about all test accounts can be seen using `/test/allAccounts`.
+Forty-five mock customer accounts are loaded and are available for the testing of payment flows. For a example changes to an accounts balance via a PaymentRequest and PaymentConfirmation 
+will remain unless a RefundRequest and RefundConfirmation are made for said PaymentRequest. Details about all test accounts can be seen using `/test/allAccounts`.
 
 ###Message State
-Validation is also performed on the different messages as they relate to other messages that have been received or not received. For example if a message is with a ID that has already been used in a previous message something similar to the following will occur:
+Validation is also performed on the different messages as they relate to other messages that have been received (or not received). 
+For example if a message is received with an ID that has already been used in a previous message something similar to the following can be expected:
 
 ```json
 {
@@ -66,7 +70,7 @@ Validation is also performed on the different messages as they relate to other m
 }
 ```
 
-Or, if a reversal request is sent after a confirmation (or vice-versa) something similar to the following will occur:
+Or, if a reversal request is sent after a confirmation (or vice-versa) something similar to the following can be expected:
 
 ```json
 {
@@ -103,7 +107,7 @@ Or, if a reversal request is sent after a confirmation (or vice-versa) something
 }
 ```
 
-Or, if a confirmation or reversal is sent but no request precedes them, something similar to the following will occur:
+Or, if a confirmation or reversal are sent but no request precedes them, something similar to the following can be expected:
 
 ```json
 {
