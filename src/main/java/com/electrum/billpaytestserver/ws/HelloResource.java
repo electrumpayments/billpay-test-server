@@ -4,12 +4,16 @@ package com.electrum.billpaytestserver.ws;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
-@Path("/hello")
+import com.electrum.billpaytestserver.engine.MockBillPayBackend;
+
+@Path("/")
 public class HelloResource {
    @GET
    @Produces(MediaType.TEXT_PLAIN)
    public String sayHello() {
-      return "Test server is up and running.";
+      return "Test server is up and running. Server was last reset at: "
+            + (MockBillPayBackend.getLastResetTime() == null ? "Never" : MockBillPayBackend.getLastResetTime())
+            + " - Contact support@electrum.co.za for assistance.";
    }
 
 }

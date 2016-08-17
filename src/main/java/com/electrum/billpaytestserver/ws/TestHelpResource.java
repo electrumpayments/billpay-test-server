@@ -8,6 +8,8 @@ import io.electrum.billpay.model.RefundReversal;
 import io.electrum.vas.model.BasicAdvice;
 import io.electrum.vas.model.TenderAdvice;
 
+import java.io.IOException;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -27,6 +29,18 @@ import com.electrum.billpaytestserver.engine.MockBillPayBackend;
 @Produces({ "application/json" })
 public class TestHelpResource {
    private static final Logger log = LoggerFactory.getLogger(TestHelpResource.class);
+
+   @Path("reset")
+   @GET
+   public void reset() throws IOException {
+      log.info("Resetting server");
+      try {
+         MockBillPayBackend.reset();
+      } catch (IOException e) {
+         log.error("Could not reset server", e);
+         throw e;
+      }
+   }
 
    @Path("allAccounts")
    @GET

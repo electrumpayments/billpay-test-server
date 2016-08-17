@@ -13,10 +13,14 @@ import io.electrum.vas.model.TenderAdvice;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.electrum.billpaytestserver.account.AccountLoader;
 import com.electrum.billpaytestserver.account.BillPayAccount;
@@ -25,6 +29,9 @@ import com.electrum.billpaytestserver.account.BillPayAccount;
  *
  */
 public class MockBillPayBackend {
+   private static final Logger log = LoggerFactory.getLogger(MockBillPayBackend.class);
+
+   private static Date lastResetTime;
 
    private static HashMap<String, BillPayAccount> accounts = new HashMap();
 
@@ -257,5 +264,33 @@ public class MockBillPayBackend {
       allMessages.add(paymentReversals);
       allMessages.add(refundReversals);
 
+   }
+
+   public static Date getLastResetTime() {
+      return lastResetTime;
+   }
+
+   public static void reset() throws IOException {
+      lastResetTime = new Date(System.currentTimeMillis());
+      log.info("Clearing all messages");
+      accountLookups.clear();
+      paymentRequests.clear();
+      refundRequests.clear();
+
+      paymentConfirmations.clear();
+      refundConfirmation.clear();
+
+      paymentReversals.clear();
+      refundReversals.clear();
+
+      allRequests.clear();
+      allConfirmations.clear();
+      allReversals.clear();
+      allMessages.clear();
+
+      log.info("Clearing and reloading accounts");
+      accounts.clear();
+      AccountLoader accountLoader = new AccountLoader(accounts);
+      accountLoader.loadAccounts();
    }
 }
