@@ -13,7 +13,7 @@ public class HelloResource {
    public String sayHello() {
       return "Test server is up and running. Server was last reset at: "
             + (MockBillPayBackend.getLastResetTime() == null ? "Never" : MockBillPayBackend.getLastResetTime())
-            + " - Contact support@electrum.co.za for assistance.";
+            + ". Contact support@electrum.co.za for assistance.";
    }
 
 }
