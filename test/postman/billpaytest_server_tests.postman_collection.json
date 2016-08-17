@@ -53,6 +53,47 @@
 					"response": []
 				},
 				{
+					"name": "AccountLookupRequest Test 2 (Duplicate ID)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests[\"Status code is 400\"] = responseCode.code === 400;\n\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct error type\"] = jsonData.errorType === environment.duplicateRecordErrorType;\n"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"reqDateTime\", dateTime);\n\npostman.setEnvironmentVariable(\"rrn\",_p8());\n\n"
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/accountLookups/{{requestId}}",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic dXNlcm5hbWU6cGFzc3N3b3Jk",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\" : \"{{requestId}}\",\n  \"time\" :\"{{reqDateTime}}\",\n  \"sender\" : {\n    \"institution\" : {\n      \"id\" : \"{{senderInstId}}\",\n      \"name\" : \"{{senderInstName}}\"\n    },\n    \"terminalId\" : \"{{terminalId}}\",\n    \"referenceNumber\" : \"{{rrn}}dd\",\n    \"merchant\" : {\n      \"merchantType\" : \"{{merchantType}}\",\n      \"merchantId\" : \"{{merchantId}}\",\n      \"merchantName\" : {\n        \"name\" : \"{{merchantName}}\",\n        \"city\" : \"{{merchantCity}}\",\n        \"region\" : \"{{merchantRegion}}\",\n        \"country\" : \"{{merchantCountry}}\"\n      }\n    }\n  },\n  \"accountRef\" : \"{{accountRef}}\"\n}"
+						},
+						"description": "Test AccountLookupRequest with a duplicated UUID"
+					},
+					"response": []
+				},
+				{
 					"name": "AccountLookupRequest Test 2 (Format Exception)",
 					"event": [
 						{
@@ -87,9 +128,50 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"id\" : \"{{requestId}}\",\n  \"time\" : \"\",\n  \"sender\" : {\n    \"institution\" : {\n      \"id\" : \"hjg77\",\n      \"name\" : \"{{senderInstName}}\"\n    },\n    \"terminalId\" : \"{{terminalId}}\",\n    \"referenceNumber\" : \"{{rrn}}dd\",\n    \"merchant\" : {\n      \"merchantType\" : \"{{merchantType}}\",\n     \n      \"merchantName\" : {\n        \"name\" : \"{{merchantName}}\",\n        \"city\" : \"{{merchantCity}}\",\n        \"region\" : \"{{merchantRegion}}\",\n        \"country\" : \"{{merchantCountry}}\"\n      }\n    }\n  },\n  \"accountRef\" : \"{{accountRef}}}\"\n}"
+							"raw": "{\n  \"id\" : \"{{requestId}}\",\n  \"time\" : \"\",\n  \"sender\" : {\n    \"institution\" : {\n      \"id\" : \"hjg77\",\n      \"name\" : \"{{senderInstName}}\"\n    },\n    \"terminalId\" : \"{{terminalId}}\",\n    \"referenceNumber\" : \"{{rrn}}dd\",\n    \"merchant\" : {\n      \"merchantType\" : \"{{merchantType}}\",\n     \n      \"merchantName\" : {\n        \"name\" : \"{{merchantName}}\",\n        \"city\" : \"{{merchantCity}}\",\n        \"region\" : \"{{merchantRegion}}\",\n        \"country\" : \"{{merchantCountry}}\"\n      }\n    }\n  },\n  \"accountRef\" : \"{{accountRef}}\"\n}"
 						},
 						"description": "Test AccountLookupRequest with missing field values"
+					},
+					"response": []
+				},
+				{
+					"name": "PaymentConfirmation (No preceeding request)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests[\"Status code is 400\"] = responseCode.code === 400;\n\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct error type\"] = jsonData.errorType === environment.unableToLocateRecordErrorType;"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nfunction halve(n) {\n    \n    return Math.floor(n/2);\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"adviceDateTime\", dateTime);\n\npostman.setEnvironmentVariable(\"rrn\",_p8());\npostman.setEnvironmentVariable(\"adviceId\",uuid());\npostman.setEnvironmentVariable(\"tenderAmount\",halve(environment.requestAmount));\n"
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/payments/{{requestId}}/confirmations/{{adviceId}}",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic dXNlcm5hbWU6cGFzc3N3b3Jk",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\" : \"{{adviceId}}\",\n  \"requestId\" : \"{{requestId}}\",\n  \"time\" : \"{{adviceDateTime}}\",\n  \"linkData\" : \"{{linkData}}\",\n  \"tenders\" : [ {\n    \"accountType\" : \"{{tenderAccountType}}\",\n    \"amount\" : {\n      \"amount\" : {{tenderAmount}},\n      \"currency\" : \"{{currency}}\"\n    },\n    \"cardNumber\" : \"{{tenderCardNumber}}1\",\n    \"reference\" : \"{{tenderRef}}1\",\n    \"tenderType\" : \"{{tenderTypeCash}}\"\n  }, {\n    \"accountType\" : \"DEFAULT\",\n    \"amount\" : {\n      \"amount\" : {{tenderAmount}},\n      \"currency\" : \"{{currency}}\"\n    },\n    \"cardNumber\" : \"{{tenderCardNumber}}2\",\n    \"reference\" : \"{{tenderRef}}2\",\n    \"tenderType\" : \"{{tenderTypeCard}}\"\n  } ]\n}"
+						},
+						"description": "Test confirm payment with no preceding request"
 					},
 					"response": []
 				}
