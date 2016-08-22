@@ -1,7 +1,7 @@
 package com.electrum.billpaytestserver.engine;
 
-import io.electrum.billpay.model.ErrorDetail;
 import io.electrum.vas.model.BasicAdvice;
+import io.electrum.vas.model.ErrorDetail;
 
 import java.util.UUID;
 

@@ -139,14 +139,15 @@ public class PaymentResourceHandler extends BaseRequestHandler<PaymentRequest, P
 
       response.setId(request.getId());
       response.setTime(new DateTime());
-      response.setSender(request.getSender());
-      // response.setLinkData();
-      response.setProcessor(getProcessor());
+      response.setOriginator(request.getOriginator());
+      response.setClient(getClient());
+      response.setSettlementEntity(getSettlementEntity());
       response.setReceiver(getReceiver());
       response.setAccount(getAccount(account));
       response.setCustomer(account.getCustomer());
       response.setSlipData(getSlipData());
       response.setResponseAmount(request.getRequestAmount());
+      response.setThirdPartyIdentifiers(getThirdPartyIdentifiers(request.getThirdPartyIdentifiers()));
 
       try {
          log.debug(Utils.objectToPrettyPrintedJson(response));

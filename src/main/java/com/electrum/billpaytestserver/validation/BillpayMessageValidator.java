@@ -5,14 +5,16 @@ import io.electrum.billpay.model.PaymentRequest;
 import io.electrum.billpay.model.PaymentReversal;
 import io.electrum.billpay.model.RefundReversal;
 import io.electrum.vas.model.BasicAdvice;
-import io.electrum.vas.model.BasicRequest;
 import io.electrum.vas.model.Institution;
 import io.electrum.vas.model.Merchant;
 import io.electrum.vas.model.MerchantName;
-import io.electrum.vas.model.Sender;
+import io.electrum.vas.model.Originator;
 import io.electrum.vas.model.TenderAdvice;
+import io.electrum.vas.model.ThirdPartyIdentifier;
+import io.electrum.vas.model.Transaction;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
@@ -21,10 +23,9 @@ import javax.validation.Validator;
 
 public class BillpayMessageValidator {
 
-   private static boolean strictMode = true;
    private static Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
-   public static ValidationResult validate(BasicRequest request) {
+   public static ValidationResult validate(Transaction request) {
       ValidationResult result = new ValidationResult();
       if (isEmpty(request)) {
          result.addViolation(getViolation("message", "", "", null));
@@ -65,14 +66,14 @@ public class BillpayMessageValidator {
    }
 
    public static void validate(PaymentReversal reversal, ValidationResult result) {
-      validateValue(reversal, "reversalReason", "id", result);
+      validateValue(reversal, "message", "reversalReason", result);
       validateValue(reversal, "message", "paymentRequest", result);
       validateValue(reversal.getPaymentRequest(), "paymentRequest", "accountRef", result);
       validate(reversal.getPaymentRequest(), result);
    }
 
    public static void validate(RefundReversal reversal, ValidationResult result) {
-      validateValue(reversal, "reversalReason", "id", result);
+      validateValue(reversal, "message", "reversalReason", result);
       validateValue(reversal, "message", "refundRequest", result);
       validateValue(reversal.getRefundRequest(), "refundRequest", "issuerReference", result);
       validateValue(reversal.getRefundRequest(), "refundRequest", "refundReason", result);
@@ -87,36 +88,61 @@ public class BillpayMessageValidator {
       validateValue(advice, "message", "id", result);
       validateValue(advice, "message", "requestId", result);
       validateValue(advice, "message", "time", result);
-      validateValue(advice, "message", "linkData", result);
+      validateValue(advice, "message", "thirdPartyIdentifiers", result);
+      validate(advice.getThirdPartyIdentifiers(), result);
 
    }
 
-   private static void validate(BasicRequest request, ValidationResult result) {
+   private static void validate(Transaction request, ValidationResult result) {
       if (isEmpty(request)) {
          return;
       }
 
       validateValue(request, "message", "id", result);
       validateValue(request, "message", "time", result);
-      validateValue(request, "message", "sender", result);
-      validate(request.getSender(), result);
+      validateValue(request, "message", "originator", result);
+      validate(request.getOriginator(), result);
+      validateValue(request, "message", "settlementEntity", result);
+      validate(request.getSettlementEntity(), result);
+      validateValue(request, "message", "receiver", result);
+      validate(request.getReceiver(), result);
+      validateValue(request, "message", "client", result);
+      validate(request.getClient(), result);
+      validateValue(request, "message", "thirdPartyIdentifiers", result);
+      validate(request.getThirdPartyIdentifiers(), result);
 
    }
 
-   private static void validate(Sender sender, ValidationResult result) {
-      if (isEmpty(sender)) {
+   private static void validate(Originator originator, ValidationResult result) {
+      if (isEmpty(originator)) {
          return;
       }
 
-      validateValue(sender, "sender", "terminalId", result);
-      validateValue(sender, "sender", "referenceNumber", result);
-      validateValue(sender, "sender", "institution", result);
-      validate(sender.getInstitution(), result);
+      validateValue(originator, "originator", "terminalId", result);
+      validateValue(originator, "originator", "institution", result);
+      validate(originator.getInstitution(), result);
+      validateValue(originator, "originator", "merchant", result);
+      validate(originator.getMerchant(), result);
 
-      if (strictMode || !isEmpty(sender.getMerchant())) {
-         validateValue(sender, "sender", "merchant", result);
-         validate(sender.getMerchant(), result);
+   }
+
+   private static void validate(List<ThirdPartyIdentifier> thirdPartyIdentifiers, ValidationResult result) {
+      if (isEmpty(thirdPartyIdentifiers)) {
+         return;
       }
+
+      for (ThirdPartyIdentifier thirdPartyIdentifier : thirdPartyIdentifiers) {
+         validate(thirdPartyIdentifier, result);
+      }
+   }
+
+   private static void validate(ThirdPartyIdentifier thirdPartyIdentifier, ValidationResult result) {
+      if (isEmpty(thirdPartyIdentifier)) {
+         return;
+      }
+
+      validateValue(thirdPartyIdentifier, "thirdPartyIdentifier", "institutionId", result);
+      validateValue(thirdPartyIdentifier, "thirdPartyIdentifier", "transactionIdentifier", result);
 
    }
 
@@ -137,11 +163,8 @@ public class BillpayMessageValidator {
 
       validateValue(merchant, "merchant", "merchantType", result);
       validateValue(merchant, "merchant", "merchantId", result);
-
-      if (strictMode || !isEmpty(merchant.getMerchantName())) {
-         validateValue(merchant, "merchant", "merchantName", result);
-         validate(merchant.getMerchantName(), result);
-      }
+      validateValue(merchant, "merchant", "merchantName", result);
+      validate(merchant.getMerchantName(), result);
    }
 
    private static void validate(MerchantName merchantName, ValidationResult result) {
@@ -163,6 +186,10 @@ public class BillpayMessageValidator {
 
       if (o instanceof String) {
          return ((String) o).isEmpty();
+      }
+
+      if (o instanceof List) {
+         return ((List) o).isEmpty();
       }
 
       return false;

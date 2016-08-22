@@ -7,10 +7,10 @@ import io.electrum.billpay.model.PaymentResponse;
 import io.electrum.billpay.model.RefundRequest;
 import io.electrum.billpay.model.SlipData;
 import io.electrum.vas.model.BasicAdvice;
-import io.electrum.vas.model.BasicRequest;
-import io.electrum.vas.model.BasicResponse;
 import io.electrum.vas.model.BasicReversal;
 import io.electrum.vas.model.Institution;
+import io.electrum.vas.model.ThirdPartyIdentifier;
+import io.electrum.vas.model.Transaction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +38,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 /**
  * T is request type U is response type
  */
-public abstract class BaseRequestHandler<T extends BasicRequest, U extends BasicResponse> {
+public abstract class BaseRequestHandler<T extends Transaction, U extends Transaction> {
    private static final Logger log = LoggerFactory.getLogger(BaseRequestHandler.class);
 
    protected void handleMessage(
@@ -242,10 +242,18 @@ public abstract class BaseRequestHandler<T extends BasicRequest, U extends Basic
 
    protected abstract void doConfirm(T origRequest);
 
-   protected Institution getProcessor() {
+   protected Institution getClient() {
       Institution institution = new Institution();
-      institution.setId("ProcessorId");
-      institution.setName("ProcessorName");
+      institution.setId("ClientId");
+      institution.setName("Client Name");
+
+      return institution;
+   }
+
+   protected Institution getSettlementEntity() {
+      Institution institution = new Institution();
+      institution.setId("SettlementEntityId");
+      institution.setName("Settlement Entity");
 
       return institution;
    }
@@ -253,9 +261,31 @@ public abstract class BaseRequestHandler<T extends BasicRequest, U extends Basic
    protected Institution getReceiver() {
       Institution institution = new Institution();
       institution.setId("ReceiverId");
-      institution.setName("ReceiverName");
+      institution.setName("Receiver Name");
 
       return institution;
+   }
+
+   protected List<ThirdPartyIdentifier> getThirdPartyIdentifiers(
+         List<ThirdPartyIdentifier> thirdPartyIdentifiersFromRequest) {
+      List<ThirdPartyIdentifier> thirdPartyIdentifiers = new ArrayList<>();
+
+      for (ThirdPartyIdentifier thirdPartyIdentifier : thirdPartyIdentifiersFromRequest) {
+         thirdPartyIdentifiers.add(thirdPartyIdentifier);
+      }
+
+      ThirdPartyIdentifier settlement = new ThirdPartyIdentifier();
+      settlement.setInstitutionId("234652");
+      settlement.setTransactionIdentifier("settlementEntityRef");
+
+      ThirdPartyIdentifier receiver = new ThirdPartyIdentifier();
+      receiver.setInstitutionId("803485");
+      receiver.setTransactionIdentifier("receiverRef");
+
+      thirdPartyIdentifiers.add(settlement);
+      thirdPartyIdentifiers.add(receiver);
+
+      return thirdPartyIdentifiers;
    }
 
    protected Account getAccount(BillPayAccount bpAccount) {

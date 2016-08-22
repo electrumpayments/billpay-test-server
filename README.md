@@ -1,5 +1,5 @@
 # billpay-test-server [![CircleCI](https://circleci.com/gh/electrumpayments/billpay-test-server/tree/master.svg?style=shield)](https://circleci.com/gh/electrumpayments/billpay-test-server/tree/master)
-REST server for testing a client implementation of the [billpay-service-interface](https://github.com/electrumpayments/billpay-service-interface) against.
+REST server for testing a client implementation of the [billpay-service-interface](https://github.com/electrumpayments/billpay-service-interface).
 ## Testing a Server
 Testing a server implementation can be achieved using [this](https://github.com/electrumpayments/billpay-test-server/tree/master/test/postman) Postman (Collection v2) REST test pack. 
 These tests consist of correctly formatted JSON messages that validate server responses. Tests may also consist of a message flow in which multiple related messages are sent sequentially to the server to test handling of state-full interactions (such as requests and confirmations).  

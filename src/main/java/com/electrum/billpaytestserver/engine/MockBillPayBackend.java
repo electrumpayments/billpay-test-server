@@ -7,9 +7,9 @@ import io.electrum.billpay.model.PaymentReversal;
 import io.electrum.billpay.model.RefundRequest;
 import io.electrum.billpay.model.RefundReversal;
 import io.electrum.vas.model.BasicAdvice;
-import io.electrum.vas.model.BasicRequest;
 import io.electrum.vas.model.BasicReversal;
 import io.electrum.vas.model.TenderAdvice;
+import io.electrum.vas.model.Transaction;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -45,8 +45,8 @@ public class MockBillPayBackend {
    private static HashMap<UUID, PaymentReversal> paymentReversals = new HashMap();
    private static HashMap<UUID, RefundReversal> refundReversals = new HashMap();
 
-   private static List<Map<UUID, ? extends BasicRequest>> allRequests =
-         new ArrayList<Map<UUID, ? extends BasicRequest>>();
+   private static List<Map<UUID, ? extends Transaction>> allRequests =
+         new ArrayList<Map<UUID, ? extends Transaction>>();
    private static List<Map<UUID, ? extends BasicAdvice>> allConfirmations =
          new ArrayList<Map<UUID, ? extends BasicAdvice>>();
    private static List<Map<UUID, ? extends BasicReversal>> allReversals =
@@ -72,7 +72,7 @@ public class MockBillPayBackend {
       }
    }
 
-   public static boolean add(BasicRequest request) {
+   public static boolean add(Transaction request) {
       if (request instanceof AccountLookupRequest) {
          return add((AccountLookupRequest) request);
       } else if (request instanceof PaymentRequest) {
@@ -178,8 +178,8 @@ public class MockBillPayBackend {
       return false;
    }
 
-   public static BasicRequest getRequest(UUID uuid) {
-      for (Map<UUID, ? extends BasicRequest> map : allRequests) {
+   public static Transaction getRequest(UUID uuid) {
+      for (Map<UUID, ? extends Transaction> map : allRequests) {
          if (map.containsKey(uuid)) {
             return map.get(uuid);
          }
