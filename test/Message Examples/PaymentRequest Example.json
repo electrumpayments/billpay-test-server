@@ -1,0 +1,122 @@
+PaymentRequest
+{
+  "id" : "59a28993-78ad-1bd9-5eb6-477b1815049d",
+  "time" : "2016-08-22T11:29:03.880Z",
+  "originator" : {
+    "institution" : {
+      "id" : "189437",
+      "name" : "Discworld Discount Merchants"
+    },
+    "terminalId" : "31180001",
+    "merchant" : {
+      "merchantType" : "1881",
+      "merchantId" : "006001007020705",
+      "merchantName" : {
+        "name" : "Gimlet's Hole Food     ",
+        "city" : "Ankh-Morpork ",
+        "region" : "sk",
+        "country" : "dw"
+      }
+    }
+  },
+  "client" : {
+    "id" : "0067",
+    "name" : "RincewindWizSwitch"
+  },
+  "settlementEntity" : {
+    "id" : "998",
+    "name" : "Unseen University"
+  },
+  "thirdPartyIdentifiers" : [ {
+    "institutionId" : "189437",
+    "transactionIdentifier" : "4996e013"
+  }, {
+    "institutionId" : "0067",
+    "transactionIdentifier" : "ce76c819"
+  } ],
+  "accountRef" : "34720000000007",
+  "requestAmount" : {
+    "amount" : 16321,
+    "currency" : "ZAR"
+  }
+}
+
+PaymentResponse
+{
+  "id": "59a28993-78ad-1bd9-5eb6-477b1815049d",
+  "time": "2016-08-22T11:29:04.115Z",
+  "originator": {
+    "institution": {
+      "id": "189437",
+      "name": "Discworld Discount Merchants"
+    },
+    "terminalId": "31180001",
+    "merchant": {
+      "merchantType": "1881",
+      "merchantId": "006001007020705",
+      "merchantName": {
+        "name": "Gimlet's Hole Food     ",
+        "city": "Ankh-Morpork ",
+        "region": "sk",
+        "country": "dw"
+      }
+    }
+  },
+  "client": {
+    "id": "ClientId",
+    "name": "Client Name"
+  },
+  "settlementEntity": {
+    "id": "SettlementEntityId",
+    "name": "Settlement Entity"
+  },
+  "receiver": {
+    "id": "ReceiverId",
+    "name": "Receiver Name"
+  },
+  "thirdPartyIdentifiers": [
+    {
+      "institutionId": "189437",
+      "transactionIdentifier": "4996e013"
+    },
+    {
+      "institutionId": "0067",
+      "transactionIdentifier": "ce76c819"
+    },
+    {
+      "institutionId": "234652",
+      "transactionIdentifier": "settlementEntityRef"
+    },
+    {
+      "institutionId": "803485",
+      "transactionIdentifier": "receiverRef"
+    }
+  ],
+  "account": {
+    "accountRef": "34720000000007",
+    "balance": {
+      "amount": 32643,
+      "currency": "ZAR"
+    }
+  },
+  "customer": {
+    "firstName": "Emeline",
+    "lastName": "Rozek",
+    "address": "Indian Manor Ironside Utah",
+    "idNumber": "9602426555476",
+    "contactNumber": "9389401102"
+  },
+  "slipData": {
+    "messageLines": [
+      "line 1",
+      "line 2",
+      "line 3"
+    ],
+    "phoneNumber": "PhoneNumber",
+    "issuerReference": "8415873"
+  },
+  "responseAmount": {
+    "amount": 16321,
+    "currency": "ZAR"
+  }
+}

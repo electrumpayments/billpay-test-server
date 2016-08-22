@@ -2,7 +2,7 @@
 FROM java:7
 
 # that's me!
-MAINTAINER Mordechai Serraf, mserraf34@gmail.com
+MAINTAINER Mordechai Serraf, mordi@electrum.co.za
 
 # we need this because the workdir is modified in dockerfile/java -> now java:7
 WORKDIR /

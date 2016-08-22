@@ -1,0 +1,107 @@
+PaymentConfirmation
+
+{
+  "id" : "b8acb685-cfbf-48fe-fabf-afadf2801c6d",
+  "requestId" : "59a28993-78ad-1bd9-5eb6-477b1815049d",
+  "time" : "2016-08-22T11:30:33.841Z",
+  "thirdPartyIdentifiers" : [ {
+    "institutionId" : "189437",
+    "transactionIdentifier" : "4996e013"
+  }, {
+    "institutionId" : "0067",
+    "transactionIdentifier" : "ce76c819"
+  }, {
+    "institutionId" : "234652",
+    "transactionIdentifier" : "settlementEntityRef"
+  }, {
+    "institutionId" : "803485",
+    "transactionIdentifier" : "receiverRef"
+  } ],
+  "tenders" : [ {
+    "accountType" : "DEFAULT",
+    "amount" : {
+      "amount" : 8160,
+      "currency" : "ZAR"
+    },
+    "cardNumber" : "12345647652312341",
+    "reference" : "1",
+    "tenderType" : "CASH"
+  }, {
+    "accountType" : "DEFAULT",
+    "amount" : {
+      "amount" : 8160,
+      "currency" : "ZAR"
+    },
+    "cardNumber" : "12345647652312342",
+    "reference" : "2",
+    "tenderType" : "CREDIT_CARD"
+  } ]
+}
+
+PaymentReversal
+{
+  "id" : "707222ad-0a6f-e253-6acf-f054728ec257",
+  "requestId" : "b99b3a65-38a1-0db0-8d1e-fa0b783fabce",
+  "time" : "2016-08-22T11:31:29.146Z",
+  "thirdPartyIdentifiers" : [ {
+    "institutionId" : "189437",
+    "transactionIdentifier" : "96520502"
+  }, {
+    "institutionId" : "0067",
+    "transactionIdentifier" : "30c5da83"
+  }, {
+    "institutionId" : "234652",
+    "transactionIdentifier" : "settlementEntityRef"
+  }, {
+    "institutionId" : "803485",
+    "transactionIdentifier" : "receiverRef"
+  } ],
+  "reversalReason" : "TIMEOUT",
+  "paymentRequest" : {
+    "id" : "b99b3a65-38a1-0db0-8d1e-fa0b783fabce",
+    "time" : "2016-08-22T11:31:26.601Z",
+    "originator" : {
+      "institution" : {
+        "id" : "189437",
+        "name" : "Discworld Discount Merchants"
+      },
+      "terminalId" : "31180001",
+      "merchant" : {
+        "merchantType" : "1881",
+        "merchantId" : "006001007020705",
+        "merchantName" : {
+          "name" : "Gimlet's Hole Food     ",
+          "city" : "Ankh-Morpork ",
+          "region" : "sk",
+          "country" : "dw"
+        }
+      }
+    },
+    "client" : {
+      "id" : "0067",
+      "name" : "RincewindWizSwitch"
+    },
+    "settlementEntity" : {
+      "id" : "998",
+      "name" : "Unseen University"
+    },
+    "thirdPartyIdentifiers" : [ {
+      "institutionId" : "189437",
+      "transactionIdentifier" : "96520502"
+    }, {
+      "institutionId" : "0067",
+      "transactionIdentifier" : "30c5da83"
+    }, {
+      "institutionId" : "234652",
+      "transactionIdentifier" : "settlementEntityRef"
+    }, {
+      "institutionId" : "803485",
+      "transactionIdentifier" : "receiverRef"
+    } ],
+    "accountRef" : "34720000000007",
+    "requestAmount" : {
+      "amount" : 8161,
+      "currency" : "ZAR"
+    }
+  }
+}

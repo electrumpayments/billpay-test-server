@@ -1,0 +1,80 @@
+RefundConfirmation:
+
+{
+  "id" : "dfad2d66-d468-7935-cb89-1e50d732aa45",
+  "requestId" : "d8019aa5-ac9c-caa2-bca8-d3eb5f7dbc5b",
+  "time" : "2016-08-22T11:33:18.846Z",
+  "thirdPartyIdentifiers" : [ {
+    "institutionId" : "189437",
+    "transactionIdentifier" : "adf0059c"
+  }, {
+    "institutionId" : "0067",
+    "transactionIdentifier" : "7dde9112"
+  }, {
+    "institutionId" : "234652",
+    "transactionIdentifier" : "settlementEntityRef"
+  }, {
+    "institutionId" : "803485",
+    "transactionIdentifier" : "receiverRef"
+  } ]
+}
+
+RefundReversal:
+
+{
+  "id" : "c5cb7733-8af9-68f5-e984-8d420f452466",
+  "requestId" : "92e47e4e-d48f-877b-59d1-d6337fef9c02",
+  "time" : "2016-08-22T11:34:03.665Z",
+  "thirdPartyIdentifiers" : [ {
+    "institutionId" : "189437",
+    "transactionIdentifier" : "41e7fb5e"
+  }, {
+    "institutionId" : "0067",
+    "transactionIdentifier" : "7dde9112"
+  }, {
+    "institutionId" : "234652",
+    "transactionIdentifier" : "settlementEntityRef"
+  }, {
+    "institutionId" : "803485",
+    "transactionIdentifier" : "receiverRef"
+  } ],
+  "reversalReason" : "TIMEOUT",
+  "refundRequest" : {
+    "id" : "92e47e4e-d48f-877b-59d1-d6337fef9c02",
+    "time" : "2016-08-22T11:34:00.821Z",
+    "originator" : {
+      "institution" : {
+        "id" : "189437",
+        "name" : "Discworld Discount Merchants"
+      },
+      "terminalId" : "31180001",
+      "merchant" : {
+        "merchantType" : "1881",
+        "merchantId" : "006001007020705",
+        "merchantName" : {
+          "name" : "Gimlet's Hole Food     ",
+          "city" : "Ankh-Morpork ",
+          "region" : "sk",
+          "country" : "dw"
+        }
+      }
+    },
+    "client" : {
+      "id" : "0067",
+      "name" : "RincewindWizSwitch"
+    },
+    "settlementEntity" : {
+      "id" : "998",
+      "name" : "Unseen University"
+    },
+    "thirdPartyIdentifiers" : [ {
+      "institutionId" : "189437",
+      "transactionIdentifier" : "41e7fb5e"
+    }, {
+      "institutionId" : "0067",
+      "transactionIdentifier" : "7dde9112"
+    } ],
+    "issuerReference" : "2023376",
+    "refundReason" : "The chest left"
+  }
+}
