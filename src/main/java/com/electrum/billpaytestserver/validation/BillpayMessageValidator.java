@@ -6,9 +6,11 @@ import io.electrum.billpay.model.PaymentReversal;
 import io.electrum.billpay.model.RefundReversal;
 import io.electrum.vas.model.BasicAdvice;
 import io.electrum.vas.model.Institution;
+import io.electrum.vas.model.LedgerAmount;
 import io.electrum.vas.model.Merchant;
 import io.electrum.vas.model.MerchantName;
 import io.electrum.vas.model.Originator;
+import io.electrum.vas.model.Tender;
 import io.electrum.vas.model.TenderAdvice;
 import io.electrum.vas.model.ThirdPartyIdentifier;
 import io.electrum.vas.model.Transaction;
@@ -34,8 +36,14 @@ public class BillpayMessageValidator {
 
       validate(request, result);
 
-      if (request instanceof AccountLookupRequest || request instanceof PaymentRequest) {
+      if (request instanceof AccountLookupRequest) {
          validateValue(request, "message", "accountRef", result);
+      }
+
+      if (request instanceof PaymentRequest) {
+         validateValue(request, "message", "accountRef", result);
+         validateValue(request, "message", "requestAmount", result);
+         validate(((PaymentRequest) request).getRequestAmount(), result);
       }
 
       return result;
@@ -63,6 +71,10 @@ public class BillpayMessageValidator {
 
    private static void validate(TenderAdvice advice, ValidationResult result) {
       validateValue(advice, "message", "tenders", result);
+      for (Tender tender : advice.getTenders()) {
+         validate(tender, result);
+      }
+
    }
 
    public static void validate(PaymentReversal reversal, ValidationResult result) {
@@ -143,6 +155,31 @@ public class BillpayMessageValidator {
 
       validateValue(thirdPartyIdentifier, "thirdPartyIdentifier", "institutionId", result);
       validateValue(thirdPartyIdentifier, "thirdPartyIdentifier", "transactionIdentifier", result);
+
+   }
+
+   private static void validate(Tender tender, ValidationResult result) {
+      if (isEmpty(tender)) {
+         return;
+      }
+
+      validateValue(tender, "tender", "accountType", result);
+      validateValue(tender, "tender", "amount", result);
+      validate(tender.getAmount(), result);
+      validateValue(tender, "tender", "cardNumber", result);
+      validateValue(tender, "tender", "reference", result);
+      validateValue(tender, "tender", "tenderType", result);
+
+   }
+
+   private static void validate(LedgerAmount amount, ValidationResult result) {
+      if (isEmpty(amount)) {
+         return;
+      }
+
+      validateValue(amount, "ledgerAmount", "amount", result);
+      validateValue(amount, "ledgerAmount", "currency", result);
+      validateValue(amount, "ledgerAmount", "ledgerIndicator", result);
 
    }
 
