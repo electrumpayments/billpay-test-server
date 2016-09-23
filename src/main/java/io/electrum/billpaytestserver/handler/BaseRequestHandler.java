@@ -1,16 +1,4 @@
-package com.electrum.billpaytestserver.handler;
-
-import io.electrum.billpay.model.Account;
-import io.electrum.billpay.model.AccountLookupRequest;
-import io.electrum.billpay.model.PaymentRequest;
-import io.electrum.billpay.model.PaymentResponse;
-import io.electrum.billpay.model.RefundRequest;
-import io.electrum.billpay.model.SlipData;
-import io.electrum.vas.model.BasicAdvice;
-import io.electrum.vas.model.BasicReversal;
-import io.electrum.vas.model.Institution;
-import io.electrum.vas.model.ThirdPartyIdentifier;
-import io.electrum.vas.model.Transaction;
+package io.electrum.billpaytestserver.handler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,13 +15,25 @@ import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.electrum.billpaytestserver.Utils;
-import com.electrum.billpaytestserver.account.BillPayAccount;
-import com.electrum.billpaytestserver.engine.ErrorDetailFactory;
-import com.electrum.billpaytestserver.engine.MockBillPayBackend;
-import com.electrum.billpaytestserver.validation.BillpayMessageValidator;
-import com.electrum.billpaytestserver.validation.ValidationResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
+
+import io.electrum.billpay.model.Account;
+import io.electrum.billpay.model.AccountLookupRequest;
+import io.electrum.billpay.model.PaymentRequest;
+import io.electrum.billpay.model.PaymentResponse;
+import io.electrum.billpay.model.RefundRequest;
+import io.electrum.billpay.model.SlipData;
+import io.electrum.billpaytestserver.Utils;
+import io.electrum.billpaytestserver.account.BillPayAccount;
+import io.electrum.billpaytestserver.engine.ErrorDetailFactory;
+import io.electrum.billpaytestserver.engine.MockBillPayBackend;
+import io.electrum.billpaytestserver.validation.BillpayMessageValidator;
+import io.electrum.billpaytestserver.validation.ValidationResult;
+import io.electrum.vas.model.BasicAdvice;
+import io.electrum.vas.model.BasicReversal;
+import io.electrum.vas.model.Institution;
+import io.electrum.vas.model.ThirdPartyIdentifier;
+import io.electrum.vas.model.Transaction;
 
 /**
  * T is request type U is response type
@@ -105,7 +105,8 @@ public abstract class BaseRequestHandler<T extends Transaction, U extends Transa
          Request request,
          HttpServletRequest httpServletRequest,
          HttpHeaders httpHeaders,
-         UriInfo uriInfo) throws Exception {
+         UriInfo uriInfo,
+         boolean isPaymentMessage) throws Exception {
 
       BasicReversal reversal = MockBillPayBackend.getRequestReversal(requestId);
       if (reversal != null) {
@@ -119,7 +120,7 @@ public abstract class BaseRequestHandler<T extends Transaction, U extends Transa
          return;
       }
 
-      if (!validateAndPersist(advice, asyncResponse)) {
+      if (!validateAndPersist(advice, asyncResponse, isPaymentMessage)) {
          return;
       }
 
@@ -148,7 +149,8 @@ public abstract class BaseRequestHandler<T extends Transaction, U extends Transa
          Request request,
          HttpServletRequest httpServletRequest,
          HttpHeaders httpHeaders,
-         UriInfo uriInfo) throws Exception {
+         UriInfo uriInfo,
+         boolean isPaymentMessage) throws Exception {
 
       BasicReversal prevReversal = MockBillPayBackend.getRequestReversal(requestId);
       if (prevReversal != null) {
@@ -162,7 +164,7 @@ public abstract class BaseRequestHandler<T extends Transaction, U extends Transa
          return;
       }
 
-      if (!validateAndPersist(reversal, asyncResponse)) {
+      if (!validateAndPersist(reversal, asyncResponse, isPaymentMessage)) {
          return;
       }
 
@@ -182,7 +184,7 @@ public abstract class BaseRequestHandler<T extends Transaction, U extends Transa
       asyncResponse.resume(Response.status(Response.Status.ACCEPTED).build());
    }
 
-   protected boolean validateAndPersist(BasicAdvice advice, AsyncResponse asyncResponse) {
+   protected boolean validateAndPersist(BasicAdvice advice, AsyncResponse asyncResponse, boolean isPaymentMessage) {
       ValidationResult validation = BillpayMessageValidator.validate(advice);
 
       if (!validation.isValid()) {
@@ -203,7 +205,7 @@ public abstract class BaseRequestHandler<T extends Transaction, U extends Transa
          return false;
       }
 
-      boolean wasAdded = MockBillPayBackend.add(advice);
+      boolean wasAdded = MockBillPayBackend.add(advice, isPaymentMessage);
 
       if (!wasAdded) {
          asyncResponse.resume(ErrorDetailFactory.getNotUniqueUuidErrorDetail(advice.getId()));
@@ -292,7 +294,6 @@ public abstract class BaseRequestHandler<T extends Transaction, U extends Transa
       Account account = new Account();
 
       account.setAccountRef(bpAccount.getAccountRef());
-      account.setBalance(bpAccount.getBalance());
       // account.setDueDate();
       return account;
    }

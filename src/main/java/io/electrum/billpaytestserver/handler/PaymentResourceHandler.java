@@ -1,12 +1,4 @@
-package com.electrum.billpaytestserver.handler;
-
-import io.electrum.billpay.api.IRefundsResource;
-import io.electrum.billpay.model.PaymentResponse;
-import io.electrum.billpay.model.RefundRequest;
-import io.electrum.billpay.model.RefundResponse;
-import io.electrum.billpay.model.RefundReversal;
-import io.electrum.vas.model.BasicAdvice;
-import io.electrum.vas.model.LedgerAmount;
+package io.electrum.billpaytestserver.handler;
 
 import java.util.UUID;
 
@@ -21,42 +13,51 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.electrum.billpaytestserver.Utils;
-import com.electrum.billpaytestserver.account.BillPayAccount;
-import com.electrum.billpaytestserver.engine.ErrorDetailFactory;
-import com.electrum.billpaytestserver.engine.MockBillPayBackend;
 import com.fasterxml.jackson.core.JsonProcessingException;
+
+import io.electrum.billpay.api.IPaymentsResource;
+import io.electrum.billpay.model.PaymentRequest;
+import io.electrum.billpay.model.PaymentResponse;
+import io.electrum.billpaytestserver.Utils;
+import io.electrum.billpaytestserver.account.BillPayAccount;
+import io.electrum.billpaytestserver.engine.ErrorDetailFactory;
+import io.electrum.billpaytestserver.engine.MockBillPayBackend;
+import io.electrum.vas.model.Amounts;
+import io.electrum.vas.model.BasicReversal;
+import io.electrum.vas.model.LedgerAmount;
+import io.electrum.vas.model.TenderAdvice;
 
 /**
  *
  */
-public class RefundResourceHandler extends BaseRequestHandler<RefundRequest, RefundResponse>
-      implements IRefundsResource {
-   private static final Logger log = LoggerFactory.getLogger(RefundResourceHandler.class);
+public class PaymentResourceHandler extends BaseRequestHandler<PaymentRequest, PaymentResponse>
+      implements IPaymentsResource {
+   private static final Logger log = LoggerFactory.getLogger(PaymentResourceHandler.class);
 
    @Override
-   public void confirmRefund(
+   public void confirmPayment(
          UUID adviceId,
-         UUID refundId,
-         BasicAdvice basicAdvice,
+         UUID paymentId,
+         TenderAdvice tenderAdvice,
          SecurityContext securityContext,
          AsyncResponse asyncResponse,
          Request request,
          HttpServletRequest httpServletRequest,
          HttpHeaders httpHeaders,
          UriInfo uriInfo) {
-      log.info("Handling refund confirm");
+      log.info("Handling payment confirm");
       try {
          handleConfirm(
                adviceId,
-               refundId,
-               basicAdvice,
+               paymentId,
+               tenderAdvice,
                securityContext,
                asyncResponse,
                request,
                httpServletRequest,
                httpHeaders,
-               uriInfo);
+               uriInfo,
+               true);
       } catch (Exception e) {
          log.error("Error handling message", e);
          asyncResponse.resume(ErrorDetailFactory.getServerErrorErrorDetail(e));
@@ -64,20 +65,20 @@ public class RefundResourceHandler extends BaseRequestHandler<RefundRequest, Ref
    }
 
    @Override
-   public void createRefund(
+   public void createPayment(
          UUID uuid,
-         RefundRequest refundRequest,
+         PaymentRequest paymentRequest,
          SecurityContext securityContext,
          AsyncResponse asyncResponse,
          Request request,
          HttpServletRequest httpServletRequest,
          HttpHeaders httpHeaders,
          UriInfo uriInfo) {
-      log.info("Handling refund request");
+      log.info("Handling payment request");
       try {
          handleMessage(
                uuid,
-               refundRequest,
+               paymentRequest,
                securityContext,
                asyncResponse,
                request,
@@ -91,67 +92,53 @@ public class RefundResourceHandler extends BaseRequestHandler<RefundRequest, Ref
    }
 
    @Override
-   public void reverseRefund(
+   public void reversePayment(
          UUID adviceId,
-         UUID refundId,
-         RefundReversal refundReversal,
+         UUID paymentId,
+         BasicReversal paymentReversal,
          SecurityContext securityContext,
          AsyncResponse asyncResponse,
          Request request,
          HttpServletRequest httpServletRequest,
          HttpHeaders httpHeaders,
          UriInfo uriInfo) {
-      log.info("Handling refund reversal");
+      log.info("Handling payment reversal");
       try {
          handleReversal(
                adviceId,
-               refundId,
-               refundReversal,
+               paymentId,
+               paymentReversal,
                securityContext,
                asyncResponse,
                request,
                httpServletRequest,
                httpHeaders,
-               uriInfo);
+               uriInfo,
+               true);
       } catch (Exception e) {
          log.error("Error handling message", e);
          asyncResponse.resume(ErrorDetailFactory.getServerErrorErrorDetail(e));
       }
-
    }
 
-   protected void doConfirm(RefundRequest request) {
-
-      PaymentResponse origPaymentResponse = MockBillPayBackend.getPaymentResponse(request.getIssuerReference());
-
-      BillPayAccount account = MockBillPayBackend.getAccount(origPaymentResponse.getAccount().getAccountRef());
+   protected void doConfirm(PaymentRequest request) {
+      BillPayAccount account = MockBillPayBackend.getAccount(request.getAccountRef());
 
       LedgerAmount ledgerAmount = account.getBalance();
 
       long amount = ledgerAmount.getAmount();
 
-      amount += origPaymentResponse.getResponseAmount().getAmount();
+      amount -= request.getAmounts().getRequestAmount().getAmount();
 
       ledgerAmount.setAmount(amount);
    }
 
-   protected void doReversal(RefundRequest request) {
-      PaymentResponse origPaymentResponse = MockBillPayBackend.getPaymentResponse(request.getIssuerReference());
-
-      BillPayAccount account = MockBillPayBackend.getAccount(origPaymentResponse.getAccount().getAccountRef());
-
-      LedgerAmount ledgerAmount = account.getBalance();
-
-      long amount = ledgerAmount.getAmount();
-
-      amount -= origPaymentResponse.getResponseAmount().getAmount();
-
-      ledgerAmount.setAmount(amount);
+   protected void doReversal(PaymentRequest request) {
    }
 
-   protected RefundResponse getResponse(RefundRequest request, BillPayAccount account) {
+   protected PaymentResponse getResponse(PaymentRequest request, BillPayAccount account) {
       log.info("Constructing response");
-      RefundResponse response = new RefundResponse();
+      PaymentResponse response = new PaymentResponse();
 
       response.setId(request.getId());
       response.setTime(new DateTime());
@@ -161,6 +148,14 @@ public class RefundResourceHandler extends BaseRequestHandler<RefundRequest, Ref
       response.setReceiver(getReceiver());
       response.setAccount(getAccount(account));
       response.setCustomer(account.getCustomer());
+      response.setSlipData(getSlipData());
+      Amounts reqAmounts = request.getAmounts();
+      LedgerAmount requestedAmount = reqAmounts.getRequestAmount();
+      Amounts rspAmounts =
+            new Amounts().requestAmount(requestedAmount)
+                  .approvedAmount(requestedAmount)
+                  .balanceAmount(account.getBalance());
+      response.setAmounts(rspAmounts);
       response.setThirdPartyIdentifiers(getThirdPartyIdentifiers(request.getThirdPartyIdentifiers()));
 
       try {
@@ -168,6 +163,8 @@ public class RefundResourceHandler extends BaseRequestHandler<RefundRequest, Ref
       } catch (JsonProcessingException e) {
          log.error("Could not print response");
       }
+
+      MockBillPayBackend.add(response);
 
       return response;
    }

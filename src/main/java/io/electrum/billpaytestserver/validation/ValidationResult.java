@@ -1,4 +1,4 @@
-package com.electrum.billpaytestserver.validation;
+package io.electrum.billpaytestserver.validation;
 
 import java.util.ArrayList;
 import java.util.List;

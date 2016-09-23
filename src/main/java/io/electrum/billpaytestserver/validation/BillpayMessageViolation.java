@@ -1,4 +1,4 @@
-package com.electrum.billpaytestserver.validation;
+package io.electrum.billpaytestserver.validation;
 
 /**
  *

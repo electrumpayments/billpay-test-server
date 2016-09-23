@@ -1,11 +1,12 @@
-package com.electrum.billpaytestserver.engine;
+package io.electrum.billpaytestserver.engine;
 
 import io.electrum.billpay.model.AccountLookupRequest;
 import io.electrum.billpay.model.PaymentRequest;
 import io.electrum.billpay.model.PaymentResponse;
-import io.electrum.billpay.model.PaymentReversal;
 import io.electrum.billpay.model.RefundRequest;
-import io.electrum.billpay.model.RefundReversal;
+import io.electrum.billpaytestserver.account.AccountLoader;
+import io.electrum.billpaytestserver.account.BillPayAccount;
+import io.electrum.vas.model.Amounts;
 import io.electrum.vas.model.BasicAdvice;
 import io.electrum.vas.model.BasicReversal;
 import io.electrum.vas.model.TenderAdvice;
@@ -21,9 +22,6 @@ import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.electrum.billpaytestserver.account.AccountLoader;
-import com.electrum.billpaytestserver.account.BillPayAccount;
 
 /**
  *
@@ -42,8 +40,8 @@ public class MockBillPayBackend {
    private static HashMap<UUID, TenderAdvice> paymentConfirmations = new HashMap();
    private static HashMap<UUID, BasicAdvice> refundConfirmation = new HashMap();
 
-   private static HashMap<UUID, PaymentReversal> paymentReversals = new HashMap();
-   private static HashMap<UUID, RefundReversal> refundReversals = new HashMap();
+   private static HashMap<UUID, BasicReversal> paymentReversals = new HashMap();
+   private static HashMap<UUID, BasicReversal> refundReversals = new HashMap();
 
    private static List<Map<UUID, ? extends Transaction>> allRequests =
          new ArrayList<Map<UUID, ? extends Transaction>>();
@@ -125,24 +123,29 @@ public class MockBillPayBackend {
       return true;
    }
 
-   public static boolean add(BasicAdvice advice) {
+   public static boolean add(BasicAdvice advice, boolean isPaymentMessage) {
       if (existsMessage(advice.getId())) {
          return false;
       }
 
       if (advice instanceof TenderAdvice) {
          return add((TenderAdvice) advice);
-      } else if (advice instanceof PaymentReversal) {
-         return add((PaymentReversal) advice);
-      } else if (advice instanceof RefundReversal) {
-         return add((RefundReversal) advice);
+      } else if (advice instanceof BasicReversal) {
+         if(isPaymentMessage)
+         {
+            return addPaymentReversal((BasicReversal) advice);
+         }
+         else
+         {
+            return addRefundReversal((BasicReversal) advice);
+         }
       }
 
       refundConfirmation.put(advice.getId(), advice);
       return true;
    }
 
-   public static boolean add(PaymentReversal paymentReversal) {
+   public static boolean addPaymentReversal(BasicReversal paymentReversal) {
       if (existsMessage(paymentReversal.getId())) {
          return false;
       }
@@ -151,7 +154,7 @@ public class MockBillPayBackend {
       return true;
    }
 
-   public static boolean add(RefundReversal refundReversal) {
+   public static boolean addRefundReversal(BasicReversal refundReversal) {
       if (existsMessage(refundReversal.getId())) {
          return false;
       }
@@ -241,12 +244,12 @@ public class MockBillPayBackend {
       return refundConfirmation.values().toArray(new BasicAdvice[] {});
    }
 
-   public static PaymentReversal[] getPaymentReversals() {
-      return paymentReversals.values().toArray(new PaymentReversal[] {});
+   public static BasicReversal[] getPaymentReversals() {
+      return paymentReversals.values().toArray(new BasicReversal[] {});
    }
 
-   public static RefundReversal[] getRefundReversals() {
-      return refundReversals.values().toArray(new RefundReversal[] {});
+   public static BasicReversal[] getRefundReversals() {
+      return refundReversals.values().toArray(new BasicReversal[] {});
    }
 
    static {

@@ -1,8 +1,4 @@
-package com.electrum.billpaytestserver.handler;
-
-import io.electrum.billpay.api.IAccountLookupsResource;
-import io.electrum.billpay.model.AccountLookupRequest;
-import io.electrum.billpay.model.AccountLookupResponse;
+package io.electrum.billpaytestserver.handler;
 
 import java.util.UUID;
 
@@ -17,10 +13,15 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.electrum.billpaytestserver.Utils;
-import com.electrum.billpaytestserver.account.BillPayAccount;
-import com.electrum.billpaytestserver.engine.ErrorDetailFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
+
+import io.electrum.billpay.api.IAccountLookupsResource;
+import io.electrum.billpay.model.AccountLookupRequest;
+import io.electrum.billpay.model.AccountLookupResponse;
+import io.electrum.billpaytestserver.Utils;
+import io.electrum.billpaytestserver.account.BillPayAccount;
+import io.electrum.billpaytestserver.engine.ErrorDetailFactory;
+import io.electrum.vas.model.Amounts;
 
 /**
  *
@@ -67,6 +68,7 @@ public class AccountLookResourceHandler extends BaseRequestHandler<AccountLookup
       response.setSettlementEntity(getSettlementEntity());
       response.setReceiver(getReceiver());
       response.setAccount(getAccount(account));
+      response.setAmounts(new Amounts().balanceAmount(account.getBalance()));
       response.setCustomer(account.getCustomer());
       response.setSlipData(getSlipData());
       response.setThirdPartyIdentifiers(getThirdPartyIdentifiers(request.getThirdPartyIdentifiers()));

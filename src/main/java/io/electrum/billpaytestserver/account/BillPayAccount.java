@@ -1,4 +1,4 @@
-package com.electrum.billpaytestserver.account;
+package io.electrum.billpaytestserver.account;
 
 import io.electrum.billpay.model.Customer;
 import io.electrum.vas.model.LedgerAmount;

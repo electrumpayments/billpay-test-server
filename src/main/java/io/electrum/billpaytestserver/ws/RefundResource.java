@@ -1,11 +1,10 @@
-package com.electrum.billpaytestserver.ws;
+package io.electrum.billpaytestserver.ws;
 
 import io.electrum.billpay.api.IRefundsResource;
 import io.electrum.billpay.api.RefundsResource;
+import io.electrum.billpaytestserver.handler.RefundResourceHandler;
 
 import javax.ws.rs.Path;
-
-import com.electrum.billpaytestserver.handler.RefundResourceHandler;
 
 @Path("/refunds/{refundId}")
 public class RefundResource extends RefundsResource {

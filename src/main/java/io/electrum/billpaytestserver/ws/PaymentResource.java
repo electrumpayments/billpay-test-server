@@ -1,11 +1,10 @@
-package com.electrum.billpaytestserver.ws;
+package io.electrum.billpaytestserver.ws;
 
 import io.electrum.billpay.api.IPaymentsResource;
 import io.electrum.billpay.api.PaymentsResource;
+import io.electrum.billpaytestserver.handler.PaymentResourceHandler;
 
 import javax.ws.rs.Path;
-
-import com.electrum.billpaytestserver.handler.PaymentResourceHandler;
 
 @Path("/payments/{paymentId}")
 public class PaymentResource extends PaymentsResource {

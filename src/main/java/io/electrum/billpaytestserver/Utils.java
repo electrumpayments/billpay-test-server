@@ -1,4 +1,4 @@
-package com.electrum.billpaytestserver;
+package io.electrum.billpaytestserver;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

@@ -1,7 +1,4 @@
-package com.electrum.billpaytestserver.account;
-
-import io.electrum.billpay.model.Customer;
-import io.electrum.vas.model.LedgerAmount;
+package io.electrum.billpaytestserver.account;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,7 +9,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.csvreader.CsvReader;
-import com.electrum.billpaytestserver.BillpayTestServer;
+
+import io.electrum.billpay.model.Customer;
+import io.electrum.billpaytestserver.BillpayTestServer;
+import io.electrum.vas.model.LedgerAmount;
 
 /**
  *
