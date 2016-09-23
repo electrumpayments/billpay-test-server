@@ -1,11 +1,8 @@
-package io.electrum.billpaytestserver.ws;
+package com.electrum.billpaytestserver.ws;
 
 import io.electrum.billpay.model.AccountLookupRequest;
 import io.electrum.billpay.model.PaymentRequest;
 import io.electrum.billpay.model.RefundRequest;
-import io.electrum.billpaytestserver.account.BillPayAccount;
-import io.electrum.billpaytestserver.engine.ErrorDetailFactory;
-import io.electrum.billpaytestserver.engine.MockBillPayBackend;
 import io.electrum.vas.model.Amounts;
 import io.electrum.vas.model.BasicAdvice;
 import io.electrum.vas.model.BasicReversal;
@@ -23,6 +20,10 @@ import javax.ws.rs.core.Response;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.electrum.billpaytestserver.account.BillPayAccount;
+import com.electrum.billpaytestserver.engine.ErrorDetailFactory;
+import com.electrum.billpaytestserver.engine.MockBillPayBackend;
 
 /**
  *

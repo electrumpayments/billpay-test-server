@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package io.electrum.billpaytestserver;
+package com.electrum.billpaytestserver;
 
 import java.io.IOException;
 
@@ -11,9 +11,8 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.electrum.billpaytestserver.engine.MockBillPayBackend;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
-
-import io.electrum.billpaytestserver.engine.MockBillPayBackend;
 
 /**
  *

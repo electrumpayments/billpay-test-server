@@ -1,10 +1,10 @@
 
-package io.electrum.billpaytestserver.ws;
+package com.electrum.billpaytestserver.ws;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
-import io.electrum.billpaytestserver.engine.MockBillPayBackend;
+import com.electrum.billpaytestserver.engine.MockBillPayBackend;
 
 @Path("/")
 public class HelloResource {

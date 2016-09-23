@@ -1,4 +1,4 @@
-package io.electrum.billpaytestserver.validation;
+package com.electrum.billpaytestserver.validation;
 
 import io.electrum.billpay.model.AccountLookupRequest;
 import io.electrum.billpay.model.PaymentRequest;
