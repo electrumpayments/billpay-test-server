@@ -1,7 +1,5 @@
 package com.electrum.billpaytestserver.handler;
 
-import java.util.UUID;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.core.HttpHeaders;
@@ -20,6 +18,7 @@ import com.electrum.billpaytestserver.engine.MockBillPayBackend;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import io.electrum.billpay.api.IRefundsResource;
+import io.electrum.billpay.model.ErrorDetail;
 import io.electrum.billpay.model.PaymentResponse;
 import io.electrum.billpay.model.RefundRequest;
 import io.electrum.billpay.model.RefundResponse;
@@ -37,8 +36,8 @@ public class RefundResourceHandler extends BaseRequestHandler<RefundRequest, Ref
 
    @Override
    public void confirmRefund(
-         UUID adviceId,
-         UUID refundId,
+         String adviceId,
+         String refundId,
          BasicAdvice basicAdvice,
          SecurityContext securityContext,
          AsyncResponse asyncResponse,
@@ -61,13 +60,13 @@ public class RefundResourceHandler extends BaseRequestHandler<RefundRequest, Ref
                false);
       } catch (Exception e) {
          log.error("Error handling message", e);
-         asyncResponse.resume(ErrorDetailFactory.getServerErrorErrorDetail(e));
+         asyncResponse.resume(ErrorDetailFactory.getServerErrorErrorDetail(e, ErrorDetail.RequestType.REFUND_CONFIRMATION, basicAdvice.getId(), basicAdvice.getRequestId()));
       }
    }
 
    @Override
    public void createRefund(
-         UUID uuid,
+         String uuid,
          RefundRequest refundRequest,
          SecurityContext securityContext,
          AsyncResponse asyncResponse,
@@ -88,14 +87,14 @@ public class RefundResourceHandler extends BaseRequestHandler<RefundRequest, Ref
                uriInfo);
       } catch (Exception e) {
          log.error("Error handling message", e);
-         asyncResponse.resume(ErrorDetailFactory.getServerErrorErrorDetail(e));
+         asyncResponse.resume(ErrorDetailFactory.getServerErrorErrorDetail(e, ErrorDetail.RequestType.REFUND_REQUEST, refundRequest.getId(), null));
       }
    }
 
    @Override
    public void reverseRefund(
-         UUID adviceId,
-         UUID refundId,
+         String adviceId,
+         String refundId,
          BasicReversal refundReversal,
          SecurityContext securityContext,
          AsyncResponse asyncResponse,
@@ -118,7 +117,7 @@ public class RefundResourceHandler extends BaseRequestHandler<RefundRequest, Ref
                false);
       } catch (Exception e) {
          log.error("Error handling message", e);
-         asyncResponse.resume(ErrorDetailFactory.getServerErrorErrorDetail(e));
+         asyncResponse.resume(ErrorDetailFactory.getServerErrorErrorDetail(e, ErrorDetail.RequestType.REFUND_REVERSAL, refundReversal.getId(), refundReversal.getRequestId()));
       }
 
    }

@@ -1,14 +1,5 @@
 package com.electrum.billpaytestserver.ws;
 
-import io.electrum.billpay.model.AccountLookupRequest;
-import io.electrum.billpay.model.PaymentRequest;
-import io.electrum.billpay.model.RefundRequest;
-import io.electrum.vas.model.Amounts;
-import io.electrum.vas.model.BasicAdvice;
-import io.electrum.vas.model.BasicReversal;
-import io.electrum.vas.model.LedgerAmount;
-import io.electrum.vas.model.TenderAdvice;
-
 import java.io.IOException;
 
 import javax.ws.rs.Consumes;
@@ -24,6 +15,15 @@ import org.slf4j.LoggerFactory;
 import com.electrum.billpaytestserver.account.BillPayAccount;
 import com.electrum.billpaytestserver.engine.ErrorDetailFactory;
 import com.electrum.billpaytestserver.engine.MockBillPayBackend;
+
+import io.electrum.billpay.model.AccountLookupRequest;
+import io.electrum.billpay.model.ErrorDetail;
+import io.electrum.billpay.model.PaymentRequest;
+import io.electrum.billpay.model.RefundRequest;
+import io.electrum.vas.model.BasicAdvice;
+import io.electrum.vas.model.BasicReversal;
+import io.electrum.vas.model.LedgerAmount;
+import io.electrum.vas.model.TenderAdvice;
 
 /**
  *
@@ -42,7 +42,8 @@ public class TestHelpResource {
          MockBillPayBackend.reset();
       } catch (IOException e) {
          log.error("Could not reset server", e);
-         return ErrorDetailFactory.getServerErrorErrorDetail(e);
+         return ErrorDetailFactory
+               .getServerErrorErrorDetail(e, ErrorDetail.RequestType.ACCOUNT_LOOKUP_REQUEST, "none", null);
       }
       return Response.ok().build();
    }
