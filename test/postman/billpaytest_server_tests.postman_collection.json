@@ -2,7 +2,7 @@
 	"variables": [],
 	"info": {
 		"name": "Billpay Service Interface",
-		"_postman_id": "9dcf2df3-299e-e85e-bbeb-d0d97513193e",
+		"_postman_id": "dddb7734-52fd-8a89-4b51-19f6eefbb02b",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
@@ -59,7 +59,7 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 400\"] = responseCode.code === 400;\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct error type\"] = jsonData.errorType === environment.duplicateRecordErrorType"
+								"exec": "tests[\"Status code is 400\"] = responseCode.code === 400;\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct error type\"] = jsonData.errorType === environment.duplicateRecordErrorType\ntests[\"Correct request type\"] = jsonData.requestType === environment.accountLookupRequestType\ntests[\"Correct request ID\"] = jsonData.id === postman.getEnvironmentVariable(\"requestId\");\ntests[\"No original ID\"] = jsonData.originalId == null"
 							}
 						},
 						{
@@ -100,7 +100,7 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 400\"] = responseCode.code === 400;\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct error type\"] = jsonData.errorType === environment.formatErrorType"
+								"exec": "tests[\"Status code is 400\"] = responseCode.code === 400;\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct error type\"] = jsonData.errorType === environment.formatErrorType\ntests[\"Correct request type\"] = jsonData.requestType === environment.accountLookupRequestType\ntests[\"Correct request ID\"] = jsonData.id === postman.getEnvironmentVariable(\"requestId\");\ntests[\"No original ID\"] = jsonData.originalId == null"
 							}
 						},
 						{
@@ -141,7 +141,7 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 400\"] = responseCode.code === 400;\n\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct error type\"] = jsonData.errorType === environment.unableToLocateRecordErrorType;"
+								"exec": "tests[\"Status code is 400\"] = responseCode.code === 400;\n\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct error type\"] = jsonData.errorType === environment.unableToLocateRecordErrorType;\ntests[\"Correct request type\"] = jsonData.requestType === environment.paymentConfirmationRequestType\ntests[\"Correct advice ID\"] = jsonData.id === postman.getEnvironmentVariable(\"adviceId\");\ntests[\"Correct request ID\"] = jsonData.originalId === postman.getEnvironmentVariable(\"requestId\");"
 							}
 						},
 						{
@@ -311,7 +311,7 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 400\"] = responseCode.code === 400;\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct error type\"] = jsonData.errorType === environment.accountAlreadySettledErrorType;"
+								"exec": "tests[\"Status code is 400\"] = responseCode.code === 400;\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct error type\"] = jsonData.errorType === environment.accountAlreadySettledErrorType;\ntests[\"Correct request type\"] = jsonData.requestType === environment.paymentReversalRequestType\ntests[\"Correct advice ID\"] = jsonData.id === postman.getEnvironmentVariable(\"adviceId\");\ntests[\"Correct request ID\"] = jsonData.originalId === postman.getEnvironmentVariable(\"requestId\");"
 							}
 						},
 						{
@@ -481,7 +481,7 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 400\"] = responseCode.code === 400;\n\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct error type\"] = jsonData.errorType === environment.accountAlreadySettledErrorType;"
+								"exec": "tests[\"Status code is 400\"] = responseCode.code === 400;\n\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct error type\"] = jsonData.errorType === environment.accountAlreadySettledErrorType;\ntests[\"Correct request type\"] = jsonData.requestType === environment.paymentConfirmationRequestType\ntests[\"Correct advice ID\"] = jsonData.id === postman.getEnvironmentVariable(\"adviceId\");\ntests[\"Correct request ID\"] = jsonData.originalId === postman.getEnvironmentVariable(\"requestId\");"
 							}
 						},
 						{
@@ -733,7 +733,7 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 400\"] = responseCode.code === 400;\n\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct error type\"] = jsonData.errorType === environment.accountAlreadySettledErrorType;"
+								"exec": "tests[\"Status code is 400\"] = responseCode.code === 400;\n\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct error type\"] = jsonData.errorType === environment.accountAlreadySettledErrorType;\ntests[\"Correct request type\"] = jsonData.requestType === environment.refundReversalRequestType\ntests[\"Correct advice ID\"] = jsonData.id === postman.getEnvironmentVariable(\"adviceId\");\ntests[\"Correct request ID\"] = jsonData.originalId === postman.getEnvironmentVariable(\"requestId\");"
 							}
 						},
 						{
@@ -985,7 +985,7 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 400\"] = responseCode.code === 400;\n\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct error type\"] = jsonData.errorType === environment.accountAlreadySettledErrorType;"
+								"exec": "tests[\"Status code is 400\"] = responseCode.code === 400;\n\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct error type\"] = jsonData.errorType === environment.accountAlreadySettledErrorType;\ntests[\"Correct request type\"] = jsonData.requestType === environment.refundConfirmationRequestType\ntests[\"Correct advice ID\"] = jsonData.id === postman.getEnvironmentVariable(\"adviceId\");\ntests[\"Correct request ID\"] = jsonData.originalId === postman.getEnvironmentVariable(\"requestId\");"
 							}
 						},
 						{
