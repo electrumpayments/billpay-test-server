@@ -21,3 +21,9 @@ log/
 .idea
 
 Dockerrun.aws.json
+/bin/
+
+#eclipse
+.classpath
+.project
+/.settings/

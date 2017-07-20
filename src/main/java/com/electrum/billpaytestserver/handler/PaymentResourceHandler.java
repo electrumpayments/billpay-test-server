@@ -1,14 +1,5 @@
 package com.electrum.billpaytestserver.handler;
 
-import io.electrum.billpay.api.IPaymentsResource;
-import io.electrum.billpay.model.PaymentRequest;
-import io.electrum.billpay.model.PaymentResponse;
-import io.electrum.billpay.model.PaymentReversal;
-import io.electrum.vas.model.LedgerAmount;
-import io.electrum.vas.model.TenderAdvice;
-
-import java.util.UUID;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.core.HttpHeaders;
@@ -26,6 +17,15 @@ import com.electrum.billpaytestserver.engine.ErrorDetailFactory;
 import com.electrum.billpaytestserver.engine.MockBillPayBackend;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+import io.electrum.billpay.api.IPaymentsResource;
+import io.electrum.billpay.model.ErrorDetail;
+import io.electrum.billpay.model.PaymentRequest;
+import io.electrum.billpay.model.PaymentResponse;
+import io.electrum.vas.model.Amounts;
+import io.electrum.vas.model.BasicReversal;
+import io.electrum.vas.model.LedgerAmount;
+import io.electrum.vas.model.TenderAdvice;
+
 /**
  *
  */
@@ -35,8 +35,8 @@ public class PaymentResourceHandler extends BaseRequestHandler<PaymentRequest, P
 
    @Override
    public void confirmPayment(
-         UUID adviceId,
-         UUID paymentId,
+         String adviceId,
+         String paymentId,
          TenderAdvice tenderAdvice,
          SecurityContext securityContext,
          AsyncResponse asyncResponse,
@@ -55,16 +55,17 @@ public class PaymentResourceHandler extends BaseRequestHandler<PaymentRequest, P
                request,
                httpServletRequest,
                httpHeaders,
-               uriInfo);
+               uriInfo,
+               true);
       } catch (Exception e) {
          log.error("Error handling message", e);
-         asyncResponse.resume(ErrorDetailFactory.getServerErrorErrorDetail(e));
+         asyncResponse.resume(ErrorDetailFactory.getServerErrorErrorDetail(e, ErrorDetail.RequestType.PAYMENT_CONFIRMATION, tenderAdvice.getId(), tenderAdvice.getRequestId()));
       }
    }
 
    @Override
    public void createPayment(
-         UUID uuid,
+         String uuid,
          PaymentRequest paymentRequest,
          SecurityContext securityContext,
          AsyncResponse asyncResponse,
@@ -85,15 +86,15 @@ public class PaymentResourceHandler extends BaseRequestHandler<PaymentRequest, P
                uriInfo);
       } catch (Exception e) {
          log.error("Error handling message", e);
-         asyncResponse.resume(ErrorDetailFactory.getServerErrorErrorDetail(e));
+         asyncResponse.resume(ErrorDetailFactory.getServerErrorErrorDetail(e, ErrorDetail.RequestType.PAYMENT_REQUEST, paymentRequest.getId(), null));
       }
    }
 
    @Override
    public void reversePayment(
-         UUID adviceId,
-         UUID paymentId,
-         PaymentReversal paymentReversal,
+         String adviceId,
+         String paymentId,
+         BasicReversal paymentReversal,
          SecurityContext securityContext,
          AsyncResponse asyncResponse,
          Request request,
@@ -111,10 +112,11 @@ public class PaymentResourceHandler extends BaseRequestHandler<PaymentRequest, P
                request,
                httpServletRequest,
                httpHeaders,
-               uriInfo);
+               uriInfo,
+               true);
       } catch (Exception e) {
          log.error("Error handling message", e);
-         asyncResponse.resume(ErrorDetailFactory.getServerErrorErrorDetail(e));
+         asyncResponse.resume(ErrorDetailFactory.getServerErrorErrorDetail(e, ErrorDetail.RequestType.PAYMENT_REVERSAL, paymentReversal.getId(), paymentReversal.getRequestId()));
       }
    }
 
@@ -125,7 +127,7 @@ public class PaymentResourceHandler extends BaseRequestHandler<PaymentRequest, P
 
       long amount = ledgerAmount.getAmount();
 
-      amount -= request.getRequestAmount().getAmount();
+      amount -= request.getAmounts().getRequestAmount().getAmount();
 
       ledgerAmount.setAmount(amount);
    }
@@ -146,7 +148,13 @@ public class PaymentResourceHandler extends BaseRequestHandler<PaymentRequest, P
       response.setAccount(getAccount(account));
       response.setCustomer(account.getCustomer());
       response.setSlipData(getSlipData());
-      response.setResponseAmount(request.getRequestAmount());
+      Amounts reqAmounts = request.getAmounts();
+      LedgerAmount requestedAmount = reqAmounts.getRequestAmount();
+      Amounts rspAmounts =
+            new Amounts().requestAmount(requestedAmount)
+                  .approvedAmount(requestedAmount)
+                  .balanceAmount(account.getBalance());
+      response.setAmounts(rspAmounts);
       response.setThirdPartyIdentifiers(getThirdPartyIdentifiers(request.getThirdPartyIdentifiers()));
 
       try {

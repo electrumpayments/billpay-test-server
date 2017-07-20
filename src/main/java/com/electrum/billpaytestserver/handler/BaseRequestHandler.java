@@ -1,20 +1,7 @@
 package com.electrum.billpaytestserver.handler;
 
-import io.electrum.billpay.model.Account;
-import io.electrum.billpay.model.AccountLookupRequest;
-import io.electrum.billpay.model.PaymentRequest;
-import io.electrum.billpay.model.PaymentResponse;
-import io.electrum.billpay.model.RefundRequest;
-import io.electrum.billpay.model.SlipData;
-import io.electrum.vas.model.BasicAdvice;
-import io.electrum.vas.model.BasicReversal;
-import io.electrum.vas.model.Institution;
-import io.electrum.vas.model.ThirdPartyIdentifier;
-import io.electrum.vas.model.Transaction;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.container.AsyncResponse;
@@ -35,6 +22,22 @@ import com.electrum.billpaytestserver.validation.BillpayMessageValidator;
 import com.electrum.billpaytestserver.validation.ValidationResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+import io.electrum.billpay.model.Account;
+import io.electrum.billpay.model.AccountLookupRequest;
+import io.electrum.billpay.model.BillSlipData;
+import io.electrum.billpay.model.ErrorDetail;
+import io.electrum.billpay.model.PaymentRequest;
+import io.electrum.billpay.model.PaymentResponse;
+import io.electrum.billpay.model.RefundRequest;
+import io.electrum.vas.model.BasicAdvice;
+import io.electrum.vas.model.BasicAdviceResponse;
+import io.electrum.vas.model.BasicReversal;
+import io.electrum.vas.model.Institution;
+import io.electrum.vas.model.SlipLine;
+import io.electrum.vas.model.TenderAdvice;
+import io.electrum.vas.model.ThirdPartyIdentifier;
+import io.electrum.vas.model.Transaction;
+
 /**
  * T is request type U is response type
  */
@@ -42,7 +45,7 @@ public abstract class BaseRequestHandler<T extends Transaction, U extends Transa
    private static final Logger log = LoggerFactory.getLogger(BaseRequestHandler.class);
 
    protected void handleMessage(
-         UUID id,
+         String id,
          T request,
          SecurityContext securityContext,
          AsyncResponse asyncResponse,
@@ -62,15 +65,23 @@ public abstract class BaseRequestHandler<T extends Transaction, U extends Transa
 
          if (account == null) {
             asyncResponse.resume(
-                  ErrorDetailFactory.getNoAccountFoundErrorDetail(((AccountLookupRequest) request).getAccountRef()));
+                  ErrorDetailFactory.getNoAccountFoundErrorDetail(
+                        ((AccountLookupRequest) request).getAccountRef(),
+                        ErrorDetail.RequestType.ACCOUNT_LOOKUP_REQUEST,
+                        request.getId(),
+                        null));
             return;
          }
       } else if (request instanceof PaymentRequest) {
          account = MockBillPayBackend.getAccount(((PaymentRequest) request).getAccountRef());
 
          if (account == null) {
-            asyncResponse
-                  .resume(ErrorDetailFactory.getNoAccountFoundErrorDetail(((PaymentRequest) request).getAccountRef()));
+            asyncResponse.resume(
+                  ErrorDetailFactory.getNoAccountFoundErrorDetail(
+                        ((PaymentRequest) request).getAccountRef(),
+                        ErrorDetail.RequestType.PAYMENT_REQUEST,
+                        request.getId(),
+                        null));
             return;
          }
       } else if (request instanceof RefundRequest) {
@@ -79,8 +90,11 @@ public abstract class BaseRequestHandler<T extends Transaction, U extends Transa
 
          if (paymentResponse == null) {
             asyncResponse.resume(
-                  ErrorDetailFactory
-                        .getNoPaymentRequestFoundErrorDetail(((RefundRequest) request).getIssuerReference()));
+                  ErrorDetailFactory.getNoPaymentRequestFoundErrorDetail(
+                        ((RefundRequest) request).getIssuerReference(),
+                        ErrorDetail.RequestType.REFUND_REQUEST,
+                        request.getId(),
+                        null));
             return;
          }
 
@@ -88,7 +102,11 @@ public abstract class BaseRequestHandler<T extends Transaction, U extends Transa
 
          if (account == null) {
             asyncResponse.resume(
-                  ErrorDetailFactory.getNoAccountFoundErrorDetail(paymentResponse.getAccount().getAccountRef()));
+                  ErrorDetailFactory.getNoAccountFoundErrorDetail(
+                        paymentResponse.getAccount().getAccountRef(),
+                        ErrorDetail.RequestType.PAYMENT_REQUEST,
+                        request.getId(),
+                        null));
             return;
          }
       }
@@ -97,29 +115,46 @@ public abstract class BaseRequestHandler<T extends Transaction, U extends Transa
    }
 
    protected void handleConfirm(
-         UUID adviceId,
-         UUID requestId,
+         String adviceId,
+         String requestId,
          BasicAdvice advice,
          SecurityContext securityContext,
          AsyncResponse asyncResponse,
          Request request,
          HttpServletRequest httpServletRequest,
          HttpHeaders httpHeaders,
-         UriInfo uriInfo) throws Exception {
+         UriInfo uriInfo,
+         boolean isPaymentMessage) throws Exception {
 
       BasicReversal reversal = MockBillPayBackend.getRequestReversal(requestId);
       if (reversal != null) {
-         asyncResponse.resume(ErrorDetailFactory.getPreviousAdviceReceivedErrorDetail(reversal));
+         asyncResponse
+               .resume(
+                     ErrorDetailFactory
+                           .getPreviousAdviceReceivedErrorDetail(
+                                 reversal,
+                                 isPaymentMessage ? ErrorDetail.RequestType.PAYMENT_CONFIRMATION
+                                       : ErrorDetail.RequestType.REFUND_CONFIRMATION,
+                                 advice.getId(),
+                                 advice.getRequestId()));
          return;
       }
 
       BasicAdvice prevAdvice = MockBillPayBackend.getRequestConfirmation(requestId);
       if (prevAdvice != null) {
-         asyncResponse.resume(ErrorDetailFactory.getPreviousAdviceReceivedErrorDetail(prevAdvice));
+         asyncResponse
+               .resume(
+                     ErrorDetailFactory
+                           .getPreviousAdviceReceivedErrorDetail(
+                                 prevAdvice,
+                                 isPaymentMessage ? ErrorDetail.RequestType.PAYMENT_CONFIRMATION
+                                       : ErrorDetail.RequestType.REFUND_CONFIRMATION,
+                                 advice.getId(),
+                                 advice.getRequestId()));
          return;
       }
 
-      if (!validateAndPersist(advice, asyncResponse)) {
+      if (!validateAndPersist(advice, asyncResponse, isPaymentMessage)) {
          return;
       }
 
@@ -131,38 +166,67 @@ public abstract class BaseRequestHandler<T extends Transaction, U extends Transa
             log.error("Request type and advice type incompatible");
             log.info("Removing advice message of ID {}", adviceId);
             MockBillPayBackend.removeMessage(adviceId);
-            asyncResponse.resume(ErrorDetailFactory.getMismatchingRequestAndAdviceErrorDetail(requestId));
+            asyncResponse
+                  .resume(
+                        ErrorDetailFactory.getMismatchingRequestAndAdviceErrorDetail(
+                              requestId,
+                              isPaymentMessage ? ErrorDetail.RequestType.PAYMENT_CONFIRMATION
+                                    : ErrorDetail.RequestType.REFUND_CONFIRMATION,
+                              advice.getId(),
+                              advice.getRequestId()));
             return;
          }
       }
 
-      asyncResponse.resume(Response.status(Response.Status.ACCEPTED).build());
+      BasicAdviceResponse adviceResponse = new BasicAdviceResponse();
+      adviceResponse.setId(advice.getId());
+      adviceResponse.setRequestId(advice.getRequestId());
+      adviceResponse.setThirdPartyIdentifiers(advice.getThirdPartyIdentifiers());
+      adviceResponse.setTime(advice.getTime());
+      asyncResponse.resume(Response.status(Response.Status.ACCEPTED).entity(adviceResponse).build());
    }
 
    protected void handleReversal(
-         UUID adviceId,
-         UUID requestId,
+         String adviceId,
+         String requestId,
          BasicReversal reversal,
          SecurityContext securityContext,
          AsyncResponse asyncResponse,
          Request request,
          HttpServletRequest httpServletRequest,
          HttpHeaders httpHeaders,
-         UriInfo uriInfo) throws Exception {
+         UriInfo uriInfo,
+         boolean isPaymentMessage) throws Exception {
 
       BasicReversal prevReversal = MockBillPayBackend.getRequestReversal(requestId);
       if (prevReversal != null) {
-         asyncResponse.resume(ErrorDetailFactory.getPreviousAdviceReceivedErrorDetail(prevReversal));
+         asyncResponse
+               .resume(
+                     ErrorDetailFactory
+                           .getPreviousAdviceReceivedErrorDetail(
+                                 prevReversal,
+                                 isPaymentMessage ? ErrorDetail.RequestType.PAYMENT_REVERSAL
+                                       : ErrorDetail.RequestType.REFUND_REVERSAL,
+                                 reversal.getId(),
+                                 reversal.getRequestId()));
          return;
       }
 
       BasicAdvice advice = MockBillPayBackend.getRequestConfirmation(requestId);
       if (advice != null) {
-         asyncResponse.resume(ErrorDetailFactory.getPreviousAdviceReceivedErrorDetail(advice));
+         asyncResponse
+               .resume(
+                     ErrorDetailFactory
+                           .getPreviousAdviceReceivedErrorDetail(
+                                 advice,
+                                 isPaymentMessage ? ErrorDetail.RequestType.PAYMENT_REVERSAL
+                                       : ErrorDetail.RequestType.REFUND_REVERSAL,
+                                 reversal.getId(),
+                                 reversal.getRequestId()));
          return;
       }
 
-      if (!validateAndPersist(reversal, asyncResponse)) {
+      if (!validateAndPersist(reversal, asyncResponse, isPaymentMessage)) {
          return;
       }
 
@@ -174,20 +238,46 @@ public abstract class BaseRequestHandler<T extends Transaction, U extends Transa
             log.error("Request type and reversal type incompatible");
             log.info("Removing advice message of ID {}", adviceId);
             MockBillPayBackend.removeMessage(adviceId);
-            asyncResponse.resume(ErrorDetailFactory.getMismatchingRequestAndAdviceErrorDetail(requestId));
+            asyncResponse
+                  .resume(
+                        ErrorDetailFactory.getMismatchingRequestAndAdviceErrorDetail(
+                              requestId,
+                              isPaymentMessage ? ErrorDetail.RequestType.PAYMENT_REVERSAL
+                                    : ErrorDetail.RequestType.REFUND_REVERSAL,
+                              reversal.getId(),
+                              reversal.getRequestId()));
             return;
          }
       }
 
-      asyncResponse.resume(Response.status(Response.Status.ACCEPTED).build());
+
+      BasicAdviceResponse adviceResponse = new BasicAdviceResponse();
+      adviceResponse.setId(reversal.getId());
+      adviceResponse.setRequestId(reversal.getRequestId());
+      adviceResponse.setThirdPartyIdentifiers(reversal.getThirdPartyIdentifiers());
+      adviceResponse.setTime(reversal.getTime());
+      asyncResponse.resume(Response.status(Response.Status.ACCEPTED).entity(adviceResponse).build());
    }
 
-   protected boolean validateAndPersist(BasicAdvice advice, AsyncResponse asyncResponse) {
+   protected boolean validateAndPersist(BasicAdvice advice, AsyncResponse asyncResponse, boolean isPaymentMessage) {
       ValidationResult validation = BillpayMessageValidator.validate(advice);
+
+      ErrorDetail.RequestType requestType = ErrorDetail.RequestType.PAYMENT_REVERSAL;
+      if (advice instanceof BasicReversal) {
+         requestType = isPaymentMessage ? requestType : ErrorDetail.RequestType.REFUND_REVERSAL;
+      } else if (advice instanceof TenderAdvice) {
+         requestType =
+               isPaymentMessage ? ErrorDetail.RequestType.PAYMENT_CONFIRMATION : ErrorDetail.RequestType.REFUND_REVERSAL;
+      }
 
       if (!validation.isValid()) {
          log.info("Request format invalid");
-         asyncResponse.resume(ErrorDetailFactory.getIllFormattedMessageErrorDetail(validation));
+         asyncResponse.resume(
+               ErrorDetailFactory.getIllFormattedMessageErrorDetail(
+                     validation,
+                     requestType,
+                     advice.getId(),
+                     advice.getRequestId()));
          return false;
       }
 
@@ -199,14 +289,21 @@ public abstract class BaseRequestHandler<T extends Transaction, U extends Transa
 
       T origRequest = (T) MockBillPayBackend.getRequest(advice.getRequestId());
       if (origRequest == null) {
-         asyncResponse.resume(ErrorDetailFactory.getNoPrecedingRequestFoundErrorDetail(advice.getRequestId()));
+         asyncResponse.resume(
+               ErrorDetailFactory.getNoPrecedingRequestFoundErrorDetail(
+                     advice.getRequestId(),
+                     requestType,
+                     advice.getId(),
+                     advice.getRequestId()));
          return false;
       }
 
-      boolean wasAdded = MockBillPayBackend.add(advice);
+      boolean wasAdded = MockBillPayBackend.add(advice, isPaymentMessage);
 
       if (!wasAdded) {
-         asyncResponse.resume(ErrorDetailFactory.getNotUniqueUuidErrorDetail(advice.getId()));
+         asyncResponse.resume(
+               ErrorDetailFactory
+                     .getNotUniqueUuidErrorDetail(advice.getId(), requestType, advice.getId(), advice.getRequestId()));
          return false;
       }
       return true;
@@ -215,9 +312,18 @@ public abstract class BaseRequestHandler<T extends Transaction, U extends Transa
    protected boolean validateAndPersist(T request, AsyncResponse asyncResponse) {
       ValidationResult validation = BillpayMessageValidator.validate(request);
 
+      ErrorDetail.RequestType requestType = ErrorDetail.RequestType.ACCOUNT_LOOKUP_REQUEST;
+
+      if (request instanceof PaymentRequest) {
+         requestType = ErrorDetail.RequestType.PAYMENT_REQUEST;
+      } else if (request instanceof RefundRequest) {
+         requestType = ErrorDetail.RequestType.REFUND_REQUEST;
+      }
+
       if (!validation.isValid()) {
          log.info("Request format invalid");
-         asyncResponse.resume(ErrorDetailFactory.getIllFormattedMessageErrorDetail(validation));
+         asyncResponse.resume(
+               ErrorDetailFactory.getIllFormattedMessageErrorDetail(validation, requestType, request.getId(), null));
          return false;
       }
 
@@ -230,7 +336,8 @@ public abstract class BaseRequestHandler<T extends Transaction, U extends Transa
       boolean wasAdded = MockBillPayBackend.add(request);
 
       if (!wasAdded) {
-         asyncResponse.resume(ErrorDetailFactory.getNotUniqueUuidErrorDetail(request.getId()));
+         asyncResponse.resume(
+               ErrorDetailFactory.getNotUniqueUuidErrorDetail(request.getId(), requestType, request.getId(), null));
          return false;
       }
       return true;
@@ -292,19 +399,20 @@ public abstract class BaseRequestHandler<T extends Transaction, U extends Transa
       Account account = new Account();
 
       account.setAccountRef(bpAccount.getAccountRef());
-      account.setBalance(bpAccount.getBalance());
       // account.setDueDate();
       return account;
    }
 
-   protected SlipData getSlipData() {
-      SlipData slipData = new SlipData();
+   protected BillSlipData getSlipData() {
+      BillSlipData slipData = new BillSlipData();
       slipData.setIssuerReference(Utils.generateIssuerReferenceNumber());
       slipData.setPhoneNumber("PhoneNumber");
-      List<String> lines = new ArrayList();
-      lines.add("line 1");
-      lines.add("line 2");
-      lines.add("line 3");
+      List<SlipLine> lines = new ArrayList<SlipLine>();
+      lines.add(new SlipLine().fontHeightScaleFactor(2).text("Double height"));
+      lines.add(new SlipLine().fontWidthScaleFactor(2).text("Double width"));
+      lines.add(new SlipLine().line(true));
+      lines.add(new SlipLine().text("Some text goes here"));
+      lines.add(new SlipLine().cut(true));
       slipData.setMessageLines(lines);
 
       return slipData;
