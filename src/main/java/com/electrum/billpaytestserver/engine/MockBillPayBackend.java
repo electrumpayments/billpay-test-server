@@ -1,29 +1,26 @@
 package com.electrum.billpaytestserver.engine;
 
-import io.electrum.billpay.model.AccountLookupRequest;
-import io.electrum.billpay.model.PaymentRequest;
-import io.electrum.billpay.model.PaymentResponse;
-import io.electrum.billpay.model.PaymentReversal;
-import io.electrum.billpay.model.RefundRequest;
-import io.electrum.billpay.model.RefundReversal;
-import io.electrum.vas.model.BasicAdvice;
-import io.electrum.vas.model.BasicReversal;
-import io.electrum.vas.model.TenderAdvice;
-import io.electrum.vas.model.Transaction;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.electrum.billpaytestserver.account.AccountLoader;
 import com.electrum.billpaytestserver.account.BillPayAccount;
+
+import io.electrum.billpay.model.AccountLookupRequest;
+import io.electrum.billpay.model.PaymentRequest;
+import io.electrum.billpay.model.PaymentResponse;
+import io.electrum.billpay.model.RefundRequest;
+import io.electrum.vas.model.BasicAdvice;
+import io.electrum.vas.model.BasicReversal;
+import io.electrum.vas.model.TenderAdvice;
+import io.electrum.vas.model.Transaction;
 
 /**
  *
@@ -33,27 +30,27 @@ public class MockBillPayBackend {
 
    private static Date lastResetTime;
 
-   private static HashMap<String, BillPayAccount> accounts = new HashMap();
+   private static HashMap<String, BillPayAccount> accounts = new HashMap<String, BillPayAccount>();
 
-   private static HashMap<UUID, AccountLookupRequest> accountLookups = new HashMap();
-   private static HashMap<UUID, PaymentRequest> paymentRequests = new HashMap();
-   private static HashMap<UUID, RefundRequest> refundRequests = new HashMap();
+   private static HashMap<String, AccountLookupRequest> accountLookups = new HashMap<String, AccountLookupRequest>();
+   private static HashMap<String, PaymentRequest> paymentRequests = new HashMap<String, PaymentRequest>();
+   private static HashMap<String, RefundRequest> refundRequests = new HashMap<String, RefundRequest>();
 
-   private static HashMap<UUID, TenderAdvice> paymentConfirmations = new HashMap();
-   private static HashMap<UUID, BasicAdvice> refundConfirmation = new HashMap();
+   private static HashMap<String, TenderAdvice> paymentConfirmations = new HashMap<String, TenderAdvice>();
+   private static HashMap<String, BasicAdvice> refundConfirmation = new HashMap<String, BasicAdvice>();
 
-   private static HashMap<UUID, PaymentReversal> paymentReversals = new HashMap();
-   private static HashMap<UUID, RefundReversal> refundReversals = new HashMap();
+   private static HashMap<String, BasicReversal> paymentReversals = new HashMap<String, BasicReversal>();
+   private static HashMap<String, BasicReversal> refundReversals = new HashMap<String, BasicReversal>();
 
-   private static List<Map<UUID, ? extends Transaction>> allRequests =
-         new ArrayList<Map<UUID, ? extends Transaction>>();
-   private static List<Map<UUID, ? extends BasicAdvice>> allConfirmations =
-         new ArrayList<Map<UUID, ? extends BasicAdvice>>();
-   private static List<Map<UUID, ? extends BasicReversal>> allReversals =
-         new ArrayList<Map<UUID, ? extends BasicReversal>>();
-   private static List<Map<UUID, ?>> allMessages = new ArrayList<Map<UUID, ? extends Object>>();
+   private static List<Map<String, ? extends Transaction>> allRequests =
+         new ArrayList<Map<String, ? extends Transaction>>();
+   private static List<Map<String, ? extends BasicAdvice>> allConfirmations =
+         new ArrayList<Map<String, ? extends BasicAdvice>>();
+   private static List<Map<String, ? extends BasicReversal>> allReversals =
+         new ArrayList<Map<String, ? extends BasicReversal>>();
+   private static List<Map<String, ?>> allMessages = new ArrayList<Map<String, ? extends Object>>();
 
-   private static HashMap<String, PaymentResponse> paymentResponses = new HashMap();
+   private static HashMap<String, PaymentResponse> paymentResponses = new HashMap<String, PaymentResponse>();
 
    public static void init() throws IOException {
 
@@ -125,24 +122,26 @@ public class MockBillPayBackend {
       return true;
    }
 
-   public static boolean add(BasicAdvice advice) {
+   public static boolean add(BasicAdvice advice, boolean isPaymentMessage) {
       if (existsMessage(advice.getId())) {
          return false;
       }
 
       if (advice instanceof TenderAdvice) {
          return add((TenderAdvice) advice);
-      } else if (advice instanceof PaymentReversal) {
-         return add((PaymentReversal) advice);
-      } else if (advice instanceof RefundReversal) {
-         return add((RefundReversal) advice);
+      } else if (advice instanceof BasicReversal) {
+         if (isPaymentMessage) {
+            return addPaymentReversal((BasicReversal) advice);
+         } else {
+            return addRefundReversal((BasicReversal) advice);
+         }
       }
 
       refundConfirmation.put(advice.getId(), advice);
       return true;
    }
 
-   public static boolean add(PaymentReversal paymentReversal) {
+   public static boolean addPaymentReversal(BasicReversal paymentReversal) {
       if (existsMessage(paymentReversal.getId())) {
          return false;
       }
@@ -151,7 +150,7 @@ public class MockBillPayBackend {
       return true;
    }
 
-   public static boolean add(RefundReversal refundReversal) {
+   public static boolean addRefundReversal(BasicReversal refundReversal) {
       if (existsMessage(refundReversal.getId())) {
          return false;
       }
@@ -160,8 +159,8 @@ public class MockBillPayBackend {
       return true;
    }
 
-   public static boolean existsMessage(UUID uuid) {
-      for (Map<UUID, ? extends Object> map : allMessages) {
+   public static boolean existsMessage(String uuid) {
+      for (Map<String, ? extends Object> map : allMessages) {
          if (map.containsKey(uuid)) {
             return true;
          }
@@ -169,8 +168,8 @@ public class MockBillPayBackend {
       return false;
    }
 
-   public static boolean removeMessage(UUID uuid) {
-      for (Map<UUID, ? extends Object> map : allMessages) {
+   public static boolean removeMessage(String uuid) {
+      for (Map<String, ? extends Object> map : allMessages) {
          if (map.containsKey(uuid)) {
             map.remove(uuid);
          }
@@ -178,8 +177,8 @@ public class MockBillPayBackend {
       return false;
    }
 
-   public static Transaction getRequest(UUID uuid) {
-      for (Map<UUID, ? extends Transaction> map : allRequests) {
+   public static Transaction getRequest(String uuid) {
+      for (Map<String, ? extends Transaction> map : allRequests) {
          if (map.containsKey(uuid)) {
             return map.get(uuid);
          }
@@ -187,9 +186,9 @@ public class MockBillPayBackend {
       return null;
    }
 
-   public static BasicAdvice getRequestConfirmation(UUID requestId) {
-      for (Map<UUID, ? extends BasicAdvice> map : allConfirmations) {
-         for (Map.Entry<UUID, ? extends BasicAdvice> entry : map.entrySet()) {
+   public static BasicAdvice getRequestConfirmation(String requestId) {
+      for (Map<String, ? extends BasicAdvice> map : allConfirmations) {
+         for (Map.Entry<String, ? extends BasicAdvice> entry : map.entrySet()) {
 
             if (entry.getValue().getRequestId().equals(requestId)) {
                return entry.getValue();
@@ -200,9 +199,9 @@ public class MockBillPayBackend {
       return null;
    }
 
-   public static BasicReversal getRequestReversal(UUID requestId) {
-      for (Map<UUID, ? extends BasicReversal> map : allReversals) {
-         for (Map.Entry<UUID, ? extends BasicReversal> entry : map.entrySet()) {
+   public static BasicReversal getRequestReversal(String requestId) {
+      for (Map<String, ? extends BasicReversal> map : allReversals) {
+         for (Map.Entry<String, ? extends BasicReversal> entry : map.entrySet()) {
 
             if (entry.getValue().getRequestId().equals(requestId)) {
                return entry.getValue();
@@ -241,12 +240,12 @@ public class MockBillPayBackend {
       return refundConfirmation.values().toArray(new BasicAdvice[] {});
    }
 
-   public static PaymentReversal[] getPaymentReversals() {
-      return paymentReversals.values().toArray(new PaymentReversal[] {});
+   public static BasicReversal[] getPaymentReversals() {
+      return paymentReversals.values().toArray(new BasicReversal[] {});
    }
 
-   public static RefundReversal[] getRefundReversals() {
-      return refundReversals.values().toArray(new RefundReversal[] {});
+   public static BasicReversal[] getRefundReversals() {
+      return refundReversals.values().toArray(new BasicReversal[] {});
    }
 
    static {

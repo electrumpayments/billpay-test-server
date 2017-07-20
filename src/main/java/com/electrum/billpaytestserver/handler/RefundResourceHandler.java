@@ -1,15 +1,5 @@
 package com.electrum.billpaytestserver.handler;
 
-import io.electrum.billpay.api.IRefundsResource;
-import io.electrum.billpay.model.PaymentResponse;
-import io.electrum.billpay.model.RefundRequest;
-import io.electrum.billpay.model.RefundResponse;
-import io.electrum.billpay.model.RefundReversal;
-import io.electrum.vas.model.BasicAdvice;
-import io.electrum.vas.model.LedgerAmount;
-
-import java.util.UUID;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.core.HttpHeaders;
@@ -27,6 +17,16 @@ import com.electrum.billpaytestserver.engine.ErrorDetailFactory;
 import com.electrum.billpaytestserver.engine.MockBillPayBackend;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+import io.electrum.billpay.api.IRefundsResource;
+import io.electrum.billpay.model.ErrorDetail;
+import io.electrum.billpay.model.PaymentResponse;
+import io.electrum.billpay.model.RefundRequest;
+import io.electrum.billpay.model.RefundResponse;
+import io.electrum.vas.model.Amounts;
+import io.electrum.vas.model.BasicAdvice;
+import io.electrum.vas.model.BasicReversal;
+import io.electrum.vas.model.LedgerAmount;
+
 /**
  *
  */
@@ -36,8 +36,8 @@ public class RefundResourceHandler extends BaseRequestHandler<RefundRequest, Ref
 
    @Override
    public void confirmRefund(
-         UUID adviceId,
-         UUID refundId,
+         String adviceId,
+         String refundId,
          BasicAdvice basicAdvice,
          SecurityContext securityContext,
          AsyncResponse asyncResponse,
@@ -56,16 +56,17 @@ public class RefundResourceHandler extends BaseRequestHandler<RefundRequest, Ref
                request,
                httpServletRequest,
                httpHeaders,
-               uriInfo);
+               uriInfo,
+               false);
       } catch (Exception e) {
          log.error("Error handling message", e);
-         asyncResponse.resume(ErrorDetailFactory.getServerErrorErrorDetail(e));
+         asyncResponse.resume(ErrorDetailFactory.getServerErrorErrorDetail(e, ErrorDetail.RequestType.REFUND_CONFIRMATION, basicAdvice.getId(), basicAdvice.getRequestId()));
       }
    }
 
    @Override
    public void createRefund(
-         UUID uuid,
+         String uuid,
          RefundRequest refundRequest,
          SecurityContext securityContext,
          AsyncResponse asyncResponse,
@@ -86,15 +87,15 @@ public class RefundResourceHandler extends BaseRequestHandler<RefundRequest, Ref
                uriInfo);
       } catch (Exception e) {
          log.error("Error handling message", e);
-         asyncResponse.resume(ErrorDetailFactory.getServerErrorErrorDetail(e));
+         asyncResponse.resume(ErrorDetailFactory.getServerErrorErrorDetail(e, ErrorDetail.RequestType.REFUND_REQUEST, refundRequest.getId(), null));
       }
    }
 
    @Override
    public void reverseRefund(
-         UUID adviceId,
-         UUID refundId,
-         RefundReversal refundReversal,
+         String adviceId,
+         String refundId,
+         BasicReversal refundReversal,
          SecurityContext securityContext,
          AsyncResponse asyncResponse,
          Request request,
@@ -112,10 +113,11 @@ public class RefundResourceHandler extends BaseRequestHandler<RefundRequest, Ref
                request,
                httpServletRequest,
                httpHeaders,
-               uriInfo);
+               uriInfo,
+               false);
       } catch (Exception e) {
          log.error("Error handling message", e);
-         asyncResponse.resume(ErrorDetailFactory.getServerErrorErrorDetail(e));
+         asyncResponse.resume(ErrorDetailFactory.getServerErrorErrorDetail(e, ErrorDetail.RequestType.REFUND_REVERSAL, refundReversal.getId(), refundReversal.getRequestId()));
       }
 
    }
@@ -130,7 +132,7 @@ public class RefundResourceHandler extends BaseRequestHandler<RefundRequest, Ref
 
       long amount = ledgerAmount.getAmount();
 
-      amount += origPaymentResponse.getResponseAmount().getAmount();
+      amount += origPaymentResponse.getAmounts().getApprovedAmount().getAmount();
 
       ledgerAmount.setAmount(amount);
    }
@@ -144,7 +146,7 @@ public class RefundResourceHandler extends BaseRequestHandler<RefundRequest, Ref
 
       long amount = ledgerAmount.getAmount();
 
-      amount -= origPaymentResponse.getResponseAmount().getAmount();
+      amount -= origPaymentResponse.getAmounts().getApprovedAmount().getAmount();
 
       ledgerAmount.setAmount(amount);
    }
@@ -160,6 +162,7 @@ public class RefundResourceHandler extends BaseRequestHandler<RefundRequest, Ref
       response.setSettlementEntity(getSettlementEntity());
       response.setReceiver(getReceiver());
       response.setAccount(getAccount(account));
+      response.setAmounts(new Amounts().balanceAmount(account.getBalance()));
       response.setCustomer(account.getCustomer());
       response.setThirdPartyIdentifiers(getThirdPartyIdentifiers(request.getThirdPartyIdentifiers()));
 

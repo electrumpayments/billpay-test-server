@@ -1,11 +1,5 @@
 package com.electrum.billpaytestserver.handler;
 
-import io.electrum.billpay.api.IAccountLookupsResource;
-import io.electrum.billpay.model.AccountLookupRequest;
-import io.electrum.billpay.model.AccountLookupResponse;
-
-import java.util.UUID;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.core.HttpHeaders;
@@ -22,6 +16,12 @@ import com.electrum.billpaytestserver.account.BillPayAccount;
 import com.electrum.billpaytestserver.engine.ErrorDetailFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+import io.electrum.billpay.api.IAccountLookupsResource;
+import io.electrum.billpay.model.AccountLookupRequest;
+import io.electrum.billpay.model.AccountLookupResponse;
+import io.electrum.billpay.model.ErrorDetail;
+import io.electrum.vas.model.Amounts;
+
 /**
  *
  */
@@ -31,7 +31,7 @@ public class AccountLookResourceHandler extends BaseRequestHandler<AccountLookup
 
    @Override
    public void requestAccountInfo(
-         UUID id,
+         String id,
          AccountLookupRequest accountLookupRequest,
          SecurityContext securityContext,
          AsyncResponse asyncResponse,
@@ -52,7 +52,7 @@ public class AccountLookResourceHandler extends BaseRequestHandler<AccountLookup
                uriInfo);
       } catch (Exception e) {
          log.error("Error handling message", e);
-         asyncResponse.resume(ErrorDetailFactory.getServerErrorErrorDetail(e));
+         asyncResponse.resume(ErrorDetailFactory.getServerErrorErrorDetail(e, ErrorDetail.RequestType.ACCOUNT_LOOKUP_REQUEST, accountLookupRequest.getId(), null));
       }
    }
 
@@ -67,6 +67,7 @@ public class AccountLookResourceHandler extends BaseRequestHandler<AccountLookup
       response.setSettlementEntity(getSettlementEntity());
       response.setReceiver(getReceiver());
       response.setAccount(getAccount(account));
+      response.setAmounts(new Amounts().balanceAmount(account.getBalance()));
       response.setCustomer(account.getCustomer());
       response.setSlipData(getSlipData());
       response.setThirdPartyIdentifiers(getThirdPartyIdentifiers(request.getThirdPartyIdentifiers()));
