@@ -1,17 +1,5 @@
 package com.electrum.billpaytestserver.validation;
 
-import io.electrum.billpay.model.AccountLookupRequest;
-import io.electrum.billpay.model.PaymentRequest;
-import io.electrum.vas.model.BasicAdvice;
-import io.electrum.vas.model.BasicReversal;
-import io.electrum.vas.model.Institution;
-import io.electrum.vas.model.Merchant;
-import io.electrum.vas.model.MerchantName;
-import io.electrum.vas.model.Originator;
-import io.electrum.vas.model.TenderAdvice;
-import io.electrum.vas.model.ThirdPartyIdentifier;
-import io.electrum.vas.model.Transaction;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -19,6 +7,10 @@ import java.util.Set;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
+
+import io.electrum.billpay.model.AccountLookupRequest;
+import io.electrum.billpay.model.PaymentRequest;
+import io.electrum.vas.model.*;
 
 public class BillpayMessageValidator {
 
@@ -35,6 +27,11 @@ public class BillpayMessageValidator {
 
       if (request instanceof AccountLookupRequest || request instanceof PaymentRequest) {
          validateValue(request, "message", "accountRef", result);
+      }
+
+      if (request instanceof PaymentRequest) {
+         validateValue(request, "message", "amounts", result);
+         validate(((PaymentRequest) request).getAmounts(), result);
       }
 
       return result;
@@ -56,6 +53,10 @@ public class BillpayMessageValidator {
       validate(advice, result);
 
       return result;
+   }
+
+   private static void validate(Amounts amounts, ValidationResult result) {
+      validateValue(amounts, "amounts", "requestAmount", result);
    }
 
    private static void validate(TenderAdvice advice, ValidationResult result) {

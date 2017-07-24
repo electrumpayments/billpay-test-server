@@ -18,9 +18,7 @@ import com.electrum.billpaytestserver.engine.MockBillPayBackend;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import io.electrum.billpay.api.IPaymentsResource;
-import io.electrum.billpay.model.ErrorDetail;
-import io.electrum.billpay.model.PaymentRequest;
-import io.electrum.billpay.model.PaymentResponse;
+import io.electrum.billpay.model.*;
 import io.electrum.vas.model.Amounts;
 import io.electrum.vas.model.BasicReversal;
 import io.electrum.vas.model.LedgerAmount;
@@ -59,7 +57,11 @@ public class PaymentResourceHandler extends BaseRequestHandler<PaymentRequest, P
                true);
       } catch (Exception e) {
          log.error("Error handling message", e);
-         asyncResponse.resume(ErrorDetailFactory.getServerErrorErrorDetail(e, ErrorDetail.RequestType.PAYMENT_CONFIRMATION, tenderAdvice.getId(), tenderAdvice.getRequestId()));
+         asyncResponse.resume(ErrorDetailFactory.getServerErrorErrorDetail(
+               e,
+               ErrorDetail.RequestType.PAYMENT_CONFIRMATION,
+               tenderAdvice.getId(),
+               tenderAdvice.getRequestId()));
       }
    }
 
@@ -86,8 +88,39 @@ public class PaymentResourceHandler extends BaseRequestHandler<PaymentRequest, P
                uriInfo);
       } catch (Exception e) {
          log.error("Error handling message", e);
-         asyncResponse.resume(ErrorDetailFactory.getServerErrorErrorDetail(e, ErrorDetail.RequestType.PAYMENT_REQUEST, paymentRequest.getId(), null));
+         asyncResponse.resume(
+               ErrorDetailFactory.getServerErrorErrorDetail(
+                     e,
+                     ErrorDetail.RequestType.PAYMENT_REQUEST,
+                     paymentRequest.getId(),
+                     null));
       }
+   }
+
+   @Override
+   public void createPayment(
+         String id,
+         TrafficFinePaymentRequest body,
+         SecurityContext securityContext,
+         AsyncResponse asyncResponse,
+         Request request,
+         HttpServletRequest httpServletRequest,
+         HttpHeaders httpHeaders,
+         UriInfo uriInfo) {
+      // TODO
+   }
+
+   @Override
+   public void createPayment(
+         String id,
+         PolicyPaymentRequest body,
+         SecurityContext securityContext,
+         AsyncResponse asyncResponse,
+         Request request,
+         HttpServletRequest httpServletRequest,
+         HttpHeaders httpHeaders,
+         UriInfo uriInfo) {
+      // TODO
    }
 
    @Override
@@ -116,7 +149,11 @@ public class PaymentResourceHandler extends BaseRequestHandler<PaymentRequest, P
                true);
       } catch (Exception e) {
          log.error("Error handling message", e);
-         asyncResponse.resume(ErrorDetailFactory.getServerErrorErrorDetail(e, ErrorDetail.RequestType.PAYMENT_REVERSAL, paymentReversal.getId(), paymentReversal.getRequestId()));
+         asyncResponse.resume(ErrorDetailFactory.getServerErrorErrorDetail(
+               e,
+               ErrorDetail.RequestType.PAYMENT_REVERSAL,
+               paymentReversal.getId(),
+               paymentReversal.getRequestId()));
       }
    }
 

@@ -17,9 +17,7 @@ import com.electrum.billpaytestserver.engine.ErrorDetailFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import io.electrum.billpay.api.IAccountLookupsResource;
-import io.electrum.billpay.model.AccountLookupRequest;
-import io.electrum.billpay.model.AccountLookupResponse;
-import io.electrum.billpay.model.ErrorDetail;
+import io.electrum.billpay.model.*;
 import io.electrum.vas.model.Amounts;
 
 /**
@@ -52,8 +50,39 @@ public class AccountLookResourceHandler extends BaseRequestHandler<AccountLookup
                uriInfo);
       } catch (Exception e) {
          log.error("Error handling message", e);
-         asyncResponse.resume(ErrorDetailFactory.getServerErrorErrorDetail(e, ErrorDetail.RequestType.ACCOUNT_LOOKUP_REQUEST, accountLookupRequest.getId(), null));
+         asyncResponse.resume(
+               ErrorDetailFactory.getServerErrorErrorDetail(
+                     e,
+                     ErrorDetail.RequestType.ACCOUNT_LOOKUP_REQUEST,
+                     accountLookupRequest.getId(),
+                     null));
       }
+   }
+
+   @Override
+   public void requestTrafficFineInfo(
+         String id,
+         TrafficFineLookupRequest body,
+         SecurityContext securityContext,
+         AsyncResponse asyncResponse,
+         Request request,
+         HttpServletRequest httpServletRequest,
+         HttpHeaders httpHeaders,
+         UriInfo uriInfo) {
+      // TODO
+   }
+
+   @Override
+   public void requestPolicyInfo(
+         String id,
+         PolicyLookupRequest body,
+         SecurityContext securityContext,
+         AsyncResponse asyncResponse,
+         Request request,
+         HttpServletRequest httpServletRequest,
+         HttpHeaders httpHeaders,
+         UriInfo uriInfo) {
+      // TODO
    }
 
    protected AccountLookupResponse getResponse(AccountLookupRequest request, BillPayAccount account) {

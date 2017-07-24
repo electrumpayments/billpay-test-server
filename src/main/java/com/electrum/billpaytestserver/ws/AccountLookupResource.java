@@ -7,7 +7,7 @@ import javax.ws.rs.Path;
 
 import com.electrum.billpaytestserver.handler.AccountLookResourceHandler;
 
-@Path("/accountLookups/{requestId}")
+@Path("/accountLookups/")
 public class AccountLookupResource extends AccountLookupsResource {
    IAccountLookupsResource handler = new AccountLookResourceHandler();
 
