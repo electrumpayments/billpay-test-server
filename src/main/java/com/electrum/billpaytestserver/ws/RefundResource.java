@@ -7,7 +7,7 @@ import javax.ws.rs.Path;
 
 import com.electrum.billpaytestserver.handler.RefundResourceHandler;
 
-@Path("/refunds/{refundId}")
+@Path("/billpay/v4/refunds/{refundId}")
 public class RefundResource extends RefundsResource {
 
    IRefundsResource handler = new RefundResourceHandler();

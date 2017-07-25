@@ -6,7 +6,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.electrum.billpaytestserver.engine.MockBillPayBackend;
 
-@Path("/")
+@Path("/billpay/v4")
 public class HelloResource {
    @GET
    @Produces(MediaType.TEXT_PLAIN)

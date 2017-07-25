@@ -7,7 +7,7 @@ import javax.ws.rs.Path;
 
 import com.electrum.billpaytestserver.handler.PaymentResourceHandler;
 
-@Path("/payments/")
+@Path("/billpay/v4/payments/")
 public class PaymentResource extends PaymentsResource {
 
    IPaymentsResource handler = new PaymentResourceHandler();
