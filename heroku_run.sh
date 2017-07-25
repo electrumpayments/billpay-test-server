@@ -1,1 +1,1 @@
-java $JAVA_OPTS -jar target/billpay-test-server-2.0.1-jar-with-dependencies.jar $PORT
+java $JAVA_OPTS -jar target/billpay-test-server-4.1.0-jar-with-dependencies.jar $PORT

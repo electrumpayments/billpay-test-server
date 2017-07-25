@@ -28,7 +28,7 @@ import io.electrum.vas.model.TenderAdvice;
 /**
  *
  */
-@Path("/test/")
+@Path("/billpay/v4/test/")
 @Consumes({ "application/json" })
 @Produces({ "application/json" })
 public class TestHelpResource {
