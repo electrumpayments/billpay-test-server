@@ -60,7 +60,11 @@ public class RefundResourceHandler extends BaseRequestHandler<RefundRequest, Ref
                false);
       } catch (Exception e) {
          log.error("Error handling message", e);
-         asyncResponse.resume(ErrorDetailFactory.getServerErrorErrorDetail(e, ErrorDetail.RequestType.REFUND_CONFIRMATION, basicAdvice.getId(), basicAdvice.getRequestId()));
+         asyncResponse.resume(ErrorDetailFactory.getServerErrorErrorDetail(
+               e,
+               ErrorDetail.RequestType.REFUND_CONFIRMATION,
+               basicAdvice.getId(),
+               basicAdvice.getRequestId()));
       }
    }
 
@@ -87,7 +91,12 @@ public class RefundResourceHandler extends BaseRequestHandler<RefundRequest, Ref
                uriInfo);
       } catch (Exception e) {
          log.error("Error handling message", e);
-         asyncResponse.resume(ErrorDetailFactory.getServerErrorErrorDetail(e, ErrorDetail.RequestType.REFUND_REQUEST, refundRequest.getId(), null));
+         asyncResponse.resume(
+               ErrorDetailFactory.getServerErrorErrorDetail(
+                     e,
+                     ErrorDetail.RequestType.REFUND_REQUEST,
+                     refundRequest.getId(),
+                     null));
       }
    }
 
@@ -117,7 +126,11 @@ public class RefundResourceHandler extends BaseRequestHandler<RefundRequest, Ref
                false);
       } catch (Exception e) {
          log.error("Error handling message", e);
-         asyncResponse.resume(ErrorDetailFactory.getServerErrorErrorDetail(e, ErrorDetail.RequestType.REFUND_REVERSAL, refundReversal.getId(), refundReversal.getRequestId()));
+         asyncResponse.resume(ErrorDetailFactory.getServerErrorErrorDetail(
+               e,
+               ErrorDetail.RequestType.REFUND_REVERSAL,
+               refundReversal.getId(),
+               refundReversal.getRequestId()));
       }
 
    }
