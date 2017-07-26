@@ -8,8 +8,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
-import io.electrum.billpay.model.AccountLookupRequest;
-import io.electrum.billpay.model.PaymentRequest;
+import io.electrum.billpay.model.*;
 import io.electrum.vas.model.*;
 
 public class BillpayMessageValidator {
@@ -29,9 +28,30 @@ public class BillpayMessageValidator {
          validateValue(request, "message", "accountRef", result);
       }
 
+      if (request instanceof TrafficFineLookupRequest) {
+         validateValue(request, "message", "noticeNumber", result);
+      }
+
+      if (request instanceof PolicyLookupRequest) {
+         validateValue(request, "message", "policyNumber", result);
+      }
+
       if (request instanceof PaymentRequest) {
+         validateValue(request, "message", "accountRef", result);
          validateValue(request, "message", "amounts", result);
          validate(((PaymentRequest) request).getAmounts(), result);
+      }
+
+      if (request instanceof TrafficFinePaymentRequest) {
+         validateValue(request, "message", "noticeNumber", result);
+         validateValue(request, "message", "amounts", result);
+         validate(((TrafficFinePaymentRequest) request).getAmounts(), result);
+      }
+
+      if (request instanceof PolicyPaymentRequest) {
+         validateValue(request, "message", "policyNumber", result);
+         validateValue(request, "message", "amounts", result);
+         validate(((PolicyPaymentRequest) request).getAmounts(), result);
       }
 
       return result;
