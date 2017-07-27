@@ -20,7 +20,7 @@ import io.electrum.vas.model.Amounts;
 /**
  *
  */
-public class AccountLookResourceHandler extends AnotherBaseRequestHandler implements IAccountLookupsResource {
+public class AccountLookResourceHandler extends BaseRequestHandler implements IAccountLookupsResource {
    private static final Logger log = LoggerFactory.getLogger(AccountLookResourceHandler.class);
 
    @Override

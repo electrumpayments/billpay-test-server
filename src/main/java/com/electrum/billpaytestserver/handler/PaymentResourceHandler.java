@@ -22,7 +22,7 @@ import io.electrum.vas.model.*;
 /**
  *
  */
-public class PaymentResourceHandler extends AnotherBaseRequestHandler implements IPaymentsResource {
+public class PaymentResourceHandler extends BaseRequestHandler implements IPaymentsResource {
    private static final Logger log = LoggerFactory.getLogger(PaymentResourceHandler.class);
 
    @Override
