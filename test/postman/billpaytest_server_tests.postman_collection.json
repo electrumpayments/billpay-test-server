@@ -2,7 +2,7 @@
 	"variables": [],
 	"info": {
 		"name": "Billpay Service Interface",
-		"_postman_id": "dddb7734-52fd-8a89-4b51-19f6eefbb02b",
+		"_postman_id": "1ad886a6-e9b8-0ca7-ed4d-3483c4423393",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
@@ -18,14 +18,54 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct id returned\"] = jsonData.id === environment.requestId;\n\n\npostman.setEnvironmentVariable(\"accountAmount\", jsonData.amounts.balanceAmount.amount);\n\npostman.setEnvironmentVariable(\"thirdPartyId1\", jsonData.thirdPartyIdentifiers[0].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef1\", jsonData.thirdPartyIdentifiers[0].transactionIdentifier);\n\npostman.setEnvironmentVariable(\"thirdPartyId2\", jsonData.thirdPartyIdentifiers[1].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef2\", jsonData.thirdPartyIdentifiers[1].transactionIdentifier);\n\npostman.setEnvironmentVariable(\"thirdPartyId3\", jsonData.thirdPartyIdentifiers[2].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef3\", jsonData.thirdPartyIdentifiers[2].transactionIdentifier);\n\npostman.setEnvironmentVariable(\"thirdPartyId4\", jsonData.thirdPartyIdentifiers[3].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef4\", jsonData.thirdPartyIdentifiers[3].transactionIdentifier);"
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Correct id returned\"] = jsonData.id === environment.requestId;",
+									"",
+									"",
+									"postman.setEnvironmentVariable(\"accountAmount\", jsonData.amounts.balanceAmount.amount);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId1\", jsonData.thirdPartyIdentifiers[0].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef1\", jsonData.thirdPartyIdentifiers[0].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId2\", jsonData.thirdPartyIdentifiers[1].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef2\", jsonData.thirdPartyIdentifiers[1].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId3\", jsonData.thirdPartyIdentifiers[2].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef3\", jsonData.thirdPartyIdentifiers[2].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId4\", jsonData.thirdPartyIdentifiers[3].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef4\", jsonData.thirdPartyIdentifiers[3].transactionIdentifier);"
+								]
 							}
 						},
 						{
 							"listen": "prerequest",
 							"script": {
 								"type": "text/javascript",
-								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"reqDateTime\", dateTime);\n\npostman.setEnvironmentVariable(\"rrn\",_p8());\npostman.setEnvironmentVariable(\"requestId\",uuid());\npostman.setEnvironmentVariable(\"senderTranRef\",_p8());\npostman.setEnvironmentVariable(\"clientTranRef\",_p8());\n\n"
+								"exec": [
+									"function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"",
+									"function uuid() {",
+									"    ",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"var dateTime = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"reqDateTime\", dateTime);",
+									"",
+									"postman.setEnvironmentVariable(\"rrn\",_p8());",
+									"postman.setEnvironmentVariable(\"requestId\",uuid());",
+									"postman.setEnvironmentVariable(\"senderTranRef\",_p8());",
+									"postman.setEnvironmentVariable(\"clientTranRef\",_p8());",
+									"",
+									""
+								]
 							}
 						}
 					],
@@ -59,14 +99,41 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 400\"] = responseCode.code === 400;\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct error type\"] = jsonData.errorType === environment.duplicateRecordErrorType\ntests[\"Correct request type\"] = jsonData.requestType === environment.accountLookupRequestType\ntests[\"Correct request ID\"] = jsonData.id === postman.getEnvironmentVariable(\"requestId\");\ntests[\"No original ID\"] = jsonData.originalId == null"
+								"exec": [
+									"tests[\"Status code is 400\"] = responseCode.code === 400;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Correct error type\"] = jsonData.errorType === environment.duplicateRecordErrorType",
+									"tests[\"Correct request type\"] = jsonData.requestType === environment.accountLookupRequestType",
+									"tests[\"Correct request ID\"] = jsonData.id === postman.getEnvironmentVariable(\"requestId\");",
+									"tests[\"No original ID\"] = jsonData.originalId == null"
+								]
 							}
 						},
 						{
 							"listen": "prerequest",
 							"script": {
 								"type": "text/javascript",
-								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"reqDateTime\", dateTime);\n\npostman.setEnvironmentVariable(\"rrn\",_p8());\npostman.setEnvironmentVariable(\"senderTranRef\",_p8());\npostman.setEnvironmentVariable(\"clientTranRef\",_p8());\n\n"
+								"exec": [
+									"function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"",
+									"function uuid() {",
+									"    ",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"var dateTime = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"reqDateTime\", dateTime);",
+									"",
+									"postman.setEnvironmentVariable(\"rrn\",_p8());",
+									"postman.setEnvironmentVariable(\"senderTranRef\",_p8());",
+									"postman.setEnvironmentVariable(\"clientTranRef\",_p8());",
+									"",
+									""
+								]
 							}
 						}
 					],
@@ -100,14 +167,41 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 400\"] = responseCode.code === 400;\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct error type\"] = jsonData.errorType === environment.formatErrorType\ntests[\"Correct request type\"] = jsonData.requestType === environment.accountLookupRequestType\ntests[\"Correct request ID\"] = jsonData.id === postman.getEnvironmentVariable(\"requestId\");\ntests[\"No original ID\"] = jsonData.originalId == null"
+								"exec": [
+									"tests[\"Status code is 400\"] = responseCode.code === 400;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Correct error type\"] = jsonData.errorType === environment.formatErrorType",
+									"tests[\"Correct request type\"] = jsonData.requestType === environment.accountLookupRequestType",
+									"tests[\"Correct request ID\"] = jsonData.id === postman.getEnvironmentVariable(\"requestId\");",
+									"tests[\"No original ID\"] = jsonData.originalId == null"
+								]
 							}
 						},
 						{
 							"listen": "prerequest",
 							"script": {
 								"type": "text/javascript",
-								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"reqDateTime\", dateTime);\n\npostman.setEnvironmentVariable(\"rrn\",_p8());\npostman.setEnvironmentVariable(\"requestId\",uuid());\npostman.setEnvironmentVariable(\"senderTranRef\",_p8());\npostman.setEnvironmentVariable(\"clientTranRef\",_p8());\n"
+								"exec": [
+									"function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"",
+									"function uuid() {",
+									"    ",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"var dateTime = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"reqDateTime\", dateTime);",
+									"",
+									"postman.setEnvironmentVariable(\"rrn\",_p8());",
+									"postman.setEnvironmentVariable(\"requestId\",uuid());",
+									"postman.setEnvironmentVariable(\"senderTranRef\",_p8());",
+									"postman.setEnvironmentVariable(\"clientTranRef\",_p8());",
+									""
+								]
 							}
 						}
 					],
@@ -141,14 +235,46 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 400\"] = responseCode.code === 400;\n\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct error type\"] = jsonData.errorType === environment.unableToLocateRecordErrorType;\ntests[\"Correct request type\"] = jsonData.requestType === environment.paymentConfirmationRequestType\ntests[\"Correct advice ID\"] = jsonData.id === postman.getEnvironmentVariable(\"adviceId\");\ntests[\"Correct request ID\"] = jsonData.originalId === postman.getEnvironmentVariable(\"requestId\");"
+								"exec": [
+									"tests[\"Status code is 400\"] = responseCode.code === 400;",
+									"",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Correct error type\"] = jsonData.errorType === environment.unableToLocateRecordErrorType;",
+									"tests[\"Correct request type\"] = jsonData.requestType === environment.paymentConfirmationRequestType",
+									"tests[\"Correct advice ID\"] = jsonData.id === postman.getEnvironmentVariable(\"adviceId\");",
+									"tests[\"Correct request ID\"] = jsonData.originalId === postman.getEnvironmentVariable(\"requestId\");"
+								]
 							}
 						},
 						{
 							"listen": "prerequest",
 							"script": {
 								"type": "text/javascript",
-								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nfunction halve(n) {\n    \n    return Math.floor(n/2);\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"adviceDateTime\", dateTime);\n\npostman.setEnvironmentVariable(\"rrn\",_p8());\npostman.setEnvironmentVariable(\"adviceId\",uuid());\npostman.setEnvironmentVariable(\"tenderAmount\",halve(environment.requestAmount));\n"
+								"exec": [
+									"function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"",
+									"function uuid() {",
+									"    ",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"function halve(n) {",
+									"    ",
+									"    return Math.floor(n/2);",
+									"}",
+									"",
+									"var dateTime = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"adviceDateTime\", dateTime);",
+									"",
+									"postman.setEnvironmentVariable(\"rrn\",_p8());",
+									"postman.setEnvironmentVariable(\"adviceId\",uuid());",
+									"postman.setEnvironmentVariable(\"tenderAmount\",halve(environment.requestAmount));",
+									""
+								]
 							}
 						}
 					],
@@ -188,14 +314,54 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct id returned\"] = jsonData.id === environment.requestId;\n\n\npostman.setEnvironmentVariable(\"accountAmount\", jsonData.amounts.balanceAmount.amount);\n\npostman.setEnvironmentVariable(\"thirdPartyId1\", jsonData.thirdPartyIdentifiers[0].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef1\", jsonData.thirdPartyIdentifiers[0].transactionIdentifier);\n\npostman.setEnvironmentVariable(\"thirdPartyId2\", jsonData.thirdPartyIdentifiers[1].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef2\", jsonData.thirdPartyIdentifiers[1].transactionIdentifier);\n\npostman.setEnvironmentVariable(\"thirdPartyId3\", jsonData.thirdPartyIdentifiers[2].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef3\", jsonData.thirdPartyIdentifiers[2].transactionIdentifier);\n\npostman.setEnvironmentVariable(\"thirdPartyId4\", jsonData.thirdPartyIdentifiers[3].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef4\", jsonData.thirdPartyIdentifiers[3].transactionIdentifier);\n"
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Correct id returned\"] = jsonData.id === environment.requestId;",
+									"",
+									"",
+									"postman.setEnvironmentVariable(\"accountAmount\", jsonData.amounts.balanceAmount.amount);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId1\", jsonData.thirdPartyIdentifiers[0].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef1\", jsonData.thirdPartyIdentifiers[0].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId2\", jsonData.thirdPartyIdentifiers[1].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef2\", jsonData.thirdPartyIdentifiers[1].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId3\", jsonData.thirdPartyIdentifiers[2].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef3\", jsonData.thirdPartyIdentifiers[2].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId4\", jsonData.thirdPartyIdentifiers[3].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef4\", jsonData.thirdPartyIdentifiers[3].transactionIdentifier);",
+									""
+								]
 							}
 						},
 						{
 							"listen": "prerequest",
 							"script": {
 								"type": "text/javascript",
-								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"reqDateTime\", dateTime);\n\npostman.setEnvironmentVariable(\"rrn\",_p8());\npostman.setEnvironmentVariable(\"requestId\",uuid());\npostman.setEnvironmentVariable(\"senderTranRef\",_p8());\npostman.setEnvironmentVariable(\"clientTranRef\",_p8());\n"
+								"exec": [
+									"function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"",
+									"function uuid() {",
+									"    ",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"var dateTime = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"reqDateTime\", dateTime);",
+									"",
+									"postman.setEnvironmentVariable(\"rrn\",_p8());",
+									"postman.setEnvironmentVariable(\"requestId\",uuid());",
+									"postman.setEnvironmentVariable(\"senderTranRef\",_p8());",
+									"postman.setEnvironmentVariable(\"clientTranRef\",_p8());",
+									""
+								]
 							}
 						}
 					],
@@ -229,14 +395,64 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct id returned\"] = jsonData.id === environment.requestId;\n\n\npostman.setEnvironmentVariable(\"issuerReference\", jsonData.slipData.issuerReference);\n\n\npostman.setEnvironmentVariable(\"thirdPartyId1\", jsonData.thirdPartyIdentifiers[0].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef1\", jsonData.thirdPartyIdentifiers[0].transactionIdentifier);\n\npostman.setEnvironmentVariable(\"thirdPartyId2\", jsonData.thirdPartyIdentifiers[1].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef2\", jsonData.thirdPartyIdentifiers[1].transactionIdentifier);\n\npostman.setEnvironmentVariable(\"thirdPartyId3\", jsonData.thirdPartyIdentifiers[2].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef3\", jsonData.thirdPartyIdentifiers[2].transactionIdentifier);\n\npostman.setEnvironmentVariable(\"thirdPartyId4\", jsonData.thirdPartyIdentifiers[3].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef4\", jsonData.thirdPartyIdentifiers[3].transactionIdentifier);"
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Correct id returned\"] = jsonData.id === environment.requestId;",
+									"",
+									"",
+									"postman.setEnvironmentVariable(\"issuerReference\", jsonData.slipData.issuerReference);",
+									"",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId1\", jsonData.thirdPartyIdentifiers[0].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef1\", jsonData.thirdPartyIdentifiers[0].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId2\", jsonData.thirdPartyIdentifiers[1].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef2\", jsonData.thirdPartyIdentifiers[1].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId3\", jsonData.thirdPartyIdentifiers[2].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef3\", jsonData.thirdPartyIdentifiers[2].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId4\", jsonData.thirdPartyIdentifiers[3].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef4\", jsonData.thirdPartyIdentifiers[3].transactionIdentifier);"
+								]
 							}
 						},
 						{
 							"listen": "prerequest",
 							"script": {
 								"type": "text/javascript",
-								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nfunction halve(n) {\n    \n    return Math.floor(n/2);\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"reqDateTime\", dateTime);\n\nvar rrn = _p8()\npostman.setEnvironmentVariable(\"rrn\",rrn);\npostman.setEnvironmentVariable(\"requestRrn\",rrn);\npostman.setEnvironmentVariable(\"senderTranRef\",_p8());\npostman.setEnvironmentVariable(\"clientTranRef\",_p8());\n\npostman.setEnvironmentVariable(\"requestId\",uuid());\n\npostman.setEnvironmentVariable(\"requestAmount\",halve(environment.accountAmount));\n"
+								"exec": [
+									"function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"",
+									"function uuid() {",
+									"    ",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"function halve(n) {",
+									"    ",
+									"    return Math.floor(n/2);",
+									"}",
+									"",
+									"var dateTime = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"reqDateTime\", dateTime);",
+									"",
+									"var rrn = _p8()",
+									"postman.setEnvironmentVariable(\"rrn\",rrn);",
+									"postman.setEnvironmentVariable(\"requestRrn\",rrn);",
+									"postman.setEnvironmentVariable(\"senderTranRef\",_p8());",
+									"postman.setEnvironmentVariable(\"clientTranRef\",_p8());",
+									"",
+									"postman.setEnvironmentVariable(\"requestId\",uuid());",
+									"",
+									"postman.setEnvironmentVariable(\"requestAmount\",halve(environment.accountAmount));",
+									""
+								]
 							}
 						}
 					],
@@ -270,14 +486,42 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 202\"] = responseCode.code === 202;\n\n\n"
+								"exec": [
+									"tests[\"Status code is 202\"] = responseCode.code === 202;",
+									"",
+									"",
+									""
+								]
 							}
 						},
 						{
 							"listen": "prerequest",
 							"script": {
 								"type": "text/javascript",
-								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nfunction halve(n) {\n    \n    return Math.floor(n/2);\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"adviceDateTime\", dateTime);\n\npostman.setEnvironmentVariable(\"rrn\",_p8());\npostman.setEnvironmentVariable(\"adviceId\",uuid());\npostman.setEnvironmentVariable(\"tenderAmount\",halve(environment.requestAmount));\n"
+								"exec": [
+									"function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"",
+									"function uuid() {",
+									"    ",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"function halve(n) {",
+									"    ",
+									"    return Math.floor(n/2);",
+									"}",
+									"",
+									"var dateTime = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"adviceDateTime\", dateTime);",
+									"",
+									"postman.setEnvironmentVariable(\"rrn\",_p8());",
+									"postman.setEnvironmentVariable(\"adviceId\",uuid());",
+									"postman.setEnvironmentVariable(\"tenderAmount\",halve(environment.requestAmount));",
+									""
+								]
 							}
 						}
 					],
@@ -311,14 +555,45 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 400\"] = responseCode.code === 400;\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct error type\"] = jsonData.errorType === environment.accountAlreadySettledErrorType;\ntests[\"Correct request type\"] = jsonData.requestType === environment.paymentReversalRequestType\ntests[\"Correct advice ID\"] = jsonData.id === postman.getEnvironmentVariable(\"adviceId\");\ntests[\"Correct request ID\"] = jsonData.originalId === postman.getEnvironmentVariable(\"requestId\");"
+								"exec": [
+									"tests[\"Status code is 400\"] = responseCode.code === 400;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Correct error type\"] = jsonData.errorType === environment.accountAlreadySettledErrorType;",
+									"tests[\"Correct request type\"] = jsonData.requestType === environment.paymentReversalRequestType",
+									"tests[\"Correct advice ID\"] = jsonData.id === postman.getEnvironmentVariable(\"adviceId\");",
+									"tests[\"Correct request ID\"] = jsonData.originalId === postman.getEnvironmentVariable(\"requestId\");"
+								]
 							}
 						},
 						{
 							"listen": "prerequest",
 							"script": {
 								"type": "text/javascript",
-								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nfunction halve(n) {\n    \n    return Math.floor(n/2);\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"adviceDateTime\", dateTime);\n\npostman.setEnvironmentVariable(\"rrn\",_p8());\npostman.setEnvironmentVariable(\"adviceId\",uuid());\npostman.setEnvironmentVariable(\"tenderAmount\",halve(environment.requestAmount));\n"
+								"exec": [
+									"function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"",
+									"function uuid() {",
+									"    ",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"function halve(n) {",
+									"    ",
+									"    return Math.floor(n/2);",
+									"}",
+									"",
+									"var dateTime = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"adviceDateTime\", dateTime);",
+									"",
+									"postman.setEnvironmentVariable(\"rrn\",_p8());",
+									"postman.setEnvironmentVariable(\"adviceId\",uuid());",
+									"postman.setEnvironmentVariable(\"tenderAmount\",halve(environment.requestAmount));",
+									""
+								]
 							}
 						}
 					],
@@ -358,14 +633,53 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct id returned\"] = jsonData.id === environment.requestId;\n\n\npostman.setEnvironmentVariable(\"accountAmount\", jsonData.amounts.balanceAmount.amount);\n\npostman.setEnvironmentVariable(\"thirdPartyId1\", jsonData.thirdPartyIdentifiers[0].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef1\", jsonData.thirdPartyIdentifiers[0].transactionIdentifier);\n\npostman.setEnvironmentVariable(\"thirdPartyId2\", jsonData.thirdPartyIdentifiers[1].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef2\", jsonData.thirdPartyIdentifiers[1].transactionIdentifier);\n\npostman.setEnvironmentVariable(\"thirdPartyId3\", jsonData.thirdPartyIdentifiers[2].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef3\", jsonData.thirdPartyIdentifiers[2].transactionIdentifier);\n\npostman.setEnvironmentVariable(\"thirdPartyId4\", jsonData.thirdPartyIdentifiers[3].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef4\", jsonData.thirdPartyIdentifiers[3].transactionIdentifier);"
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Correct id returned\"] = jsonData.id === environment.requestId;",
+									"",
+									"",
+									"postman.setEnvironmentVariable(\"accountAmount\", jsonData.amounts.balanceAmount.amount);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId1\", jsonData.thirdPartyIdentifiers[0].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef1\", jsonData.thirdPartyIdentifiers[0].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId2\", jsonData.thirdPartyIdentifiers[1].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef2\", jsonData.thirdPartyIdentifiers[1].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId3\", jsonData.thirdPartyIdentifiers[2].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef3\", jsonData.thirdPartyIdentifiers[2].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId4\", jsonData.thirdPartyIdentifiers[3].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef4\", jsonData.thirdPartyIdentifiers[3].transactionIdentifier);"
+								]
 							}
 						},
 						{
 							"listen": "prerequest",
 							"script": {
 								"type": "text/javascript",
-								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"reqDateTime\", dateTime);\n\npostman.setEnvironmentVariable(\"rrn\",_p8());\npostman.setEnvironmentVariable(\"requestId\",uuid());\npostman.setEnvironmentVariable(\"senderTranRef\",_p8());\npostman.setEnvironmentVariable(\"clientTranRef\",_p8());\n"
+								"exec": [
+									"function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"",
+									"function uuid() {",
+									"    ",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"var dateTime = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"reqDateTime\", dateTime);",
+									"",
+									"postman.setEnvironmentVariable(\"rrn\",_p8());",
+									"postman.setEnvironmentVariable(\"requestId\",uuid());",
+									"postman.setEnvironmentVariable(\"senderTranRef\",_p8());",
+									"postman.setEnvironmentVariable(\"clientTranRef\",_p8());",
+									""
+								]
 							}
 						}
 					],
@@ -399,14 +713,61 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct id returned\"] = jsonData.id === environment.requestId;\n\n\npostman.setEnvironmentVariable(\"issuerReference\", jsonData.slipData.issuerReference);\n\npostman.setEnvironmentVariable(\"thirdPartyId1\", jsonData.thirdPartyIdentifiers[0].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef1\", jsonData.thirdPartyIdentifiers[0].transactionIdentifier);\n\npostman.setEnvironmentVariable(\"thirdPartyId2\", jsonData.thirdPartyIdentifiers[1].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef2\", jsonData.thirdPartyIdentifiers[1].transactionIdentifier);\n\npostman.setEnvironmentVariable(\"thirdPartyId3\", jsonData.thirdPartyIdentifiers[2].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef3\", jsonData.thirdPartyIdentifiers[2].transactionIdentifier);\n\npostman.setEnvironmentVariable(\"thirdPartyId4\", jsonData.thirdPartyIdentifiers[3].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef4\", jsonData.thirdPartyIdentifiers[3].transactionIdentifier);"
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Correct id returned\"] = jsonData.id === environment.requestId;",
+									"",
+									"",
+									"postman.setEnvironmentVariable(\"issuerReference\", jsonData.slipData.issuerReference);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId1\", jsonData.thirdPartyIdentifiers[0].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef1\", jsonData.thirdPartyIdentifiers[0].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId2\", jsonData.thirdPartyIdentifiers[1].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef2\", jsonData.thirdPartyIdentifiers[1].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId3\", jsonData.thirdPartyIdentifiers[2].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef3\", jsonData.thirdPartyIdentifiers[2].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId4\", jsonData.thirdPartyIdentifiers[3].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef4\", jsonData.thirdPartyIdentifiers[3].transactionIdentifier);"
+								]
 							}
 						},
 						{
 							"listen": "prerequest",
 							"script": {
 								"type": "text/javascript",
-								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nfunction halve(n) {\n    \n    return Math.floor(n/2);\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"reqDateTime\", dateTime);\n\nvar rrn = _p8()\npostman.setEnvironmentVariable(\"rrn\",rrn);\npostman.setEnvironmentVariable(\"requestRrn\",rrn);\n\npostman.setEnvironmentVariable(\"requestId\",uuid());\n\npostman.setEnvironmentVariable(\"requestAmount\",halve(environment.accountAmount));\n"
+								"exec": [
+									"function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"",
+									"function uuid() {",
+									"    ",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"function halve(n) {",
+									"    ",
+									"    return Math.floor(n/2);",
+									"}",
+									"",
+									"var dateTime = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"reqDateTime\", dateTime);",
+									"",
+									"var rrn = _p8()",
+									"postman.setEnvironmentVariable(\"rrn\",rrn);",
+									"postman.setEnvironmentVariable(\"requestRrn\",rrn);",
+									"",
+									"postman.setEnvironmentVariable(\"requestId\",uuid());",
+									"",
+									"postman.setEnvironmentVariable(\"requestAmount\",halve(environment.accountAmount));",
+									""
+								]
 							}
 						}
 					],
@@ -440,14 +801,42 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 202\"] = responseCode.code === 202;\n\n\n"
+								"exec": [
+									"tests[\"Status code is 202\"] = responseCode.code === 202;",
+									"",
+									"",
+									""
+								]
 							}
 						},
 						{
 							"listen": "prerequest",
 							"script": {
 								"type": "text/javascript",
-								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nfunction halve(n) {\n    \n    return Math.floor(n/2);\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"adviceDateTime\", dateTime);\n\npostman.setEnvironmentVariable(\"rrn\",_p8());\npostman.setEnvironmentVariable(\"adviceId\",uuid());\npostman.setEnvironmentVariable(\"tenderAmount\",halve(environment.requestAmount));\n"
+								"exec": [
+									"function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"",
+									"function uuid() {",
+									"    ",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"function halve(n) {",
+									"    ",
+									"    return Math.floor(n/2);",
+									"}",
+									"",
+									"var dateTime = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"adviceDateTime\", dateTime);",
+									"",
+									"postman.setEnvironmentVariable(\"rrn\",_p8());",
+									"postman.setEnvironmentVariable(\"adviceId\",uuid());",
+									"postman.setEnvironmentVariable(\"tenderAmount\",halve(environment.requestAmount));",
+									""
+								]
 							}
 						}
 					],
@@ -481,14 +870,46 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 400\"] = responseCode.code === 400;\n\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct error type\"] = jsonData.errorType === environment.accountAlreadySettledErrorType;\ntests[\"Correct request type\"] = jsonData.requestType === environment.paymentConfirmationRequestType\ntests[\"Correct advice ID\"] = jsonData.id === postman.getEnvironmentVariable(\"adviceId\");\ntests[\"Correct request ID\"] = jsonData.originalId === postman.getEnvironmentVariable(\"requestId\");"
+								"exec": [
+									"tests[\"Status code is 400\"] = responseCode.code === 400;",
+									"",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Correct error type\"] = jsonData.errorType === environment.accountAlreadySettledErrorType;",
+									"tests[\"Correct request type\"] = jsonData.requestType === environment.paymentConfirmationRequestType",
+									"tests[\"Correct advice ID\"] = jsonData.id === postman.getEnvironmentVariable(\"adviceId\");",
+									"tests[\"Correct request ID\"] = jsonData.originalId === postman.getEnvironmentVariable(\"requestId\");"
+								]
 							}
 						},
 						{
 							"listen": "prerequest",
 							"script": {
 								"type": "text/javascript",
-								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nfunction halve(n) {\n    \n    return Math.floor(n/2);\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"adviceDateTime\", dateTime);\n\npostman.setEnvironmentVariable(\"rrn\",_p8());\npostman.setEnvironmentVariable(\"adviceId\",uuid());\npostman.setEnvironmentVariable(\"tenderAmount\",halve(environment.requestAmount));\n"
+								"exec": [
+									"function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"",
+									"function uuid() {",
+									"    ",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"function halve(n) {",
+									"    ",
+									"    return Math.floor(n/2);",
+									"}",
+									"",
+									"var dateTime = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"adviceDateTime\", dateTime);",
+									"",
+									"postman.setEnvironmentVariable(\"rrn\",_p8());",
+									"postman.setEnvironmentVariable(\"adviceId\",uuid());",
+									"postman.setEnvironmentVariable(\"tenderAmount\",halve(environment.requestAmount));",
+									""
+								]
 							}
 						}
 					],
@@ -528,14 +949,53 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct id returned\"] = jsonData.id === environment.requestId;\n\n\npostman.setEnvironmentVariable(\"accountAmount\", jsonData.amounts.balanceAmount.amount);\n\npostman.setEnvironmentVariable(\"thirdPartyId1\", jsonData.thirdPartyIdentifiers[0].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef1\", jsonData.thirdPartyIdentifiers[0].transactionIdentifier);\n\npostman.setEnvironmentVariable(\"thirdPartyId2\", jsonData.thirdPartyIdentifiers[1].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef2\", jsonData.thirdPartyIdentifiers[1].transactionIdentifier);\n\npostman.setEnvironmentVariable(\"thirdPartyId3\", jsonData.thirdPartyIdentifiers[2].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef3\", jsonData.thirdPartyIdentifiers[2].transactionIdentifier);\n\npostman.setEnvironmentVariable(\"thirdPartyId4\", jsonData.thirdPartyIdentifiers[3].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef4\", jsonData.thirdPartyIdentifiers[3].transactionIdentifier);"
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Correct id returned\"] = jsonData.id === environment.requestId;",
+									"",
+									"",
+									"postman.setEnvironmentVariable(\"accountAmount\", jsonData.amounts.balanceAmount.amount);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId1\", jsonData.thirdPartyIdentifiers[0].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef1\", jsonData.thirdPartyIdentifiers[0].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId2\", jsonData.thirdPartyIdentifiers[1].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef2\", jsonData.thirdPartyIdentifiers[1].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId3\", jsonData.thirdPartyIdentifiers[2].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef3\", jsonData.thirdPartyIdentifiers[2].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId4\", jsonData.thirdPartyIdentifiers[3].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef4\", jsonData.thirdPartyIdentifiers[3].transactionIdentifier);"
+								]
 							}
 						},
 						{
 							"listen": "prerequest",
 							"script": {
 								"type": "text/javascript",
-								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"reqDateTime\", dateTime);\n\npostman.setEnvironmentVariable(\"rrn\",_p8());\npostman.setEnvironmentVariable(\"requestId\",uuid());\npostman.setEnvironmentVariable(\"senderTranRef\",_p8());\npostman.setEnvironmentVariable(\"clientTranRef\",_p8());\n"
+								"exec": [
+									"function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"",
+									"function uuid() {",
+									"    ",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"var dateTime = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"reqDateTime\", dateTime);",
+									"",
+									"postman.setEnvironmentVariable(\"rrn\",_p8());",
+									"postman.setEnvironmentVariable(\"requestId\",uuid());",
+									"postman.setEnvironmentVariable(\"senderTranRef\",_p8());",
+									"postman.setEnvironmentVariable(\"clientTranRef\",_p8());",
+									""
+								]
 							}
 						}
 					],
@@ -569,14 +1029,61 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct id returned\"] = jsonData.id === environment.requestId;\n\n\npostman.setEnvironmentVariable(\"issuerReference\", jsonData.slipData.issuerReference);\n\npostman.setEnvironmentVariable(\"thirdPartyId1\", jsonData.thirdPartyIdentifiers[0].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef1\", jsonData.thirdPartyIdentifiers[0].transactionIdentifier);\n\npostman.setEnvironmentVariable(\"thirdPartyId2\", jsonData.thirdPartyIdentifiers[1].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef2\", jsonData.thirdPartyIdentifiers[1].transactionIdentifier);\n\npostman.setEnvironmentVariable(\"thirdPartyId3\", jsonData.thirdPartyIdentifiers[2].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef3\", jsonData.thirdPartyIdentifiers[2].transactionIdentifier);\n\npostman.setEnvironmentVariable(\"thirdPartyId4\", jsonData.thirdPartyIdentifiers[3].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef4\", jsonData.thirdPartyIdentifiers[3].transactionIdentifier);"
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Correct id returned\"] = jsonData.id === environment.requestId;",
+									"",
+									"",
+									"postman.setEnvironmentVariable(\"issuerReference\", jsonData.slipData.issuerReference);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId1\", jsonData.thirdPartyIdentifiers[0].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef1\", jsonData.thirdPartyIdentifiers[0].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId2\", jsonData.thirdPartyIdentifiers[1].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef2\", jsonData.thirdPartyIdentifiers[1].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId3\", jsonData.thirdPartyIdentifiers[2].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef3\", jsonData.thirdPartyIdentifiers[2].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId4\", jsonData.thirdPartyIdentifiers[3].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef4\", jsonData.thirdPartyIdentifiers[3].transactionIdentifier);"
+								]
 							}
 						},
 						{
 							"listen": "prerequest",
 							"script": {
 								"type": "text/javascript",
-								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nfunction halve(n) {\n    \n    return Math.floor(n/2);\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"reqDateTime\", dateTime);\n\nvar rrn = _p8()\npostman.setEnvironmentVariable(\"rrn\",rrn);\npostman.setEnvironmentVariable(\"requestRrn\",rrn);\n\npostman.setEnvironmentVariable(\"requestId\",uuid());\n\npostman.setEnvironmentVariable(\"requestAmount\",halve(environment.accountAmount));\n"
+								"exec": [
+									"function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"",
+									"function uuid() {",
+									"    ",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"function halve(n) {",
+									"    ",
+									"    return Math.floor(n/2);",
+									"}",
+									"",
+									"var dateTime = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"reqDateTime\", dateTime);",
+									"",
+									"var rrn = _p8()",
+									"postman.setEnvironmentVariable(\"rrn\",rrn);",
+									"postman.setEnvironmentVariable(\"requestRrn\",rrn);",
+									"",
+									"postman.setEnvironmentVariable(\"requestId\",uuid());",
+									"",
+									"postman.setEnvironmentVariable(\"requestAmount\",halve(environment.accountAmount));",
+									""
+								]
 							}
 						}
 					],
@@ -610,14 +1117,42 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 202\"] = responseCode.code === 202;\n\n\n"
+								"exec": [
+									"tests[\"Status code is 202\"] = responseCode.code === 202;",
+									"",
+									"",
+									""
+								]
 							}
 						},
 						{
 							"listen": "prerequest",
 							"script": {
 								"type": "text/javascript",
-								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nfunction halve(n) {\n    \n    return Math.floor(n/2);\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"adviceDateTime\", dateTime);\n\npostman.setEnvironmentVariable(\"rrn\",_p8());\npostman.setEnvironmentVariable(\"adviceId\",uuid());\npostman.setEnvironmentVariable(\"tenderAmount\",halve(environment.requestAmount));\n"
+								"exec": [
+									"function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"",
+									"function uuid() {",
+									"    ",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"function halve(n) {",
+									"    ",
+									"    return Math.floor(n/2);",
+									"}",
+									"",
+									"var dateTime = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"adviceDateTime\", dateTime);",
+									"",
+									"postman.setEnvironmentVariable(\"rrn\",_p8());",
+									"postman.setEnvironmentVariable(\"adviceId\",uuid());",
+									"postman.setEnvironmentVariable(\"tenderAmount\",halve(environment.requestAmount));",
+									""
+								]
 							}
 						}
 					],
@@ -651,14 +1186,61 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct id returned\"] = jsonData.id === environment.requestId;\n\n\n\npostman.setEnvironmentVariable(\"thirdPartyId1\", jsonData.thirdPartyIdentifiers[0].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef1\", jsonData.thirdPartyIdentifiers[0].transactionIdentifier);\n\npostman.setEnvironmentVariable(\"thirdPartyId2\", jsonData.thirdPartyIdentifiers[1].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef2\", jsonData.thirdPartyIdentifiers[1].transactionIdentifier);\n\npostman.setEnvironmentVariable(\"thirdPartyId3\", jsonData.thirdPartyIdentifiers[2].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef3\", jsonData.thirdPartyIdentifiers[2].transactionIdentifier);\n\npostman.setEnvironmentVariable(\"thirdPartyId4\", jsonData.thirdPartyIdentifiers[3].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef4\", jsonData.thirdPartyIdentifiers[3].transactionIdentifier);\n"
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Correct id returned\"] = jsonData.id === environment.requestId;",
+									"",
+									"",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId1\", jsonData.thirdPartyIdentifiers[0].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef1\", jsonData.thirdPartyIdentifiers[0].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId2\", jsonData.thirdPartyIdentifiers[1].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef2\", jsonData.thirdPartyIdentifiers[1].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId3\", jsonData.thirdPartyIdentifiers[2].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef3\", jsonData.thirdPartyIdentifiers[2].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId4\", jsonData.thirdPartyIdentifiers[3].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef4\", jsonData.thirdPartyIdentifiers[3].transactionIdentifier);",
+									""
+								]
 							}
 						},
 						{
 							"listen": "prerequest",
 							"script": {
 								"type": "text/javascript",
-								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nfunction halve(n) {\n    \n    return Math.floor(n/2);\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"reqDateTime\", dateTime);\n\nvar rrn = _p8()\npostman.setEnvironmentVariable(\"rrn\",rrn);\npostman.setEnvironmentVariable(\"requestRrn\",rrn);\n\npostman.setEnvironmentVariable(\"requestId\",uuid());\n\npostman.setEnvironmentVariable(\"requestAmount\",halve(environment.accountAmount));\n"
+								"exec": [
+									"function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"",
+									"function uuid() {",
+									"    ",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"function halve(n) {",
+									"    ",
+									"    return Math.floor(n/2);",
+									"}",
+									"",
+									"var dateTime = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"reqDateTime\", dateTime);",
+									"",
+									"var rrn = _p8()",
+									"postman.setEnvironmentVariable(\"rrn\",rrn);",
+									"postman.setEnvironmentVariable(\"requestRrn\",rrn);",
+									"",
+									"postman.setEnvironmentVariable(\"requestId\",uuid());",
+									"",
+									"postman.setEnvironmentVariable(\"requestAmount\",halve(environment.accountAmount));",
+									""
+								]
 							}
 						}
 					],
@@ -692,14 +1274,36 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 202\"] = responseCode.code === 202;\n\n\n"
+								"exec": [
+									"tests[\"Status code is 202\"] = responseCode.code === 202;",
+									"",
+									"",
+									""
+								]
 							}
 						},
 						{
 							"listen": "prerequest",
 							"script": {
 								"type": "text/javascript",
-								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"adviceDateTime\", dateTime);\n\npostman.setEnvironmentVariable(\"adviceId\",uuid());\n\n"
+								"exec": [
+									"function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"",
+									"function uuid() {",
+									"    ",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"var dateTime = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"adviceDateTime\", dateTime);",
+									"",
+									"postman.setEnvironmentVariable(\"adviceId\",uuid());",
+									"",
+									""
+								]
 							}
 						}
 					],
@@ -733,14 +1337,46 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 400\"] = responseCode.code === 400;\n\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct error type\"] = jsonData.errorType === environment.accountAlreadySettledErrorType;\ntests[\"Correct request type\"] = jsonData.requestType === environment.refundReversalRequestType\ntests[\"Correct advice ID\"] = jsonData.id === postman.getEnvironmentVariable(\"adviceId\");\ntests[\"Correct request ID\"] = jsonData.originalId === postman.getEnvironmentVariable(\"requestId\");"
+								"exec": [
+									"tests[\"Status code is 400\"] = responseCode.code === 400;",
+									"",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Correct error type\"] = jsonData.errorType === environment.accountAlreadySettledErrorType;",
+									"tests[\"Correct request type\"] = jsonData.requestType === environment.refundReversalRequestType",
+									"tests[\"Correct advice ID\"] = jsonData.id === postman.getEnvironmentVariable(\"adviceId\");",
+									"tests[\"Correct request ID\"] = jsonData.originalId === postman.getEnvironmentVariable(\"requestId\");"
+								]
 							}
 						},
 						{
 							"listen": "prerequest",
 							"script": {
 								"type": "text/javascript",
-								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nfunction halve(n) {\n    \n    return Math.floor(n/2);\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"adviceDateTime\", dateTime);\n\npostman.setEnvironmentVariable(\"rrn\",_p8());\npostman.setEnvironmentVariable(\"adviceId\",uuid());\npostman.setEnvironmentVariable(\"tenderAmount\",halve(environment.requestAmount));\n"
+								"exec": [
+									"function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"",
+									"function uuid() {",
+									"    ",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"function halve(n) {",
+									"    ",
+									"    return Math.floor(n/2);",
+									"}",
+									"",
+									"var dateTime = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"adviceDateTime\", dateTime);",
+									"",
+									"postman.setEnvironmentVariable(\"rrn\",_p8());",
+									"postman.setEnvironmentVariable(\"adviceId\",uuid());",
+									"postman.setEnvironmentVariable(\"tenderAmount\",halve(environment.requestAmount));",
+									""
+								]
 							}
 						}
 					],
@@ -780,14 +1416,52 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct id returned\"] = jsonData.id === environment.requestId;\n\n\npostman.setEnvironmentVariable(\"accountAmount\", jsonData.amounts.balanceAmount.amount);\n\npostman.setEnvironmentVariable(\"thirdPartyId1\", jsonData.thirdPartyIdentifiers[0].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef1\", jsonData.thirdPartyIdentifiers[0].transactionIdentifier);\n\npostman.setEnvironmentVariable(\"thirdPartyId2\", jsonData.thirdPartyIdentifiers[1].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef2\", jsonData.thirdPartyIdentifiers[1].transactionIdentifier);\n\npostman.setEnvironmentVariable(\"thirdPartyId3\", jsonData.thirdPartyIdentifiers[2].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef3\", jsonData.thirdPartyIdentifiers[2].transactionIdentifier);\n\npostman.setEnvironmentVariable(\"thirdPartyId4\", jsonData.thirdPartyIdentifiers[3].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef4\", jsonData.thirdPartyIdentifiers[3].transactionIdentifier);"
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Correct id returned\"] = jsonData.id === environment.requestId;",
+									"",
+									"",
+									"postman.setEnvironmentVariable(\"accountAmount\", jsonData.amounts.balanceAmount.amount);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId1\", jsonData.thirdPartyIdentifiers[0].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef1\", jsonData.thirdPartyIdentifiers[0].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId2\", jsonData.thirdPartyIdentifiers[1].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef2\", jsonData.thirdPartyIdentifiers[1].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId3\", jsonData.thirdPartyIdentifiers[2].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef3\", jsonData.thirdPartyIdentifiers[2].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId4\", jsonData.thirdPartyIdentifiers[3].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef4\", jsonData.thirdPartyIdentifiers[3].transactionIdentifier);"
+								]
 							}
 						},
 						{
 							"listen": "prerequest",
 							"script": {
 								"type": "text/javascript",
-								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"reqDateTime\", dateTime);\n\npostman.setEnvironmentVariable(\"rrn\",_p8());\npostman.setEnvironmentVariable(\"requestId\",uuid());\npostman.setEnvironmentVariable(\"senderTranRef\",_p8());\n"
+								"exec": [
+									"function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"",
+									"function uuid() {",
+									"    ",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"var dateTime = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"reqDateTime\", dateTime);",
+									"",
+									"postman.setEnvironmentVariable(\"rrn\",_p8());",
+									"postman.setEnvironmentVariable(\"requestId\",uuid());",
+									"postman.setEnvironmentVariable(\"senderTranRef\",_p8());",
+									""
+								]
 							}
 						}
 					],
@@ -821,14 +1495,61 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct id returned\"] = jsonData.id === environment.requestId;\n\n\npostman.setEnvironmentVariable(\"issuerReference\", jsonData.slipData.issuerReference);\n\npostman.setEnvironmentVariable(\"thirdPartyId1\", jsonData.thirdPartyIdentifiers[0].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef1\", jsonData.thirdPartyIdentifiers[0].transactionIdentifier);\n\npostman.setEnvironmentVariable(\"thirdPartyId2\", jsonData.thirdPartyIdentifiers[1].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef2\", jsonData.thirdPartyIdentifiers[1].transactionIdentifier);\n\npostman.setEnvironmentVariable(\"thirdPartyId3\", jsonData.thirdPartyIdentifiers[2].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef3\", jsonData.thirdPartyIdentifiers[2].transactionIdentifier);\n\npostman.setEnvironmentVariable(\"thirdPartyId4\", jsonData.thirdPartyIdentifiers[3].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef4\", jsonData.thirdPartyIdentifiers[3].transactionIdentifier);"
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Correct id returned\"] = jsonData.id === environment.requestId;",
+									"",
+									"",
+									"postman.setEnvironmentVariable(\"issuerReference\", jsonData.slipData.issuerReference);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId1\", jsonData.thirdPartyIdentifiers[0].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef1\", jsonData.thirdPartyIdentifiers[0].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId2\", jsonData.thirdPartyIdentifiers[1].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef2\", jsonData.thirdPartyIdentifiers[1].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId3\", jsonData.thirdPartyIdentifiers[2].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef3\", jsonData.thirdPartyIdentifiers[2].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId4\", jsonData.thirdPartyIdentifiers[3].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef4\", jsonData.thirdPartyIdentifiers[3].transactionIdentifier);"
+								]
 							}
 						},
 						{
 							"listen": "prerequest",
 							"script": {
 								"type": "text/javascript",
-								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nfunction halve(n) {\n    \n    return Math.floor(n/2);\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"reqDateTime\", dateTime);\n\nvar rrn = _p8()\npostman.setEnvironmentVariable(\"rrn\",rrn);\npostman.setEnvironmentVariable(\"requestRrn\",rrn);\n\npostman.setEnvironmentVariable(\"requestId\",uuid());\n\npostman.setEnvironmentVariable(\"requestAmount\",halve(environment.accountAmount));\n"
+								"exec": [
+									"function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"",
+									"function uuid() {",
+									"    ",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"function halve(n) {",
+									"    ",
+									"    return Math.floor(n/2);",
+									"}",
+									"",
+									"var dateTime = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"reqDateTime\", dateTime);",
+									"",
+									"var rrn = _p8()",
+									"postman.setEnvironmentVariable(\"rrn\",rrn);",
+									"postman.setEnvironmentVariable(\"requestRrn\",rrn);",
+									"",
+									"postman.setEnvironmentVariable(\"requestId\",uuid());",
+									"",
+									"postman.setEnvironmentVariable(\"requestAmount\",halve(environment.accountAmount));",
+									""
+								]
 							}
 						}
 					],
@@ -862,14 +1583,42 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 202\"] = responseCode.code === 202;\n\n\n"
+								"exec": [
+									"tests[\"Status code is 202\"] = responseCode.code === 202;",
+									"",
+									"",
+									""
+								]
 							}
 						},
 						{
 							"listen": "prerequest",
 							"script": {
 								"type": "text/javascript",
-								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nfunction halve(n) {\n    \n    return Math.floor(n/2);\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"adviceDateTime\", dateTime);\n\npostman.setEnvironmentVariable(\"rrn\",_p8());\npostman.setEnvironmentVariable(\"adviceId\",uuid());\npostman.setEnvironmentVariable(\"tenderAmount\",halve(environment.requestAmount));\n"
+								"exec": [
+									"function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"",
+									"function uuid() {",
+									"    ",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"function halve(n) {",
+									"    ",
+									"    return Math.floor(n/2);",
+									"}",
+									"",
+									"var dateTime = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"adviceDateTime\", dateTime);",
+									"",
+									"postman.setEnvironmentVariable(\"rrn\",_p8());",
+									"postman.setEnvironmentVariable(\"adviceId\",uuid());",
+									"postman.setEnvironmentVariable(\"tenderAmount\",halve(environment.requestAmount));",
+									""
+								]
 							}
 						}
 					],
@@ -903,14 +1652,61 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct id returned\"] = jsonData.id === environment.requestId;\n\n\n\n\npostman.setEnvironmentVariable(\"thirdPartyId1\", jsonData.thirdPartyIdentifiers[0].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef1\", jsonData.thirdPartyIdentifiers[0].transactionIdentifier);\n\npostman.setEnvironmentVariable(\"thirdPartyId2\", jsonData.thirdPartyIdentifiers[1].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef2\", jsonData.thirdPartyIdentifiers[1].transactionIdentifier);\n\npostman.setEnvironmentVariable(\"thirdPartyId3\", jsonData.thirdPartyIdentifiers[2].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef3\", jsonData.thirdPartyIdentifiers[2].transactionIdentifier);\n\npostman.setEnvironmentVariable(\"thirdPartyId4\", jsonData.thirdPartyIdentifiers[3].institutionId);\npostman.setEnvironmentVariable(\"thirdPartyTranRef4\", jsonData.thirdPartyIdentifiers[3].transactionIdentifier);"
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Correct id returned\"] = jsonData.id === environment.requestId;",
+									"",
+									"",
+									"",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId1\", jsonData.thirdPartyIdentifiers[0].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef1\", jsonData.thirdPartyIdentifiers[0].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId2\", jsonData.thirdPartyIdentifiers[1].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef2\", jsonData.thirdPartyIdentifiers[1].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId3\", jsonData.thirdPartyIdentifiers[2].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef3\", jsonData.thirdPartyIdentifiers[2].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId4\", jsonData.thirdPartyIdentifiers[3].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef4\", jsonData.thirdPartyIdentifiers[3].transactionIdentifier);"
+								]
 							}
 						},
 						{
 							"listen": "prerequest",
 							"script": {
 								"type": "text/javascript",
-								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nfunction halve(n) {\n    \n    return Math.floor(n/2);\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"reqDateTime\", dateTime);\n\nvar rrn = _p8()\npostman.setEnvironmentVariable(\"rrn\",rrn);\npostman.setEnvironmentVariable(\"requestRrn\",rrn);\n\npostman.setEnvironmentVariable(\"requestId\",uuid());\n\npostman.setEnvironmentVariable(\"requestAmount\",halve(environment.accountAmount));\n"
+								"exec": [
+									"function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"",
+									"function uuid() {",
+									"    ",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"function halve(n) {",
+									"    ",
+									"    return Math.floor(n/2);",
+									"}",
+									"",
+									"var dateTime = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"reqDateTime\", dateTime);",
+									"",
+									"var rrn = _p8()",
+									"postman.setEnvironmentVariable(\"rrn\",rrn);",
+									"postman.setEnvironmentVariable(\"requestRrn\",rrn);",
+									"",
+									"postman.setEnvironmentVariable(\"requestId\",uuid());",
+									"",
+									"postman.setEnvironmentVariable(\"requestAmount\",halve(environment.accountAmount));",
+									""
+								]
 							}
 						}
 					],
@@ -944,14 +1740,42 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 202\"] = responseCode.code === 202;\n\n\n"
+								"exec": [
+									"tests[\"Status code is 202\"] = responseCode.code === 202;",
+									"",
+									"",
+									""
+								]
 							}
 						},
 						{
 							"listen": "prerequest",
 							"script": {
 								"type": "text/javascript",
-								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nfunction halve(n) {\n    \n    return Math.floor(n/2);\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"adviceDateTime\", dateTime);\n\npostman.setEnvironmentVariable(\"rrn\",_p8());\npostman.setEnvironmentVariable(\"adviceId\",uuid());\npostman.setEnvironmentVariable(\"tenderAmount\",halve(environment.requestAmount));\n"
+								"exec": [
+									"function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"",
+									"function uuid() {",
+									"    ",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"function halve(n) {",
+									"    ",
+									"    return Math.floor(n/2);",
+									"}",
+									"",
+									"var dateTime = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"adviceDateTime\", dateTime);",
+									"",
+									"postman.setEnvironmentVariable(\"rrn\",_p8());",
+									"postman.setEnvironmentVariable(\"adviceId\",uuid());",
+									"postman.setEnvironmentVariable(\"tenderAmount\",halve(environment.requestAmount));",
+									""
+								]
 							}
 						}
 					],
@@ -985,14 +1809,40 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 400\"] = responseCode.code === 400;\n\n\nvar jsonData = JSON.parse(responseBody);\ntests[\"Correct error type\"] = jsonData.errorType === environment.accountAlreadySettledErrorType;\ntests[\"Correct request type\"] = jsonData.requestType === environment.refundConfirmationRequestType\ntests[\"Correct advice ID\"] = jsonData.id === postman.getEnvironmentVariable(\"adviceId\");\ntests[\"Correct request ID\"] = jsonData.originalId === postman.getEnvironmentVariable(\"requestId\");"
+								"exec": [
+									"tests[\"Status code is 400\"] = responseCode.code === 400;",
+									"",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Correct error type\"] = jsonData.errorType === environment.accountAlreadySettledErrorType;",
+									"tests[\"Correct request type\"] = jsonData.requestType === environment.refundConfirmationRequestType",
+									"tests[\"Correct advice ID\"] = jsonData.id === postman.getEnvironmentVariable(\"adviceId\");",
+									"tests[\"Correct request ID\"] = jsonData.originalId === postman.getEnvironmentVariable(\"requestId\");"
+								]
 							}
 						},
 						{
 							"listen": "prerequest",
 							"script": {
 								"type": "text/javascript",
-								"exec": "function _p8(s) {\n        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);\n        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;\n    }\n\nfunction uuid() {\n    \n    return _p8() + _p8(true) + _p8(true) + _p8();\n}\n\nvar dateTime = new Date().toISOString();\npostman.setEnvironmentVariable(\"adviceDateTime\", dateTime);\n\npostman.setEnvironmentVariable(\"adviceId\",uuid());\n\n"
+								"exec": [
+									"function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"",
+									"function uuid() {",
+									"    ",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"var dateTime = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"adviceDateTime\", dateTime);",
+									"",
+									"postman.setEnvironmentVariable(\"adviceId\",uuid());",
+									"",
+									""
+								]
 							}
 						}
 					],
@@ -1016,6 +1866,500 @@
 							"raw": "{\n  \"id\" : \"{{adviceId}}\",\n  \"requestId\" : \"{{requestId}}\",\n  \"time\" : \"{{adviceDateTime}}\",\n  \"thirdPartyIdentifiers\": [\n        {\n            \"institutionId\": \"{{thirdPartyId1}}\",\n            \"transactionIdentifier\": \"{{thirdPartyTranRef1}}\"\n        },\n        {\n            \"institutionId\": \"{{thirdPartyId2}}\",\n            \"transactionIdentifier\": \"{{thirdPartyTranRef2}}\"\n        },\n        {\n            \"institutionId\": \"{{thirdPartyId3}}\",\n            \"transactionIdentifier\": \"{{thirdPartyTranRef3}}\"\n        },\n        {\n            \"institutionId\": \"{{thirdPartyId4}}\",\n            \"transactionIdentifier\": \"{{thirdPartyTranRef4}}\"\n        }\n    ]\n}"
 						},
 						"description": "Test Refund confirmation"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Policy Payment and Confirmation",
+			"description": "",
+			"item": [
+				{
+					"name": "PolicyLookupRequest",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Correct id returned\"] = jsonData.id === environment.requestId;",
+									"",
+									"",
+									"postman.setEnvironmentVariable(\"accountAmount\", jsonData.amounts.balanceAmount.amount);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId1\", jsonData.thirdPartyIdentifiers[0].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef1\", jsonData.thirdPartyIdentifiers[0].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId2\", jsonData.thirdPartyIdentifiers[1].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef2\", jsonData.thirdPartyIdentifiers[1].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId3\", jsonData.thirdPartyIdentifiers[2].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef3\", jsonData.thirdPartyIdentifiers[2].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId4\", jsonData.thirdPartyIdentifiers[3].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef4\", jsonData.thirdPartyIdentifiers[3].transactionIdentifier);",
+									""
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"",
+									"function uuid() {",
+									"    ",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"var dateTime = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"reqDateTime\", dateTime);",
+									"",
+									"postman.setEnvironmentVariable(\"rrn\",_p8());",
+									"postman.setEnvironmentVariable(\"requestId\",uuid());",
+									"postman.setEnvironmentVariable(\"senderTranRef\",_p8());",
+									"postman.setEnvironmentVariable(\"clientTranRef\",_p8());",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/accountLookups/policy/{{requestId}}",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic dXNlcm5hbWU6cGFzc3N3b3Jk",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"policyNumber\": \"{{policyNumber}}\",\n    \"client\": {\n        \"id\": \"{{clientId}}\",\n        \"name\": \"{{clientName}}\"\n    },\n    \"id\": \"{{requestId}}\",\n    \"originator\": {\n        \"institution\": {\n            \"id\": \"{{senderInstId}}\",\n            \"name\": \"{{senderInstName}}\"\n        },\n        \"merchant\": {\n            \"merchantId\": \"{{merchantId}}\",\n            \"merchantName\": {\n                \"city\": \"{{merchantCity}}\",\n                \"country\": \"{{merchantCountry}}\",\n                \"name\": \"{{merchantName}}\",\n                \"region\": \"{{merchantRegion}}\"\n            },\n            \"merchantType\": \"{{merchantType}}\"\n        },\n        \"terminalId\": \"{{terminalId}}\"\n    },\n    \"reciever\": {\n        \"id\": \"{{recieverId}}\",\n        \"name\": \"{{recieverName}}\"\n    },\n    \"settlementEntity\": {\n        \"id\": \"{{settlementEntityId}}\",\n        \"name\": \"{{settlementEntityName}}\"\n    },\n    \"thirdPartyIdentifiers\": [\n        {\n            \"institutionId\": \"{{senderInstId}}\",\n            \"transactionIdentifier\": \"{{senderTranRef}}\"\n        },\n        {\n            \"institutionId\": \"{{clientId}}\",\n            \"transactionIdentifier\": \"{{clientTranRef}}\"\n        }\n    ],\n    \"time\": \"{{reqDateTime}}\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "PolicyPaymentRequest",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Correct id returned\"] = jsonData.id === environment.requestId;",
+									"",
+									"",
+									"postman.setEnvironmentVariable(\"issuerReference\", jsonData.slipData.issuerReference);",
+									"",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId1\", jsonData.thirdPartyIdentifiers[0].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef1\", jsonData.thirdPartyIdentifiers[0].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId2\", jsonData.thirdPartyIdentifiers[1].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef2\", jsonData.thirdPartyIdentifiers[1].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId3\", jsonData.thirdPartyIdentifiers[2].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef3\", jsonData.thirdPartyIdentifiers[2].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId4\", jsonData.thirdPartyIdentifiers[3].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef4\", jsonData.thirdPartyIdentifiers[3].transactionIdentifier);"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"",
+									"function uuid() {",
+									"    ",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"function halve(n) {",
+									"    ",
+									"    return Math.floor(n/2);",
+									"}",
+									"",
+									"var dateTime = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"reqDateTime\", dateTime);",
+									"",
+									"var rrn = _p8()",
+									"postman.setEnvironmentVariable(\"rrn\",rrn);",
+									"postman.setEnvironmentVariable(\"requestRrn\",rrn);",
+									"postman.setEnvironmentVariable(\"senderTranRef\",_p8());",
+									"postman.setEnvironmentVariable(\"clientTranRef\",_p8());",
+									"",
+									"postman.setEnvironmentVariable(\"requestId\",uuid());",
+									"",
+									"postman.setEnvironmentVariable(\"requestAmount\",halve(environment.accountAmount));",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/payments/policy/{{requestId}}",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic dXNlcm5hbWU6cGFzc3N3b3Jk",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"policyNumber\": \"{{policyNumber}}\",\n    \"client\": {\n        \"id\": \"{{clientId}}\",\n        \"name\": \"{{clientName}}\"\n    },\n    \"id\": \"{{requestId}}\",\n    \"originator\": {\n        \"institution\": {\n            \"id\": \"{{senderInstId}}\",\n            \"name\": \"{{senderInstName}}\"\n        },\n        \"merchant\": {\n            \"merchantId\": \"{{merchantId}}\",\n            \"merchantName\": {\n                \"city\": \"{{merchantCity}}\",\n                \"country\": \"{{merchantCountry}}\",\n                \"name\": \"{{merchantName}}\",\n                \"region\": \"{{merchantRegion}}\"\n            },\n            \"merchantType\": \"{{merchantType}}\"\n        },\n        \"terminalId\": \"{{terminalId}}\"\n    },\n    \"reciever\": {\n        \"id\": \"{{recieverId}}\",\n        \"name\": \"{{recieverName}}\"\n    },\n    \"amounts\": {\n        \"requestAmount\": {\n            \"amount\": \"{{requestAmount}}\",\n            \"currency\": \"{{currency}}\"\n        }\n    },\n    \"settlementEntity\": {\n        \"id\": \"{{settlementEntityId}}\",\n        \"name\": \"{{settlementEntityName}}\"\n    },\n    \"thirdPartyIdentifiers\": [\n        {\n            \"institutionId\": \"{{senderInstId}}\",\n            \"transactionIdentifier\": \"{{senderTranRef}}\"\n        },\n        {\n            \"institutionId\": \"{{clientId}}\",\n            \"transactionIdentifier\": \"{{clientTranRef}}\"\n        }\n    ],\n    \"time\": \"{{reqDateTime}}\"\n}"
+						},
+						"description": "Test PaymentRequest"
+					},
+					"response": []
+				},
+				{
+					"name": "PolicyPaymentConfirmation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 202\"] = responseCode.code === 202;",
+									"",
+									"",
+									""
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"",
+									"function uuid() {",
+									"    ",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"function halve(n) {",
+									"    ",
+									"    return Math.floor(n/2);",
+									"}",
+									"",
+									"var dateTime = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"adviceDateTime\", dateTime);",
+									"",
+									"postman.setEnvironmentVariable(\"rrn\",_p8());",
+									"postman.setEnvironmentVariable(\"adviceId\",uuid());",
+									"postman.setEnvironmentVariable(\"tenderAmount\",halve(environment.requestAmount));",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/payments/{{requestId}}/confirmations/{{adviceId}}",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic dXNlcm5hbWU6cGFzc3N3b3Jk",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\" : \"{{adviceId}}\",\n  \"requestId\" : \"{{requestId}}\",\n  \"time\" : \"{{adviceDateTime}}\",\n  \"linkData\" : \"{{linkData}}\",\n  \"tenders\" : [ {\n    \"accountType\" : \"{{tenderAccountType}}\",\n    \"amount\" : {\n      \"amount\" : {{tenderAmount}},\n      \"currency\" : \"{{currency}}\"\n    },\n    \"cardNumber\" : \"{{tenderCardNumber}}1\",\n    \"reference\" : \"{{tenderRef}}1\",\n    \"tenderType\" : \"{{tenderTypeCash}}\"\n  }, {\n    \"accountType\" : \"DEFAULT\",\n    \"amount\" : {\n      \"amount\" : {{tenderAmount}},\n      \"currency\" : \"{{currency}}\"\n    },\n    \"cardNumber\" : \"{{tenderCardNumber}}2\",\n    \"reference\" : \"{{tenderRef}}2\",\n    \"tenderType\" : \"{{tenderTypeCard}}\"\n  } ],\n  \"thirdPartyIdentifiers\": [\n        {\n            \"institutionId\": \"{{thirdPartyId1}}\",\n            \"transactionIdentifier\": \"{{thirdPartyTranRef1}}\"\n        },\n        {\n            \"institutionId\": \"{{thirdPartyId2}}\",\n            \"transactionIdentifier\": \"{{thirdPartyTranRef2}}\"\n        },\n        {\n            \"institutionId\": \"{{thirdPartyId3}}\",\n            \"transactionIdentifier\": \"{{thirdPartyTranRef3}}\"\n        },\n        {\n            \"institutionId\": \"{{thirdPartyId4}}\",\n            \"transactionIdentifier\": \"{{thirdPartyTranRef4}}\"\n        }\n    ]\n}"
+						},
+						"description": "Test confirm payment"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Traffic Fine Payment and Confirmation",
+			"description": "",
+			"item": [
+				{
+					"name": "TrafficFineLookupRequest",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Correct id returned\"] = jsonData.id === environment.requestId;",
+									"",
+									"",
+									"postman.setEnvironmentVariable(\"accountAmount\", jsonData.amounts.balanceAmount.amount);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId1\", jsonData.thirdPartyIdentifiers[0].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef1\", jsonData.thirdPartyIdentifiers[0].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId2\", jsonData.thirdPartyIdentifiers[1].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef2\", jsonData.thirdPartyIdentifiers[1].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId3\", jsonData.thirdPartyIdentifiers[2].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef3\", jsonData.thirdPartyIdentifiers[2].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId4\", jsonData.thirdPartyIdentifiers[3].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef4\", jsonData.thirdPartyIdentifiers[3].transactionIdentifier);",
+									""
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"",
+									"function uuid() {",
+									"    ",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"var dateTime = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"reqDateTime\", dateTime);",
+									"",
+									"postman.setEnvironmentVariable(\"rrn\",_p8());",
+									"postman.setEnvironmentVariable(\"requestId\",uuid());",
+									"postman.setEnvironmentVariable(\"senderTranRef\",_p8());",
+									"postman.setEnvironmentVariable(\"clientTranRef\",_p8());",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/accountLookups/traffic/{{requestId}}",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic dXNlcm5hbWU6cGFzc3N3b3Jk",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"noticeNumber\": \"{{noticeNumber}}\",\n    \"client\": {\n        \"id\": \"{{clientId}}\",\n        \"name\": \"{{clientName}}\"\n    },\n    \"id\": \"{{requestId}}\",\n    \"originator\": {\n        \"institution\": {\n            \"id\": \"{{senderInstId}}\",\n            \"name\": \"{{senderInstName}}\"\n        },\n        \"merchant\": {\n            \"merchantId\": \"{{merchantId}}\",\n            \"merchantName\": {\n                \"city\": \"{{merchantCity}}\",\n                \"country\": \"{{merchantCountry}}\",\n                \"name\": \"{{merchantName}}\",\n                \"region\": \"{{merchantRegion}}\"\n            },\n            \"merchantType\": \"{{merchantType}}\"\n        },\n        \"terminalId\": \"{{terminalId}}\"\n    },\n    \"reciever\": {\n        \"id\": \"{{recieverId}}\",\n        \"name\": \"{{recieverName}}\"\n    },\n    \"settlementEntity\": {\n        \"id\": \"{{settlementEntityId}}\",\n        \"name\": \"{{settlementEntityName}}\"\n    },\n    \"thirdPartyIdentifiers\": [\n        {\n            \"institutionId\": \"{{senderInstId}}\",\n            \"transactionIdentifier\": \"{{senderTranRef}}\"\n        },\n        {\n            \"institutionId\": \"{{clientId}}\",\n            \"transactionIdentifier\": \"{{clientTranRef}}\"\n        }\n    ],\n    \"time\": \"{{reqDateTime}}\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "TrafficFinePaymentRequest",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Correct id returned\"] = jsonData.id === environment.requestId;",
+									"",
+									"",
+									"postman.setEnvironmentVariable(\"issuerReference\", jsonData.slipData.issuerReference);",
+									"",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId1\", jsonData.thirdPartyIdentifiers[0].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef1\", jsonData.thirdPartyIdentifiers[0].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId2\", jsonData.thirdPartyIdentifiers[1].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef2\", jsonData.thirdPartyIdentifiers[1].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId3\", jsonData.thirdPartyIdentifiers[2].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef3\", jsonData.thirdPartyIdentifiers[2].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId4\", jsonData.thirdPartyIdentifiers[3].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef4\", jsonData.thirdPartyIdentifiers[3].transactionIdentifier);"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"",
+									"function uuid() {",
+									"    ",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"function halve(n) {",
+									"    ",
+									"    return Math.floor(n/2);",
+									"}",
+									"",
+									"var dateTime = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"reqDateTime\", dateTime);",
+									"",
+									"var rrn = _p8()",
+									"postman.setEnvironmentVariable(\"rrn\",rrn);",
+									"postman.setEnvironmentVariable(\"requestRrn\",rrn);",
+									"postman.setEnvironmentVariable(\"senderTranRef\",_p8());",
+									"postman.setEnvironmentVariable(\"clientTranRef\",_p8());",
+									"",
+									"postman.setEnvironmentVariable(\"requestId\",uuid());",
+									"",
+									"postman.setEnvironmentVariable(\"requestAmount\",halve(environment.accountAmount));",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/payments/traffic/{{requestId}}",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic dXNlcm5hbWU6cGFzc3N3b3Jk",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"noticeNumber\": \"{{noticeNumber}}\",\n    \"client\": {\n        \"id\": \"{{clientId}}\",\n        \"name\": \"{{clientName}}\"\n    },\n    \"id\": \"{{requestId}}\",\n    \"originator\": {\n        \"institution\": {\n            \"id\": \"{{senderInstId}}\",\n            \"name\": \"{{senderInstName}}\"\n        },\n        \"merchant\": {\n            \"merchantId\": \"{{merchantId}}\",\n            \"merchantName\": {\n                \"city\": \"{{merchantCity}}\",\n                \"country\": \"{{merchantCountry}}\",\n                \"name\": \"{{merchantName}}\",\n                \"region\": \"{{merchantRegion}}\"\n            },\n            \"merchantType\": \"{{merchantType}}\"\n        },\n        \"terminalId\": \"{{terminalId}}\"\n    },\n    \"reciever\": {\n        \"id\": \"{{recieverId}}\",\n        \"name\": \"{{recieverName}}\"\n    },\n    \"amounts\": {\n        \"requestAmount\": {\n            \"amount\": \"{{requestAmount}}\",\n            \"currency\": \"{{currency}}\"\n        }\n    },\n    \"settlementEntity\": {\n        \"id\": \"{{settlementEntityId}}\",\n        \"name\": \"{{settlementEntityName}}\"\n    },\n    \"thirdPartyIdentifiers\": [\n        {\n            \"institutionId\": \"{{senderInstId}}\",\n            \"transactionIdentifier\": \"{{senderTranRef}}\"\n        },\n        {\n            \"institutionId\": \"{{clientId}}\",\n            \"transactionIdentifier\": \"{{clientTranRef}}\"\n        }\n    ],\n    \"time\": \"{{reqDateTime}}\"\n}"
+						},
+						"description": "Test PaymentRequest"
+					},
+					"response": []
+				},
+				{
+					"name": "TrafficFinePaymentConfirmation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 202\"] = responseCode.code === 202;",
+									"",
+									"",
+									""
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"",
+									"function uuid() {",
+									"    ",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"function halve(n) {",
+									"    ",
+									"    return Math.floor(n/2);",
+									"}",
+									"",
+									"var dateTime = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"adviceDateTime\", dateTime);",
+									"",
+									"postman.setEnvironmentVariable(\"rrn\",_p8());",
+									"postman.setEnvironmentVariable(\"adviceId\",uuid());",
+									"postman.setEnvironmentVariable(\"tenderAmount\",halve(environment.requestAmount));",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/payments/{{requestId}}/confirmations/{{adviceId}}",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic dXNlcm5hbWU6cGFzc3N3b3Jk",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\" : \"{{adviceId}}\",\n  \"requestId\" : \"{{requestId}}\",\n  \"time\" : \"{{adviceDateTime}}\",\n  \"linkData\" : \"{{linkData}}\",\n  \"tenders\" : [ {\n    \"accountType\" : \"{{tenderAccountType}}\",\n    \"amount\" : {\n      \"amount\" : {{tenderAmount}},\n      \"currency\" : \"{{currency}}\"\n    },\n    \"cardNumber\" : \"{{tenderCardNumber}}1\",\n    \"reference\" : \"{{tenderRef}}1\",\n    \"tenderType\" : \"{{tenderTypeCash}}\"\n  }, {\n    \"accountType\" : \"DEFAULT\",\n    \"amount\" : {\n      \"amount\" : {{tenderAmount}},\n      \"currency\" : \"{{currency}}\"\n    },\n    \"cardNumber\" : \"{{tenderCardNumber}}2\",\n    \"reference\" : \"{{tenderRef}}2\",\n    \"tenderType\" : \"{{tenderTypeCard}}\"\n  } ],\n  \"thirdPartyIdentifiers\": [\n        {\n            \"institutionId\": \"{{thirdPartyId1}}\",\n            \"transactionIdentifier\": \"{{thirdPartyTranRef1}}\"\n        },\n        {\n            \"institutionId\": \"{{thirdPartyId2}}\",\n            \"transactionIdentifier\": \"{{thirdPartyTranRef2}}\"\n        },\n        {\n            \"institutionId\": \"{{thirdPartyId3}}\",\n            \"transactionIdentifier\": \"{{thirdPartyTranRef3}}\"\n        },\n        {\n            \"institutionId\": \"{{thirdPartyId4}}\",\n            \"transactionIdentifier\": \"{{thirdPartyTranRef4}}\"\n        }\n    ]\n}"
+						},
+						"description": "Test confirm payment"
 					},
 					"response": []
 				}
