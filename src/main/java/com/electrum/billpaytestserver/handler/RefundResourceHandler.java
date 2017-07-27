@@ -168,7 +168,7 @@ public class RefundResourceHandler extends BaseRequestHandler implements IRefund
          return;
       }
 
-      BillPayAccount account = null;
+      BillPayAccount account;
 
       PaymentResponse paymentResponse = MockBillPayBackend.getPaymentResponse((request).getIssuerReference());
 
