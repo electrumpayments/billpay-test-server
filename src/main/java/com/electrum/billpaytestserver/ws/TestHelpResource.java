@@ -2,11 +2,7 @@ package com.electrum.billpaytestserver.ws;
 
 import java.io.IOException;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
 import org.slf4j.Logger;
@@ -16,10 +12,7 @@ import com.electrum.billpaytestserver.account.BillPayAccount;
 import com.electrum.billpaytestserver.engine.ErrorDetailFactory;
 import com.electrum.billpaytestserver.engine.MockBillPayBackend;
 
-import io.electrum.billpay.model.AccountLookupRequest;
-import io.electrum.billpay.model.ErrorDetail;
-import io.electrum.billpay.model.PaymentRequest;
-import io.electrum.billpay.model.RefundRequest;
+import io.electrum.billpay.model.*;
 import io.electrum.vas.model.BasicAdvice;
 import io.electrum.vas.model.BasicReversal;
 import io.electrum.vas.model.LedgerAmount;
@@ -62,11 +55,39 @@ public class TestHelpResource {
       return MockBillPayBackend.getAccountLookupRequests();
    }
 
+   @Path("allTrafficFineLookups")
+   @GET
+   public TrafficFineLookupRequest[] getAllTrafficFineLookupRequests() {
+      log.info("GET traffic fine lookups");
+      return MockBillPayBackend.getTrafficFineLookups();
+   }
+
+   @Path("allPolicyLookups")
+   @GET
+   public PolicyLookupRequest[] getAllPolicyLookupRequests() {
+      log.info("GET policy lookups");
+      return MockBillPayBackend.getPolicyLookups();
+   }
+
    @Path("allPaymentRequests")
    @GET
    public PaymentRequest[] getAllPaymentRequests() {
       log.info("GET payment requests");
       return MockBillPayBackend.getPaymentRequests();
+   }
+
+   @Path("allTrafficFinePaymentRequests")
+   @GET
+   public TrafficFinePaymentRequest[] getAllTrafficFinePaymentRequests() {
+      log.info("GET traffic fine payment requests");
+      return MockBillPayBackend.getTrafficFinePaymentRequests();
+   }
+
+   @Path("allPolicyPaymentRequests")
+   @GET
+   public PolicyPaymentRequest[] getAllPolicyPaymentRequests() {
+      log.info("GET policy payment requests");
+      return MockBillPayBackend.getPolicyPaymentRequests();
    }
 
    @Path("allRefundRequests")

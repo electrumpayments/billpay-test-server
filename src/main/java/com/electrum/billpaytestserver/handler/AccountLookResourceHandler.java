@@ -168,7 +168,7 @@ public class AccountLookResourceHandler extends AnotherBaseRequestHandler implem
          return;
       }
 
-      BillPayAccount account = null;
+      BillPayAccount account;
 
       account = MockBillPayBackend.getAccount((request).getNoticeNumber());
 

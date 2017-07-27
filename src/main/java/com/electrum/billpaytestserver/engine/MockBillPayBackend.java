@@ -66,13 +66,21 @@ public class MockBillPayBackend {
    }
 
    public static boolean add(Transaction request) {
-      if (request instanceof AccountLookupRequest) {
+      if (request instanceof AccountLookupRequest)
          return add((AccountLookupRequest) request);
-      } else if (request instanceof PaymentRequest) {
+      if (request instanceof TrafficFineLookupRequest)
+         return add((TrafficFineLookupRequest) request);
+      if (request instanceof PolicyLookupRequest)
+         return add((PolicyLookupRequest) request);
+      if (request instanceof PaymentRequest)
          return add((PaymentRequest) request);
-      } else if (request instanceof RefundRequest) {
+      if (request instanceof TrafficFinePaymentRequest)
+         return add((TrafficFinePaymentRequest) request);
+      if (request instanceof PolicyPaymentRequest)
+         return add((PolicyPaymentRequest) request);
+      if (request instanceof RefundRequest)
          return add((RefundRequest) request);
-      }
+
       return false;
    }
 
@@ -82,6 +90,24 @@ public class MockBillPayBackend {
       }
 
       accountLookups.put(accountLookupRequest.getId(), accountLookupRequest);
+      return true;
+   }
+
+   public static boolean add(TrafficFineLookupRequest trafficFineLookupRequest) {
+      if (existsMessage(trafficFineLookupRequest.getId())) {
+         return false;
+      }
+
+      trafficFineLookups.put(trafficFineLookupRequest.getId(), trafficFineLookupRequest);
+      return true;
+   }
+
+   public static boolean add(PolicyLookupRequest policyLookupRequest) {
+      if (existsMessage(policyLookupRequest.getId())) {
+         return false;
+      }
+
+      policyLookups.put(policyLookupRequest.getId(), policyLookupRequest);
       return true;
    }
 
