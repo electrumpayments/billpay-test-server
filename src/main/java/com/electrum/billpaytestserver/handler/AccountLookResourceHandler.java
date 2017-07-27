@@ -2,19 +2,16 @@ package com.electrum.billpaytestserver.handler;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.container.AsyncResponse;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.SecurityContext;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.*;
 
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.electrum.billpaytestserver.Utils;
 import com.electrum.billpaytestserver.account.BillPayAccount;
 import com.electrum.billpaytestserver.engine.ErrorDetailFactory;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.electrum.billpaytestserver.engine.MockBillPayBackend;
+import com.electrum.billpaytestserver.validation.BillpayMessageValidator;
+import com.electrum.billpaytestserver.validation.ValidationResult;
 
 import io.electrum.billpay.api.IAccountLookupsResource;
 import io.electrum.billpay.model.*;
@@ -23,8 +20,7 @@ import io.electrum.vas.model.Amounts;
 /**
  *
  */
-public class AccountLookResourceHandler extends BaseRequestHandler<AccountLookupRequest, AccountLookupResponse>
-      implements IAccountLookupsResource {
+public class AccountLookResourceHandler extends BaseRequestHandler implements IAccountLookupsResource {
    private static final Logger log = LoggerFactory.getLogger(AccountLookResourceHandler.class);
 
    @Override
@@ -39,15 +35,7 @@ public class AccountLookResourceHandler extends BaseRequestHandler<AccountLookup
          UriInfo uriInfo) {
       log.info("Handling account lookup request");
       try {
-         handleMessage(
-               id,
-               accountLookupRequest,
-               securityContext,
-               asyncResponse,
-               request,
-               httpServletRequest,
-               httpHeaders,
-               uriInfo);
+         handleMessage(accountLookupRequest, asyncResponse);
       } catch (Exception e) {
          log.error("Error handling message", e);
          asyncResponse.resume(
@@ -62,62 +50,233 @@ public class AccountLookResourceHandler extends BaseRequestHandler<AccountLookup
    @Override
    public void requestTrafficFineInfo(
          String id,
-         TrafficFineLookupRequest body,
+         TrafficFineLookupRequest trafficFineLookupRequest,
          SecurityContext securityContext,
          AsyncResponse asyncResponse,
          Request request,
          HttpServletRequest httpServletRequest,
          HttpHeaders httpHeaders,
          UriInfo uriInfo) {
-      // TODO
+      log.info("Handling traffic fine info request");
+      try {
+         handleMessage(trafficFineLookupRequest, asyncResponse);
+      } catch (Exception e) {
+         log.error("Error handling message", e);
+         asyncResponse.resume(ErrorDetailFactory.getServerErrorErrorDetail(
+               e,
+               ErrorDetail.RequestType.TRAFFIC_FINE_LOOKUP_REQUEST,
+               trafficFineLookupRequest.getId(),
+               null));
+      }
    }
 
    @Override
    public void requestPolicyInfo(
          String id,
-         PolicyLookupRequest body,
+         PolicyLookupRequest policyLookupRequest,
          SecurityContext securityContext,
          AsyncResponse asyncResponse,
          Request request,
          HttpServletRequest httpServletRequest,
          HttpHeaders httpHeaders,
          UriInfo uriInfo) {
-      // TODO
+      log.info("Handling traffic fine info request");
+      try {
+         handleMessage(policyLookupRequest, asyncResponse);
+      } catch (Exception e) {
+         log.error("Error handling message", e);
+         asyncResponse.resume(
+               ErrorDetailFactory.getServerErrorErrorDetail(
+                     e,
+                     ErrorDetail.RequestType.TRAFFIC_FINE_LOOKUP_REQUEST,
+                     policyLookupRequest.getId(),
+                     null));
+      }
    }
 
    protected AccountLookupResponse getResponse(AccountLookupRequest request, BillPayAccount account) {
       log.info("Constructing response");
       AccountLookupResponse response = new AccountLookupResponse();
 
-      response.setId(request.getId());
-      response.setTime(new DateTime());
-      response.setOriginator(request.getOriginator());
-      response.setClient(getClient());
-      response.setSettlementEntity(getSettlementEntity());
-      response.setReceiver(getReceiver());
+      setBasicResponseFields(request, response);
+
       response.setAccount(getAccount(account));
       response.setAmounts(new Amounts().balanceAmount(account.getBalance()));
       response.setCustomer(account.getCustomer());
-      response.setSlipData(getSlipData());
-      response.setThirdPartyIdentifiers(getThirdPartyIdentifiers(request.getThirdPartyIdentifiers()));
 
-      try {
-         log.debug(Utils.objectToPrettyPrintedJson(response));
-      } catch (JsonProcessingException e) {
-         log.error("Could not print response");
-      }
+      logRequestOrResponse(response, log);
 
       return response;
    }
 
-   @Override
-   protected void doReversal(AccountLookupRequest origRequest) {
+   protected TrafficFineLookupResponse getResponse(TrafficFineLookupRequest request, BillPayAccount account) {
+      log.info("Constructing response");
+      TrafficFineLookupResponse response = new TrafficFineLookupResponse();
 
+      setBasicResponseFields(request, response);
+
+      response.setTrafficFine(getTrafficFine(account));
+      response.setAmounts(new Amounts().balanceAmount(account.getBalance()));
+      response.setCustomer(account.getCustomer());
+
+      logRequestOrResponse(response, log);
+
+      return response;
    }
 
-   @Override
-   protected void doConfirm(AccountLookupRequest origRequest) {
+   protected PolicyLookupResponse getResponse(PolicyLookupRequest request, BillPayAccount account) {
+      log.info("Constructing response");
+      PolicyLookupResponse response = new PolicyLookupResponse();
 
+      setBasicResponseFields(request, response);
+
+      response.setPolicy(getPolicy(account));
+      response.setAmounts(new Amounts().balanceAmount(account.getBalance()));
+      response.setCustomer(account.getCustomer());
+
+      logRequestOrResponse(response, log);
+
+      return response;
    }
 
+   protected void handleMessage(AccountLookupRequest request, AsyncResponse asyncResponse) throws Exception {
+
+      if (!validateAndPersist(request, asyncResponse)) {
+         return;
+      }
+
+      BillPayAccount account;
+
+      account = MockBillPayBackend.getAccount((request).getAccountRef());
+
+      if (account == null) {
+         asyncResponse.resume(
+               ErrorDetailFactory.getNoAccountFoundErrorDetail(
+                     (request).getAccountRef(),
+                     ErrorDetail.RequestType.ACCOUNT_LOOKUP_REQUEST,
+                     request.getId(),
+                     null));
+         return;
+      }
+
+      asyncResponse.resume(Response.status(Response.Status.OK).entity(getResponse(request, account)).build());
+   }
+
+   protected void handleMessage(TrafficFineLookupRequest request, AsyncResponse asyncResponse) throws Exception {
+
+      if (!validateAndPersist(request, asyncResponse)) {
+         return;
+      }
+
+      BillPayAccount account;
+
+      account = MockBillPayBackend.getAccount((request).getNoticeNumber());
+
+      if (account == null) {
+         asyncResponse.resume(
+               ErrorDetailFactory.getNoAccountFoundErrorDetail(
+                     (request).getNoticeNumber(),
+                     ErrorDetail.RequestType.TRAFFIC_FINE_LOOKUP_REQUEST,
+                     request.getId(),
+                     null));
+         return;
+      }
+
+      asyncResponse.resume(Response.status(Response.Status.OK).entity(getResponse(request, account)).build());
+   }
+
+   protected void handleMessage(PolicyLookupRequest request, AsyncResponse asyncResponse) throws Exception {
+
+      if (!validateAndPersist(request, asyncResponse)) {
+         return;
+      }
+
+      BillPayAccount account = null;
+
+      account = MockBillPayBackend.getAccount((request).getPolicyNumber());
+
+      if (account == null) {
+         asyncResponse.resume(
+               ErrorDetailFactory.getNoAccountFoundErrorDetail(
+                     (request).getPolicyNumber(),
+                     ErrorDetail.RequestType.POLICY_LOOKUP_REQUEST,
+                     request.getId(),
+                     null));
+         return;
+      }
+
+      asyncResponse.resume(Response.status(Response.Status.OK).entity(getResponse(request, account)).build());
+   }
+
+   protected boolean validateAndPersist(AccountLookupRequest request, AsyncResponse asyncResponse) {
+      ValidationResult validation = BillpayMessageValidator.validate(request);
+
+      ErrorDetail.RequestType requestType = ErrorDetail.RequestType.ACCOUNT_LOOKUP_REQUEST;
+
+      if (!validation.isValid()) {
+         log.info("Request format invalid");
+         asyncResponse.resume(
+               ErrorDetailFactory.getIllFormattedMessageErrorDetail(validation, requestType, request.getId(), null));
+         return false;
+      }
+
+      logRequestOrResponse(request, log);
+
+      boolean wasAdded = MockBillPayBackend.add(request);
+
+      if (!wasAdded) {
+         asyncResponse.resume(
+               ErrorDetailFactory.getNotUniqueUuidErrorDetail(request.getId(), requestType, request.getId(), null));
+         return false;
+      }
+      return true;
+   }
+
+   protected boolean validateAndPersist(TrafficFineLookupRequest request, AsyncResponse asyncResponse) {
+      ValidationResult validation = BillpayMessageValidator.validate(request);
+
+      ErrorDetail.RequestType requestType = ErrorDetail.RequestType.TRAFFIC_FINE_LOOKUP_REQUEST;
+
+      if (!validation.isValid()) {
+         log.info("Request format invalid");
+         asyncResponse.resume(
+               ErrorDetailFactory.getIllFormattedMessageErrorDetail(validation, requestType, request.getId(), null));
+         return false;
+      }
+
+      logRequestOrResponse(request, log);
+
+      boolean wasAdded = MockBillPayBackend.add(request);
+
+      if (!wasAdded) {
+         asyncResponse.resume(
+               ErrorDetailFactory.getNotUniqueUuidErrorDetail(request.getId(), requestType, request.getId(), null));
+         return false;
+      }
+      return true;
+   }
+
+   protected boolean validateAndPersist(PolicyLookupRequest request, AsyncResponse asyncResponse) {
+      ValidationResult validation = BillpayMessageValidator.validate(request);
+
+      ErrorDetail.RequestType requestType = ErrorDetail.RequestType.POLICY_LOOKUP_REQUEST;
+
+      if (!validation.isValid()) {
+         log.info("Request format invalid");
+         asyncResponse.resume(
+               ErrorDetailFactory.getIllFormattedMessageErrorDetail(validation, requestType, request.getId(), null));
+         return false;
+      }
+
+      logRequestOrResponse(request, log);
+
+      boolean wasAdded = MockBillPayBackend.add(request);
+
+      if (!wasAdded) {
+         asyncResponse.resume(
+               ErrorDetailFactory.getNotUniqueUuidErrorDetail(request.getId(), requestType, request.getId(), null));
+         return false;
+      }
+      return true;
+   }
 }
