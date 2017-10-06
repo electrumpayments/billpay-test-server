@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.electrum</groupId>
   <artifactId>billpay-test-server</artifactId>
-  <version>4.2.0</version>
+  <version>4.2.1</version>
   <packaging>jar</packaging>
   <licenses>
     <license>
@@ -34,7 +34,7 @@
     <jetty-version>9.2.18.v20160721</jetty-version>
     <jersey-version>2.22.1</jersey-version>
     <joda-time-version>2.9.4</joda-time-version>
-    <billpay-version>4.4.0</billpay-version>
+    <billpay-version>4.4.2</billpay-version>
   </properties>
 
   <dependencies>
