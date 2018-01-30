@@ -5,6 +5,10 @@
  */
 package com.electrum.billpaytestserver;
 
+import java.util.EnumSet;
+
+import javax.servlet.DispatcherType;
+
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
@@ -13,8 +17,10 @@ import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerCollection;
+import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.util.thread.ScheduledExecutorScheduler;
 import org.glassfish.jersey.servlet.ServletContainer;
@@ -69,6 +75,14 @@ public class BillpayTestServerRunner {
       ServletContextHandler context = new ServletContextHandler();
       context.setContextPath("/");
       context.addServlet(servletHolder, "/*");
+
+      FilterHolder corsFilterHolder = new FilterHolder(CrossOriginFilter.class);
+      corsFilterHolder.setName("CORS filter");
+      context.addFilter(corsFilterHolder, "/*", EnumSet.allOf(DispatcherType.class));
+      corsFilterHolder.getRegistration().setInitParameter("allowedOrigins", "*");
+      corsFilterHolder.getRegistration()
+            .setInitParameter("allowedHeaders", "X-Requested-With,Content-Type,Accept,Origin");
+      corsFilterHolder.getRegistration().setInitParameter("allowedMethods", "OPTIONS,GET,PUT,POST,DELETE,HEAD");
 
       server.setHandler(context);
 
