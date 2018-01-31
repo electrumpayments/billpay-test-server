@@ -26,7 +26,7 @@
     <developerConnection>scm:git:git@github.com:electrumpayments/billpay-test-server.git</developerConnection>
     <url>git@github.com:electrumpayments/billpay-test-server.git</url>
   </scm>
-  
+
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.7</maven.compiler.source>
@@ -34,8 +34,7 @@
     <jetty-version>9.2.18.v20160721</jetty-version>
     <jersey-version>2.22.1</jersey-version>
     <joda-time-version>2.9.4</joda-time-version>
-    <billpay-version>4.4.2</billpay-version>
-    <electrum.dependency.jetty.version>9.4.6.v20170531</electrum.dependency.jetty.version>
+    <billpay-version>4.4.0</billpay-version>
   </properties>
 
   <dependencies>
@@ -46,7 +45,7 @@
       <artifactId>billpay-service-interface</artifactId>
       <version>${billpay-version}</version>
     </dependency>
-    
+
     <!-- CSV -->
     <dependency>
       <groupId>net.sourceforge.javacsv</groupId>
@@ -67,20 +66,25 @@
       <artifactId>guava</artifactId>
       <version>19.0</version>
     </dependency>
-    
+
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-server</artifactId>
       <version>${jetty-version}</version>
     </dependency>
     <dependency>
-    <groupId>org.eclipse.jetty</groupId>
-    <artifactId>jetty-servlet</artifactId>
-    <version>${jetty-version}</version>
-  </dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-servlet</artifactId>
+      <version>${jetty-version}</version>
+    </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-webapp</artifactId>
+      <version>${jetty-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-servlets</artifactId>
       <version>${jetty-version}</version>
     </dependency>
 
@@ -110,8 +114,8 @@
       <artifactId>jersey-media-json-jackson</artifactId>
       <version>${jersey-version}</version>
     </dependency>
-    
-    
+
+
     <!-- Logging -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -129,12 +133,6 @@
       <version>2.1</version>
     </dependency>
 
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-servlets</artifactId>
-      <version>${electrum.dependency.jetty.version}</version>
-    </dependency>
-    
   </dependencies>
   <build>
 
@@ -159,7 +157,7 @@
         <artifactId>maven-resources-plugin</artifactId>
         <version>2.7</version>
         <executions>
-          
+
           <execution>
             <id>copy-resource-docker</id>
             <phase>install</phase>
@@ -201,7 +199,7 @@
           </execution>
         </executions>
       </plugin>
-      
+
       <!-- Jar with dependencies -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -239,31 +237,31 @@
       </plugin>
 
       <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-source-plugin</artifactId>
-          <version>2.2.1</version>
-          <executions>
-              <execution>
-                  <id>attach-sources</id>
-                  <goals>
-                      <goal>jar-no-fork</goal>
-                  </goals>
-              </execution>
-          </executions>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.2.1</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
 
       <plugin>
-         <groupId>org.apache.maven.plugins</groupId>
-         <artifactId>maven-javadoc-plugin</artifactId>
-         <version>2.9</version>
-         <executions>
-            <execution>
-               <id>attach-javadocs</id>
-               <goals>
-                  <goal>jar</goal>
-               </goals>
-            </execution>
-         </executions>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.9</version>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
 
       <plugin>
@@ -286,7 +284,7 @@
           </execution>
         </executions>
       </plugin>
-      
+
     </plugins>
   </build>
 
