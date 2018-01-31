@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.electrum</groupId>
   <artifactId>billpay-test-server</artifactId>
-  <version>4.2.0</version>
+  <version>4.2.01</version>
   <packaging>jar</packaging>
   <licenses>
     <license>
@@ -35,6 +35,7 @@
     <jersey-version>2.22.1</jersey-version>
     <joda-time-version>2.9.4</joda-time-version>
     <billpay-version>4.4.0</billpay-version>
+    <electrum.dependency.jetty.version>9.4.6.v20170531</electrum.dependency.jetty.version>
   </properties>
 
   <dependencies>
@@ -127,6 +128,13 @@
       <artifactId>log4j-core</artifactId>
       <version>2.1</version>
     </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-servlets</artifactId>
+      <version>${electrum.dependency.jetty.version}</version>
+    </dependency>
+    
   </dependencies>
   <build>
 
