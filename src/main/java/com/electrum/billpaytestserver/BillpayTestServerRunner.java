@@ -82,7 +82,7 @@ public class BillpayTestServerRunner {
       corsFilterHolder.getRegistration().setInitParameter("allowedOrigins", "*");
       corsFilterHolder.getRegistration().setInitParameter(
             "allowedHeaders",
-            "Access-Control-Allow-Headers,Origin,Accept,X-Requested-With,Content-Type,Access-Control-Request-Method,Access-Control-Request-Headers");
+            "Access-Control-Allow-Origin,Access-Control-Allow-Headers,Origin,Accept,X-Requested-With,Content-Type,Access-Control-Request-Method,Access-Control-Request-Headers");
       corsFilterHolder.getRegistration().setInitParameter("allowedMethods", "OPTIONS,GET,PUT,POST,DELETE,HEAD");
 
       server.setHandler(context);
