@@ -6,6 +6,9 @@
   <artifactId>billpay-test-server</artifactId>
   <version>4.2.3</version>
   <packaging>jar</packaging>
+  <name>Billpay Test Server</name>
+  <description>Server and Postman scripts to test Billpay Service Interface implementations</description>
+  <url>https://electrumpayments.github.io/billpay-service-interface-docs/testing/</url>
   <licenses>
     <license>
       <name>Apache License, Version 2.0</name>
@@ -31,8 +34,8 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.7</maven.compiler.source>
     <maven.compiler.target>1.7</maven.compiler.target>
-    <jetty-version>9.2.18.v20160721</jetty-version>
-    <jersey-version>2.22.1</jersey-version>
+    <jetty-version>9.4.14.v20181114</jetty-version>
+    <jersey-version>2.25</jersey-version>
     <joda-time-version>2.9.4</joda-time-version>
     <billpay-version>4.4.0</billpay-version>
   </properties>
@@ -145,9 +148,6 @@
         <directory>src/dist</directory>
         <filtering>true</filtering>
       </resource>
-      <resource>
-        <directory>src/docs/devguide</directory>
-      </resource>
 
     </resources>
 
@@ -160,7 +160,7 @@
 
           <execution>
             <id>copy-resource-docker</id>
-            <phase>install</phase>
+            <phase>package</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
@@ -179,7 +179,7 @@
           </execution>
           <execution>
             <id>copy-resource-heroku</id>
-            <phase>install</phase>
+            <phase>package</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
@@ -204,6 +204,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.1.1</version>
         <executions>
           <execution>
             <id>jar-with-dependencies</id>
@@ -231,8 +232,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.1</version>
         <configuration>
-          <source>1.7</source>
-          <target>1.7</target>
+          <source>1.8</source>
+          <target>1.8</target>
         </configuration>
       </plugin>
 
@@ -259,27 +260,6 @@
             <id>attach-javadocs</id>
             <goals>
               <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>install</phase>
-            <configuration>
-              <tasks if="newman.test">
-                <exec executable="${basedir}/test/postman/run_tests.sh" failonerror="true">
-                  <arg value="${basedir}"/>
-                  <arg value="${basedir}/test/postman"/>
-                </exec>
-              </tasks>
-            </configuration>
-            <goals>
-              <goal>run</goal>
             </goals>
           </execution>
         </executions>
