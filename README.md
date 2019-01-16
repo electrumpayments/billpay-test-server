@@ -6,9 +6,9 @@ To test a client implementation an instance of this test server is provided at: 
 
 Or you can run a containerized version of this test server locally using Docker:
 ```bash
-docker pull electrum/billpay-test-server:5
+docker pull electrum/billpay-test-server:4
 # Run the test server listening on localhost:8080
-docker run -d -p 8080:8080 electrum/billpay-test-server:5
+docker run -d -p 8080:8080 electrum/billpay-test-server:4
 ```
 
 Messages sent to this server via the URLs described in the [billpay-service-interface](https://github.com/electrumpayments/billpay-service-interface) will be
@@ -190,6 +190,6 @@ Note that that tests may be run individually from the main Postman view where te
 ```
 2. Run the tests (from the root directory of this reop):
 ```
-	newman run test/postman/billpaytest_server_tests.postman_collection.json -e test/postmanlocalhost.postman_environment.json
+	newman run test/postman/billpaytest_server_tests.postman_collection.json -e test/postman/localhost.postman_environment.json
 ```
 This will run all tests and provide a basic breakdown of which tests passed and failed.
