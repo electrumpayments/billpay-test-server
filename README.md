@@ -12,7 +12,7 @@ docker run -d -p 8080:8080 electrum/billpay-test-server:4
 ```
 
 Messages sent to this server via the URLs described in the [billpay-service-interface](https://github.com/electrumpayments/billpay-service-interface) will be
-validated as well as processed against a set of preloaded mock customer accounts.
+validated as well as processed against a set of pre-loaded mock customer accounts.
 
 ### Test utils
 | Action                                                  | Url                     |
@@ -25,7 +25,7 @@ validated as well as processed against a set of preloaded mock customer accounts
 | View all PaymentReversals that have been made     | /test/allPaymentReversals |
 | View all RefundConfirmations that have been made     | /test/allRefundConfirmations |
 | View all RefundReversals that have been made     | /test/allRefundReversals |
-| Reset all accounts and remove all messges received     | /test/reset |
+| Reset all accounts and remove all messages received     | /test/reset |
 | Add a BillPayment account     | /test/addAccount |
 
 ### Testing message correctness
@@ -86,7 +86,7 @@ New BillPayment accounts can be added via `/test/addAccount` with JSON similar t
 }
 ```
 
-The only mandatory field here is `accountRef` neglecting to poplulate the other fields will result in server generated data being used.
+The only mandatory field here is `accountRef` neglecting to populate the other fields will result in server generated data being used.
 For example the following request JSON is valid:
 
 ```json
@@ -186,10 +186,10 @@ Note that that tests may be run individually from the main Postman view where te
 #### Newman
 1. Install newman (make sure `npm` is installed first):
 ```
-	npm install newman -g
+npm install newman -g
 ```
-2. Run the tests (from the root directory of this reop):
+2. Run the tests (from the root directory of this repo):
 ```
-	newman run test/postman/billpaytest_server_tests.postman_collection.json -e test/postman/localhost.postman_environment.json
+newman run test/postman/billpaytest_server_tests.postman_collection.json -e test/postman/localhost.postman_environment.json
 ```
 This will run all tests and provide a basic breakdown of which tests passed and failed.

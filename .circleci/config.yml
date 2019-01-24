@@ -15,7 +15,7 @@ jobs:
           keys:
             - v1-maven-{{ .Branch }}-{{ checksum "pom.xml" }}
             - v1-maven-{{ .Branch }}
-      - run: mvn dependency:go-offline
+      - run: mvn dependency:resolve-plugins dependency:go-offline -B -Dstyle.color=always
       - save_cache:
           paths:
             - ~/.m2
@@ -42,9 +42,17 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Setup Heroku
+          command: |
+            echo 'machine git.heroku.com
+              login $HEROKU_LOGIN
+              password $HEROKU_API_KEY' > ~/.netrc
+            echo 'VerifyHostKeyDNS yes
+                  StrictHostKeyChecking no' > ~/.ssh/config
+      - run:
           name: Deploy Master to Heroku
           command: |
-            git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP.git master
+            git push git@heroku.com:$HEROKU_APP.git master
       - attach_workspace:
           at: docker-cache
       - run:
@@ -66,6 +74,7 @@ jobs:
         aws_auth:
           aws_access_key_id: $AWS_ACCESS_KEY_ID
           aws_secret_access_key: $AWS_SECRET_ACCESS_KEY
+    working_directory: /home/circleci/project
     steps:
       - checkout
       - restore_cache:
